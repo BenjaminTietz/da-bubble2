@@ -5,14 +5,15 @@ import { RouterModule } from '@angular/router';
 // forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //firebase
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AuthService } from './services/auth.service';
+
+import { initializeApp } from "firebase/app";
 
 //pre-login components
 import { LoginComponent } from './pre-login-components/login/login.component';
@@ -25,9 +26,8 @@ import { ResetPasswordComponent } from './pre-login-components/reset-password/re
 
 
 //services
+import { AuthService } from './services/auth.service';
 
-
-import { environment } from '../environments/environment';
 import { routes } from './app-routing.module';
 import { ImprintComponent } from './legal-components/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privacy-policy.component';
@@ -55,10 +55,11 @@ import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privac
     RouterModule.forRoot(routes),
     FormsModule,
     ReactiveFormsModule,
+
   ],
   exports: [RouterModule],
   providers: [
-    AuthService
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })
