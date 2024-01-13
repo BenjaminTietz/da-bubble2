@@ -19,7 +19,7 @@ export class ChannelListComponent implements OnDestroy {
 
   firestore: Firestore = inject(Firestore);
   //displayedColumns: string[] = ['position'];
-  //unsubChannels;
+  unsubChannels;
   listChannels: any = [];
   channel = new Channel();
 
@@ -27,13 +27,13 @@ export class ChannelListComponent implements OnDestroy {
 
   constructor() {
     this.checkScreenSize();
-    //this.unsubChannels = this.subChannelsList();
+    this.unsubChannels = this.subChannelsList();
 
   }
 
 
 
-  /* subChannelsList() {
+  subChannelsList() {
     const q = query(this.getChannelsRef());
     return onSnapshot(q, (list) => {
       this.listChannels = [];
@@ -41,7 +41,7 @@ export class ChannelListComponent implements OnDestroy {
         this.listChannels.push(this.setChannel(element.data(), element.id));
       });
     });
-  } */
+  }
 
 
 
@@ -56,9 +56,9 @@ export class ChannelListComponent implements OnDestroy {
     }
   }
 
-  /* getChannelsRef() {
+  getChannelsRef() {
     return collection(this.firestore, 'channels');
-  } */
+  }
 
 
 

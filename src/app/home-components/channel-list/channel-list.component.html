@@ -1,6 +1,6 @@
 <ul>
     <li *ngFor="let channel of listChannels" (click)="isScreenSmall" routerLinkActive="active" routerLink="/home/channels">
-        <mat-icon>channel</mat-icon>Channelname
+        <mat-icon>channel</mat-icon> {{ channel.name }}
     </li>
 
     
