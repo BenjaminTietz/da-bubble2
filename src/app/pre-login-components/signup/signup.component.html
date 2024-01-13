@@ -16,12 +16,12 @@
           DABubble-Konto.</span
         >
       </div>
-      <form>
+      <form [formGroup]="signupForm" (ngSubmit)="signup()">
         <div class="input-wrapper">
           <input
             class="input-field"
             type="username"
-            id="username"
+            formControlName="username"
             placeholder="Name und Nachname"
           />
           <img src="../../../assets/img/user.png" alt="user-icon" />
@@ -30,7 +30,7 @@
           <input
             class="input-field"
             type="email"
-            id="email"
+            formControlName="email"
             placeholder="beispielname@email.com"
           />
           <img src="../../../assets/img/email.png" alt="mail-icon" />
@@ -40,17 +40,19 @@
           <input
             class="input-field"
             type="password"
-            id="password"
+            formControlName="password"
             placeholder="Passwort"
           />
           <img src="../../../assets/img/password.png" alt="password-icon" />
         </div>
 
         <div class="input-checkbox-wrapper">
-          <input class="input-checkbox" type="checkbox" id="accept-terms" />
+          <input class="input-checkbox" type="checkbox" formControlName="accept-terms" />
           <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu.</span>
         </div>
-
+        <div *ngIf="firebaseErrorMessage !=''" class="error-style">
+          <span	>{{ firebaseErrorMessage }}</span>
+        </div>
         <div class="signup-btn-wrapper">
           <button class="continue-btn" type="submit">Weiter</button>
         </div>

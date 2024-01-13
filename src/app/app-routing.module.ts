@@ -11,7 +11,7 @@ import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privac
 //post-login components
 
 //guards
-import { authGuard } from './services/auth.guard';
+import { AuthGuard } from './services/auth.guard';
 //services
 
 //material
