@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AuthService } from '../../services/auth.service';
+// import { AngularFireAuth } from '@angular/fire/compat/auth';
+// import { AuthService } from '../../services/auth.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
@@ -16,9 +16,9 @@ export class SignupComponent implements OnInit {
   firebaseErrorMessage: string;
 
   constructor(
-    public authService: AuthService,
+    // public authService: AuthService,
     private router: Router,
-    private afAuth: AngularFireAuth,
+    // private afAuth: AngularFireAuth,
     ) {
       this.firebaseErrorMessage = '';
      }
@@ -32,20 +32,20 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  async signup(): Promise<void> {
-    if (this.signupForm.invalid) {
-      return;
-    }
+  // async signup(): Promise<void> {
+  //   if (this.signupForm.invalid) {
+  //     return;
+  //   }
 
-    try {
-      const result: any = await this.authService.signupUser(this.signupForm.value);
-      if (result == null) {
-        this.router.navigate(['/home']);
-      } else if (result.isValid == false) {
-        this.firebaseErrorMessage = result.message;
-      }
-    } catch (error: any) {
-      // Handle error
-    }
-  }
+  //   try {
+  //     const result: any = await this.authService.signupUser(this.signupForm.value);
+  //     if (result == null) {
+  //       this.router.navigate(['/home']);
+  //     } else if (result.isValid == false) {
+  //       this.firebaseErrorMessage = result.message;
+  //     }
+  //   } catch (error: any) {
+  //     // Handle error
+  //   }
+  // }
 }
