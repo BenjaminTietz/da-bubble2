@@ -2,6 +2,7 @@ import { NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
+
 //firebase
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -28,6 +29,9 @@ import { ResetPasswordComponent } from './pre-login-components/reset-password/re
 
 
 import { environment } from '../environments/environment';
+import { routes } from './app-routing.module';
+import { ImprintComponent } from './legal-components/imprint/imprint.component';
+import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privacy-policy.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,9 @@ import { environment } from '../environments/environment';
     SignupComponent,
     SelectAvatarComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ImprintComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule,
@@ -46,8 +52,10 @@ import { environment } from '../environments/environment';
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
     provideStorage(() => getStorage()),
-    RouterModule
+    RouterModule.forRoot(routes),
+
   ],
+  exports: [RouterModule],
   providers: [],
   bootstrap: [AppComponent]
 })

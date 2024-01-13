@@ -1,0 +1,216 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  background-color: $bg-color;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  width: 242px;
+  height: 70px;
+  margin-left: 75px;
+  margin-top: 75px;
+  gap: 16px;
+  img {
+    width: 70px;
+    height: 70px;
+  }
+
+  span {
+    color: $black;
+    @include Nunito(400, 16px, 18.8px, $black);
+  }
+}
+
+.signup {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 75px;
+  margin-top: 75px;
+  gap: 16px;
+  span {
+    color: $black;
+    @include Nunito(400, 18px, 24.55px, $black);
+    align-items: right;
+  }
+
+  a {
+    text-decoration: none;
+    @include Figtree(400, 18px, 21.6px, $purple-2);
+    align-items: right;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    text-decoration: none;
+    @include Figtree(400, 18px, 21.6px, $purple-2);
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  margin-bottom: 32px;
+  img {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+  }
+
+  input {
+    text-align: center;
+  }
+}
+
+.input-field {
+  width: 500px;
+  height: 60px;
+  box-sizing: border-box;
+  border-radius: 100px;
+  border: 0px 0px 1px 0px;
+  padding: 18px 32px 18px 32px;
+  gap: 10px;
+  background-color: $bg-color;
+  border: none;
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 606px;
+  height: 769px;
+  border-radius: 30px;
+  background-color: $white;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.login-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 486px;
+  height: 133px;
+  gap: 30px;
+  h1 {
+    @include Nunito(700, 46px, 55.2px, $purple-1);
+  }
+
+  span {
+    @include Nunito(400, 20px, 24px, $black);
+    text-align: center;
+  }
+}
+
+.divider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  box-sizing: border-box;
+  margin-top: 64px;
+  span {
+    @include Nunito(400, 18px, 24.55px, $black);
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+
+.light-purple-line {
+  border-bottom: 1px solid $light-purple-lines;
+  width: 100%;
+}
+
+.login-google-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 500px;
+  height: 60px;
+  border-radius: 100px;
+  border: 0px 0px 1px 0px;
+  background-color: $bg-color;
+  gap: 20px;
+  padding: 11px 32px 11px 32px;
+  margin-top: 64px;
+  span {
+    @include Nunito(400, 18px, 21.6px, $purple-1);
+  }
+}
+
+.login-btn-wrapper {
+    display: flex;
+  margin-top: 64px;
+  gap: 30px;
+}
+
+.login-btn {
+  width: 137px;
+  height: 49px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  background-color: $purple-1;
+  color: $white;
+  padding: 12px 25px 12px 25px;
+  border: none;
+  @include Nunito(700, 18px, 24.55px, $white);
+}
+
+.guest-login-btn {
+  width: 153px;
+  height: 49px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  background-color: $white;
+  color: $white;
+  white-space: nowrap;
+  padding: 12px 25px 12px 25px;
+  border: 1px solid $purple-2;
+  @include Nunito(700, 18px, 24.55px, $purple-1);
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100px;
+  background-color: $bg-color;
+  gap: 16px;
+  a {
+    text-decoration: none;
+    @include Figtree(400, 18px, 21.6px, $purple-2);
+  }
+}

@@ -1,0 +1,19 @@
+@mixin Nunito ($weight, $size, $line-height, $color) {
+    font-family: 'Nunito', sans-serif;
+    font-weight: $weight;
+    font-size: $size;
+    line-height: $line-height;
+    color: $color;
+}
+
+@mixin Figtree ($weight, $size, $line-height, $color) {
+    font-family: 'Figtree', sans-serif;
+    font-weight: $weight;
+    font-size: $size;
+    line-height: $line-height;
+    color: $color;
+}
+
+//example usage
+
+// @include Nunito(400, 16px, 18.8px, $red);

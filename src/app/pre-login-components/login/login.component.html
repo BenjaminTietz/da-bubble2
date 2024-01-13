@@ -1,1 +1,67 @@
-<p>login works!</p>
+<div class="login-wrapper">
+  <header>
+    <div class="logo">
+      <img src="../../../assets/img/da_bubble_logo.png" alt="logo" />
+      <span>DABubble</span>
+    </div>
+
+    <div class="signup">
+      <span>Neu bei DABubble?</span>
+      <a routerLink="/signup">Konto erstellen</a>
+    </div>
+  </header>
+  <div class="content">
+    <div class="login-box">
+      <div class="login-top">
+        <h1>Anmeldung</h1>
+        <span
+          >Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der
+          Arbeit verwendest.</span
+        >
+      </div>
+      <form>
+        <div class="input-wrapper">
+          <input
+            class="input-field"
+            type="email"
+            id="email"
+            placeholder="beispielname@email.com"
+          />
+          <img src="../../../assets/img/email.png" alt="mail-icon" />
+        </div>
+
+        <div class="input-wrapper">
+          <input
+            class="input-field"
+            type="password"
+            id="password"
+            placeholder="Passwort"
+          />
+          <img src="../../../assets/img/password.png" alt="password-icon" />
+        </div>
+
+        
+          <a routerLink="/forgot-password">Passwort vergessen?</a>
+        
+        <div class="divider">
+          <div class="light-purple-line"></div>
+          <span>ODER</span>
+          <div class="light-purple-line"></div>
+        </div>
+        <div class="login-google-btn">
+          <img src="../../../assets/img/google_logo.png" alt="google-logo" />
+          <span>Anmelden mit Google</span>
+        </div>
+
+        <div class="login-btn-wrapper">
+          <button class="login-btn" type="submit">Anmelden</button>
+          <button class="guest-login-btn" type="button">Gäste-Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <footer>
+    <a routerLink="/imprint">Impressum</a>
+    <a routerLink="/privacy-policy">Datenschutz</a>
+  </footer>
+</div>
