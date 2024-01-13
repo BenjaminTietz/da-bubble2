@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "da-bubble-9f879": {
+      "hosting": {
+        "da-bubble2": [
+          "da-bubble-9f879"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "da-bubble-9f879"
+  }
+}
