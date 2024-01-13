@@ -15,6 +15,7 @@ import { authGuard } from './services/auth.guard';
 //material
 
 export const routes: Routes = [
+  //pre-login components
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'signup', component: SignupComponent },
     { path: 'login', component: LoginComponent },
@@ -22,4 +23,8 @@ export const routes: Routes = [
     { path: 'forgot-password', component: ForgotPasswordComponent },
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: '**', component: LoginComponent}                            //catch all other routes and redirect to login
+
+    //post-login components
+
+    
 ];
