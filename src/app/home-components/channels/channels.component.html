@@ -1,1 +1,17 @@
-<p>channels works!</p>
+<div class="container-channel" *ngIf="dataLoaded">
+
+
+    <h4>Channel</h4>
+    <p>id: {{ channel.id }}</p>
+    <p>name: {{ channel.name }}</p>
+    <p>description: {{ channel.description }}</p>
+    <p>creator: {{ channel.creator.name }} / {{ channel.creator.id }} </p>
+    <h4>users:</h4>
+    <p *ngFor="let user of channel.users"> {{ user.name }}</p>
+    <h4>Posts</h4>
+    <p *ngFor="let post of channel.posts"> {{ post.id }}</p>
+
+
+
+
+</div>

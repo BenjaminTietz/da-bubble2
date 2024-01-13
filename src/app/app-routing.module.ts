@@ -35,7 +35,8 @@ export const routes: Routes = [
   {
     path: 'home', component: HomeComponent,
     children: [
-      { path: 'channels', component: ChannelsComponent }
+      { path: 'channels/:id', component: ChannelsComponent },
+      //{ path: 'channels', component: ChannelsComponent },
     ]
   },
 
