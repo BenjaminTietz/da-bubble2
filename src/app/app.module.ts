@@ -46,6 +46,8 @@ import { NavbarComponent } from './home-components/navbar/navbar.component';
 import { HomeComponent } from './home-components/home/home.component';
 import { ChannelsComponent } from './home-components/channels/channels.component';
 import { ChannelListComponent } from './home-components/channel-list/channel-list.component';
+import { provideFirestore } from '@angular/fire/firestore';
+import { getFirestore } from 'firebase/firestore';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,7 @@ import { ChannelListComponent } from './home-components/channel-list/channel-lis
     BrowserAnimationsModule,
     AngularFireAuthModule,
     provideFirebaseApp(() => initializeApp({"projectId":"da-bubble-9f879","appId":"1:872329683690:web:21114e02f86b180bd52d93","storageBucket":"da-bubble-9f879.appspot.com","apiKey":"AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc","authDomain":"da-bubble-9f879.firebaseapp.com","messagingSenderId":"872329683690"})),
+    provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
     provideStorage(() => getStorage()),
