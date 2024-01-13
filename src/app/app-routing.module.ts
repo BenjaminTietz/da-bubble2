@@ -7,6 +7,8 @@ import { ResetPasswordComponent } from './pre-login-components/reset-password/re
 import { SelectAvatarComponent } from './pre-login-components/select-avatar/select-avatar.component';
 import { ImprintComponent } from './legal-components/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privacy-policy.component';
+import { HomeComponent } from './home-components/home/home.component';
+import { ChannelsComponent } from './home-components/channels/channels.component';
 
 //post-login components
 
@@ -18,19 +20,34 @@ import { AuthGuard } from './services/auth.guard';
 
 export const routes: Routes = [
   //pre-login components
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
-    { path: 'signup', component: SignupComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'choose-avatar', component: SelectAvatarComponent },
-    { path: 'forgot-password', component: ForgotPasswordComponent },
-    { path: 'reset-password', component: ResetPasswordComponent },
-    { path: 'imprint', component: ImprintComponent },
-    { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    { path: '**', component: LoginComponent}                            //catch all other routes and redirect to login
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'signup', component: SignupComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'choose-avatar', component: SelectAvatarComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'imprint', component: ImprintComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  // { path: '**', component: LoginComponent },                            //catch all other routes and redirect to login
 
-    //post-login components
+  //post-login components
 
-    
+  {
+    path: 'home', component: HomeComponent,
+    children: [
+      { path: 'channels', component: ChannelsComponent }
+    ]
+  },
+
+
+
+
+
+
+
 ];
 
-export class RoutingModule {}
+
+
+
+export class RoutingModule { }

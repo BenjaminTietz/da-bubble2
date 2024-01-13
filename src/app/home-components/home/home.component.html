@@ -1,0 +1,36 @@
+<app-header></app-header>
+
+<mat-drawer-container class="mat-drawer-container" autosize>
+    <mat-drawer #drawer class="sidenav" [mode]="drawerMode" [opened]="drawerOpened">
+
+        <div class="logo-container">
+            <img class="img-logo" src="" alt="logo">
+        </div>
+
+        <div class="container-drawer-content">
+            <h3>Channels</h3>
+
+            <app-channel-list></app-channel-list>
+
+
+            <h3>Direktnachrichten</h3>
+
+
+            
+
+        </div>
+
+
+
+    </mat-drawer>
+
+    <div class="container-sidenav-content">
+
+        <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
+
+        <div class="container-router">
+            <router-outlet></router-outlet>
+        </div>
+
+    </div>
+</mat-drawer-container>

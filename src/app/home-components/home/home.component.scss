@@ -1,0 +1,32 @@
+
+
+
+.mat-drawer-container {
+    min-height: 600px;
+}
+
+
+.sidenav {
+    width: 300px;
+    //position: fixed;
+}
+
+
+.container-drawer-content {
+    //height: calc(100% - 57px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.container-sidenav-content {
+    //position: relative;
+    //margin-top: 64px;
+
+
+}
+
+
+.active {
+    background-color: rgba(0, 0, 0, 0.1);
+}

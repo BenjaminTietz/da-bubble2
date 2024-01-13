@@ -25,12 +25,27 @@ import { ResetPasswordComponent } from './pre-login-components/reset-password/re
 //post-login components
 
 
+//Sidenav
+import {MatSidenavModule} from '@angular/material/sidenav';
+//Mat-Icon
+import {MatIconModule} from '@angular/material/icon';
+//Toolbar
+import {MatToolbarModule} from '@angular/material/toolbar';
+
+
+
+
 //services
 import { AuthService } from './services/auth.service';
 
 import { routes } from './app-routing.module';
 import { ImprintComponent } from './legal-components/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privacy-policy.component';
+import { HeaderComponent } from './home-components/header/header.component';
+import { NavbarComponent } from './home-components/navbar/navbar.component';
+import { HomeComponent } from './home-components/home/home.component';
+import { ChannelsComponent } from './home-components/channels/channels.component';
+import { ChannelListComponent } from './home-components/channel-list/channel-list.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +56,12 @@ import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privac
     ForgotPasswordComponent,
     ResetPasswordComponent,
     ImprintComponent,
-    PrivacyPolicyComponent
+    PrivacyPolicyComponent,
+    HeaderComponent,
+    NavbarComponent,
+    HomeComponent,
+    ChannelsComponent,
+    ChannelListComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +75,9 @@ import { PrivacyPolicyComponent } from './legal-components/privacy-policy/privac
     RouterModule.forRoot(routes),
     FormsModule,
     ReactiveFormsModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
 
   ],
   exports: [RouterModule],
