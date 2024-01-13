@@ -16,7 +16,7 @@
           DABubble-Konto.</span
         >
       </div>
-      <form [formGroup]="signupForm">
+      <form [formGroup]="signupForm" (ngSubmit)="signup()">
         <div class="input-wrapper">
           <input
             class="input-field"
@@ -26,6 +26,14 @@
           />
           <img src="../../../assets/img/user.png" alt="user-icon" />
         </div>
+        <span
+        *ngIf="
+        signupForm.get('username')?.hasError('required') &&
+        (signupForm.get('username')?.dirty ||
+        signupForm.get('username')?.touched)"
+        class="error-style">
+            Please enter your full name
+        </span>
         <div class="input-wrapper">
           <input
             class="input-field"
@@ -35,7 +43,14 @@
           />
           <img src="../../../assets/img/email.png" alt="mail-icon" />
         </div>
-
+        <span
+        *ngIf="
+        signupForm.get('email')?.invalid  &&
+        (signupForm.get('email')?.dirty ||
+        signupForm.get('email')?.touched)"
+        class="error-style">
+            Please enter a valid email
+        </span>
         <div class="input-wrapper">
           <input
             class="input-field"
@@ -45,16 +60,31 @@
           />
           <img src="../../../assets/img/password.png" alt="password-icon" />
         </div>
-
+        <span
+        *ngIf="
+        signupForm.get('password')?.invalid  &&
+        (signupForm.get('password')?.dirty ||
+        signupForm.get('password')?.touched)"
+        class="error-style">
+            Please enter a valid password (min 6 characters)
+        </span>
         <div class="input-checkbox-wrapper">
-          <input class="input-checkbox" type="checkbox" formControlName="accept-terms" />
+          <input class="input-checkbox" type="checkbox" formControlName="acceptTerms" />
           <span>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu.</span>
         </div>
+        <span
+        *ngIf="
+        signupForm.get('acceptTerms')?.invalid  &&
+        (signupForm.get('acceptTerms')?.dirty ||
+        signupForm.get('emaacceptTermsil')?.touched)"
+        class="error-style">
+            Please accept our privacy policy
+        </span>
         <div *ngIf="firebaseErrorMessage !=''" class="error-style">
           <span	>{{ firebaseErrorMessage }}</span>
         </div>
         <div class="signup-btn-wrapper">
-          <button class="continue-btn" type="submit">Weiter</button>
+          <button class="continue-btn" [disabled]="!signupForm.valid">Weiter</button>
         </div>
       </form>
     </div>
