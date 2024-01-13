@@ -14,6 +14,14 @@
     color: $color;
 }
 
+@mixin OpenSans ($weight, $size, $line-height, $color) {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: $weight;
+    font-size: $size;
+    line-height: $line-height;
+    color: $color;
+}
+
 //example usage
 
 // @include Nunito(400, 16px, 18.8px, $red);
