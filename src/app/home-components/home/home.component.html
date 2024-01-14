@@ -8,15 +8,45 @@
         </div>
 
         <div class="container-drawer-content">
-            <h3>Channels</h3>
 
-            <app-channel-list></app-channel-list>
+            <div class="container-channels">
+
+                <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-channels">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h3 class="header-channels">
+                                <mat-icon>workspaces</mat-icon>
+                                Channels
+                            </h3>
+                        </mat-panel-title>
+
+                        <mat-icon (click)="noToggle($event); openDialogAddChannel()" class="mat-icon-add-channel"
+                            matTooltip="Add channel">add</mat-icon>
+
+                    </mat-expansion-panel-header>
+
+                    <app-channel-list></app-channel-list>
+
+                </mat-expansion-panel>
+
+            </div>
 
 
-            <h3>Direktnachrichten</h3>
+            <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-direct-messages">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h3 class="header-direct-messages">
+                            <mat-icon>account_circle</mat-icon>
+                            Direktnachrichten
+                        </h3>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Platz für Messages-Komponente -->
+
+            </mat-expansion-panel>
 
 
-            
 
         </div>
 

@@ -1,0 +1,31 @@
+<mat-card class="channel-card">
+    <mat-card-header>
+        <mat-card-title>Channel erstellen</mat-card-title>
+        <mat-card-subtitle>
+            Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein, wie beispielsweise
+            #marketing.
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="channel-name">
+            <h3>Channel-Name</h3>
+            <input [(ngModel)]="channel.chanName" type="text">
+        </div>
+
+
+        <div class="channel-description">
+            <h3>Beschreibung (optional)</h3>
+            <input [(ngModel)]="channel.description" type="text">
+        </div>
+
+    </mat-card-content>
+
+
+
+
+
+    <mat-card-actions>
+        <button (click)="saveChannel()" [disabled]="formIncomplete" mat-flat-button [mat-dialog-close]=""
+            color="primary">Erstellen</button>
+    </mat-card-actions>
+</mat-card>

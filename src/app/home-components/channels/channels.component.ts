@@ -40,8 +40,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.channel = new Channel(doc.data())
       this.dataLoaded = true;
     });
-    
-
 
   }
 

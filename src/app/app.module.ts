@@ -31,6 +31,20 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
 //Toolbar
 import {MatToolbarModule} from '@angular/material/toolbar';
+//MatExpansion
+import {MatExpansionModule} from '@angular/material/expansion';
+//Tooltip
+import {MatTooltipModule} from '@angular/material/tooltip';
+//Mat-Card
+import {MatCardModule} from '@angular/material/card';
+//Mat-Button
+import {MatButtonModule} from '@angular/material/button';
+//Mat-Dialog
+import {MatDialogModule} from '@angular/material/dialog';
+
+
+
+
 
 
 
@@ -48,6 +62,7 @@ import { ChannelsComponent } from './home-components/channels/channels.component
 import { ChannelListComponent } from './home-components/channel-list/channel-list.component';
 import { provideFirestore } from '@angular/fire/firestore';
 import { getFirestore } from 'firebase/firestore';
+import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-channel/dialog-add-channel.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +78,8 @@ import { getFirestore } from 'firebase/firestore';
     NavbarComponent,
     HomeComponent,
     ChannelsComponent,
-    ChannelListComponent
+    ChannelListComponent,
+    DialogAddChannelComponent
   ],
   imports: [
     BrowserModule,
@@ -81,6 +97,13 @@ import { getFirestore } from 'firebase/firestore';
     MatSidenavModule,
     MatIconModule,
     MatToolbarModule,
+    MatExpansionModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    
+
 
   ],
   exports: [RouterModule],

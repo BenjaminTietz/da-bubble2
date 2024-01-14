@@ -34,7 +34,7 @@ export class ChannelListComponent implements OnDestroy {
 
 
   subChannelsList() {
-    const q = query(this.getChannelsRef(), orderBy('name'));
+    const q = query(this.getChannelsRef(), orderBy('chanName'));
     return onSnapshot(q, (list) => {
       this.listChannels = [];
       list.forEach(element => {
@@ -48,7 +48,7 @@ export class ChannelListComponent implements OnDestroy {
   setChannel(obj: any, id: string,): Channel {
     return {
       id: id || "",
-      name: obj.name || "",
+      chanName: obj.chanName || "",
       description: obj.description || "",
       creator: obj.creator || "",
       users: obj.users || [],

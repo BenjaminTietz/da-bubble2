@@ -5,7 +5,7 @@ import { Post } from "./post.class";
 export class Channel {
     [x: string]: any;
     id!: string;
-    name!: string;
+    chanName!: string;
     description!: string;
     creator!: User;
     users!: User[];
@@ -14,7 +14,7 @@ export class Channel {
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
-        this.name = obj ? obj.id : '';
+        this.chanName = obj ? obj.chanName : '';
         this.description = obj ? obj.description : '';
         this.creator = obj ? obj.creator : '';
         this.users = obj ? obj.users : [];
