@@ -6,7 +6,7 @@ export class User {
     id!: string;
     authUID!: string;
     name!: string;
-    status!: string;
+    status: boolean = false;
     photoURL!: string;
     channels: Channel[] = [];
     
@@ -17,7 +17,7 @@ export class User {
         this.id = obj ? obj.id : '';
         this.authUID = obj ? obj.authUID : '';
         this.name = obj ? obj.name : '';
-        this.status = obj ? obj.status : '';
+        this.status = obj ? obj.status : false;
         this.photoURL = obj ? obj.photoURL : '';
         this.channels = obj ? obj.channels : [];
 
