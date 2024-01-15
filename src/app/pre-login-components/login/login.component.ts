@@ -43,8 +43,14 @@ export class LoginComponent implements OnInit {
       const authUID = userCredential.user.uid;
       await setDoc(doc(firestore, 'users', authUID), { status: true }, { merge: true });
 
+      //Code Timo um die authUID in den session-storage zu schreiben:
+
+      sessionStorage.setItem('authUID', authUID);
+
+      //Code Timo Ende
+
       console.log('Login successful!');
-      
+
       // Weiterleitung zur Home-Komponente
       this.router.navigate(['/home']);
     } catch (error) {
@@ -53,7 +59,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  guestLogin() {}
+  guestLogin() { }
 
   onSubmit() {
     if (this.loginForm.valid) {
