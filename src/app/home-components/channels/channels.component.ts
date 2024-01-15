@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
+import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
 import { Channel } from '../../../models/channel.class';
 import { MatDialog } from '@angular/material/dialog';
+import { Post } from '../../../models/post.class';
+import { User } from '../../../models/user.class';
 
 
 
@@ -23,9 +25,18 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   dataLoaded: boolean = false;
   unsubChannel!: () => void;
 
+  unsubPosts!: () => void;
+
+
+
+  newPost: Post = new Post();
+
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   };
 
+
+
+  //Code für Channels
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -35,12 +46,53 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     });
   }
 
-  async loadChannelData(id: string) {
+  loadChannelData(id: string) {
     this.unsubChannel = onSnapshot(doc(this.firestore, 'channels', this.channelID), (doc) => {
       this.channel = new Channel(doc.data())
       this.dataLoaded = true;
     });
+  }
 
+
+
+
+  //Code für Posts
+
+  createPost(channel: any) {
+    console.log('Create Post')
+    //get time
+    //get user
+    //this.newPost.channel = channel;
+    this.newPost.date = '15.01.2024';
+    this.newPost.time = '11:45';
+    //this.newPost.user = new User();
+    console.log(this.newPost);
+    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) })
+
+
+  }
+
+
+  setPostObject(obj: any, id: string,): Post {
+    return {
+      id: id || "",
+      content: obj.content || "",
+      channel: obj.channel || "",
+      user: obj.user || "",
+      date: obj.date || "",
+      time: obj.time || "",
+      answers: obj.answers || [],
+      reactions: obj.reactions || [],
+    }
+  }
+
+
+
+
+
+
+  getChannelDocRef(chan_id: any) {
+    return doc(this.firestore, 'channels', chan_id);
   }
 
 
@@ -50,5 +102,14 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
+
 }
+
+
+
+
+
+
+
+
 

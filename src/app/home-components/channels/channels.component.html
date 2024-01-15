@@ -8,8 +8,78 @@
     <p>creator: {{ channel.creator.name }} / {{ channel.creator.id }} </p>
     <h4>users:</h4>
     <p *ngFor="let user of channel.users"> {{ user.name }}</p>
-    <h4>Posts</h4>
-    <p *ngFor="let post of channel.posts"> {{ post.id }}</p>
+    <h4>Posts:</h4>
+
+
+    <div class="container-single-post" *ngFor="let post of channel.posts">
+
+
+        <div class="container-user-img">
+            <img [src]="'../../../'+post.user.photoURL" alt="src/assets/img/character_1.png">
+        </div>
+
+
+        <div class="container-post">
+            <div class="name-and-time">
+                <b>{{ post.user.name }}</b>
+                <span>{{ post.time }} Uhr</span>
+            </div>
+
+            <div class="post-content">
+                {{ post.content }}
+            </div>
+
+            <div class="answers">
+                <span>{{ post.answers.length }} Antworten</span>
+                <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length - 1].time
+                    }}</span>
+            </div>
+
+            <div class="reactions">
+
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+    <div class="container-new-message">
+
+        <textarea [(ngModel)]="newPost.content" name="" id="" cols="30" rows="auto"
+            [placeholder]="'Nachricht an #' + channel.chanName"></textarea>
+
+
+        <div class="container-icons">
+            <div class="icons-left">
+                <mat-icon matTooltip="add file">add</mat-icon>
+                <div class="vertical-line"></div>
+                <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+                <mat-icon>alternate_email</mat-icon>
+            </div>
+
+
+            <div class="icons-right">
+                <mat-icon (click)="createPost(channel)" matTooltip="send">send</mat-icon>
+            </div>
+
+
+        </div>
+
+    </div>
 
 
 

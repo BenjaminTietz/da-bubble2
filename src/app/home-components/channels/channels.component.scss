@@ -2,4 +2,145 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background-color: white;
+    border-radius: 20px;
+}
+
+
+.container-new-message {
+    border: 1px solid #ADB0D9;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 80%;
+
+
+    textarea {
+        border: none;
+        background-color: unset;
+        resize: none;
+        width: 100%;
+
+        &:focus {
+            border: none;
+            outline: none;
+        }
+    }
+
+
+    .container-icons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+
+        .icons-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+
+            .vertical-line {
+                height: 24px;
+                width: 0;
+                border: 0.5px solid #ADB0D9;
+            }
+
+            mat-icon {
+                color: grey;
+                cursor: pointer;
+
+                &:hover {
+                    color: #444DF2;
+                    scale: 1.05;
+                }
+
+            }
+        }
+
+        .icons-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+
+            mat-icon {
+                color: #444DF2;
+                cursor: pointer;
+
+                &:hover {
+                    color: #444df27b;
+                    scale: 1.05;
+                }
+            }
+        }
+    }
+
+}
+
+
+.container-single-post {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 80%;
+    padding: 24px;
+    gap: 24px;
+
+    .container-user-img {
+        width: 10%;
+
+        img {
+            width: 90%;
+            border-radius: 100%;
+        }
+    }
+
+    .container-post {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 8px;
+
+
+        .name-and-time {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+        }
+
+
+        .post-content {
+            padding: 12px 8px;
+            background-color: #ECEEFE;
+            border-radius: 0 30px 30px 30px;
+
+        }
+
+        .answers {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 16px;
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
 }
