@@ -66,6 +66,7 @@ import { ChannelListComponent } from './home-components/channel-list/channel-lis
 import { provideFirestore } from '@angular/fire/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-channel/dialog-add-channel.component';
+import { UserDetailComponent } from './home-components/dialogs/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-
     HomeComponent,
     ChannelsComponent,
     ChannelListComponent,
-    DialogAddChannelComponent
+    DialogAddChannelComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,

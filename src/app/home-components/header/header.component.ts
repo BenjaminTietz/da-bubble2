@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { User } from '../../../models/user.class';
 import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
+import { MatDialog } from '@angular/material/dialog';
+import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 
 
 
@@ -16,6 +18,11 @@ export class HeaderComponent implements OnInit {
 
   user: User = new User();
   storedUserAuthUID: any;
+
+
+constructor(public dialog: MatDialog) {
+  
+}
 
 
   ngOnInit(): void {
@@ -61,6 +68,9 @@ export class HeaderComponent implements OnInit {
 
   openDialogProfile() {
     console.log('Open Profile')
+    const dialog = this.dialog.open(UserDetailComponent);
+    dialog.componentInstance.user = new User(this.user);
+
   }
 
   logout() {
