@@ -44,6 +44,11 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       // Rufen Sie hier Ihre Funktion auf, um Daten basierend auf dem neuen channelId zu laden
       this.loadChannelData(this.channelID);
     });
+
+    const storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+
+    console.log(storedUserAuthUID);
+
   }
 
   loadChannelData(id: string) {

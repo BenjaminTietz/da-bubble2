@@ -34,8 +34,17 @@ export class LoginComponent {
       const authUID = userCredential.user.uid;
       await setDoc(doc(firestore, 'users', authUID), { status: true }, { merge: true });
 
+      //Code Timo für session-storage:
+
+      sessionStorage.setItem('userAuthUID', authUID)
+
+
+      // Ende Code session-storage
+
+
+
       console.log('Login successful!');
-      
+
       // Weiterleitung zur Home-Komponente
       this.router.navigate(['/home']);
     } catch (error) {
