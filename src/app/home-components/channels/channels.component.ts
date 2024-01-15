@@ -5,6 +5,7 @@ import { Channel } from '../../../models/channel.class';
 import { MatDialog } from '@angular/material/dialog';
 import { Post } from '../../../models/post.class';
 import { User } from '../../../models/user.class';
+import { getDocs } from 'firebase/firestore';
 
 
 
@@ -28,6 +29,8 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   unsubPosts!: () => void;
 
 
+  user: User = new User();
+  storedUserAuthUID: any;
 
   newPost: Post = new Post();
 
@@ -41,15 +44,36 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.channelID = params['id'];
-      // Rufen Sie hier Ihre Funktion auf, um Daten basierend auf dem neuen channelId zu laden
       this.loadChannelData(this.channelID);
     });
 
-    const storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-
-    console.log(storedUserAuthUID);
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    this.getUser();
 
   }
+
+
+  getUser() {
+    let q;
+    if (this.storedUserAuthUID) {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
+    } else {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
+    }
+
+    return onSnapshot(q, (docSnap: any) => {
+      docSnap.forEach((doc: any) => {
+        this.user = new User(this.setUserObject(doc.data()))
+      })
+    })
+
+  }
+
+
+  getUsersRef() {
+    return collection(this.firestore, 'users');
+  }
+
 
   loadChannelData(id: string) {
     this.unsubChannel = onSnapshot(doc(this.firestore, 'channels', this.channelID), (doc) => {
@@ -64,9 +88,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Code für Posts
 
   createPost(channel: any) {
-    console.log('Create Post')
-    //get user
-
+    this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
     this.newPost.date = this.getCurrentDate();
     this.newPost.time = this.getCurrentTime();
@@ -109,13 +131,13 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-  setUserObject(obj: any) { //Daten müssen noch vom aktuellen User ausgelesen werden!
+  setUserObject(obj: any) {
     return {
       id: obj.id || "",
       authUID: obj.authUID || "",
       name: obj.name || "",
       status: obj.status || true,
-      photoURL: '../../../assets/img/character_1.png',
+      photoURL: obj.photoURL || '',
       channels: obj.channels || [],
     }
   }

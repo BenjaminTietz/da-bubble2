@@ -8,8 +8,8 @@
 
 
     <div class="container-user">
-        <span>Username</span>
-        <img src="../../../assets/img/character_1.png" alt="user-avatar">
+        <span>{{ user.name }}</span>
+        <img [src]="user.photoURL" alt="user-avatar">
         <mat-icon [matMenuTriggerFor]="menuHeader">expand_more</mat-icon>
     </div>
 

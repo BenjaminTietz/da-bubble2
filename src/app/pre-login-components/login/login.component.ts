@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
 
       //Code Timo um die authUID in den session-storage zu schreiben:
 
-      sessionStorage.setItem('authUID', authUID);
+      sessionStorage.setItem('userAuthUID', authUID);
 
       //Code Timo Ende
 
