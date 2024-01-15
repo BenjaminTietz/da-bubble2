@@ -78,7 +78,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       id: id || "",
       content: obj.content || "",
       channel: obj.channel || "",
-      user: obj.user || "",
+      user: this.setUserObject(obj.user),
       date: obj.date || "",
       time: obj.time || "",
       answers: obj.answers || [],
@@ -88,7 +88,16 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
 
-
+  setUserObject(obj: any) {
+    return {
+      id: obj.id || "",
+      authUID: obj.authUID || "",
+      name: obj.name || "",
+      status: obj.status || true,
+      photoURL: '../../../assets/img/character_1.png',
+      channels: obj.channels || [],
+    }
+  }
 
 
   getChannelDocRef(chan_id: any) {
