@@ -23,7 +23,8 @@ export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'signup', component: SignupComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'choose-avatar', component: SelectAvatarComponent },
+  { path: 'choose-avatar/:userId', component: SelectAvatarComponent },
+
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'imprint', component: ImprintComponent },
@@ -39,13 +40,7 @@ export const routes: Routes = [
       //{ path: 'channels', component: ChannelsComponent },
     ]
   },
-
-
-
-
-
-
-
+  { path: 'home/:userId', component: HomeComponent },
 ];
 
 

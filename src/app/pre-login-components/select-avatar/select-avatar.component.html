@@ -15,44 +15,70 @@
       </div>
       <div class="selection-wrapper">
         <img
+        *ngIf="selectedAvatarUrl; else defaultProfile"
+        [src]="selectedAvatarUrl"
+        alt="selected_avatar"
+        class="avatar-profile"
+      />
+      <ng-template #defaultProfile>
+        <img
           class="default-profile"
           src="../../../assets/img/profile.png"
           alt="default_profile"
         />
+      </ng-template>
         <div class="avatar-content">
           <h2>{{ username }}</h2>
           <span>Aus der Liste wählen</span>
           <div class="avatar-selection">
+            <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_1.png"
               alt="avatar_1"
+              (click)="selectAvatar('character_1.png')" 
             />
+          </div>
+          <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_2.png"
               alt="avatar_2"
+              (click)="selectAvatar('character_2.png')" 
             />
+          </div>
+          <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_3.png"
               alt="avatar_3"
+              (click)="selectAvatar('character_3.png')" 
             />
+          </div>
+          <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_4.png"
               alt="avatar_4"
+              (click)="selectAvatar('character_4.png')" 
             />
+          </div>
+          <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_5.png"
               alt="avatar_5"
+              (click)="selectAvatar('character_5.png')" 
             />
+          </div>
+          <div class="avatar-container">
             <img
               class="avatar"
               src="../../../assets/img/character_6.png"
               alt="avatar_6"
+              (click)="selectAvatar('character_6.png')" 
             />
+          </div>
           </div>
           <div class="upload-avatar">
             <span>eigenes Bild verwenden</span>

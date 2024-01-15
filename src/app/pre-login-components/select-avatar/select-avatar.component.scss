@@ -101,6 +101,13 @@ header {
     padding: 16px;
     gap: 10px;
 }
+.avatar-profile {
+  width: 168px;
+  height: 168px;
+  border-radius: 100px;
+  padding: 16px;
+  gap: 10px;
+}
 .avatar-content {
     display: flex;
     flex-direction: column;
@@ -126,11 +133,28 @@ header {
     gap: 8px;
 }
 
-.avatar {
-    width: 64px;
-    height: 64px;
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 72px;
+    height: 72px;
     border-radius: 41px;
+    border: 8px unset ;
+    box-sizing: border-box;
+    img {
+        width: 64px;
+        height: 64px;
+        border-radius: 41px;
+    }
+
+    &:hover {
+      cursor: pointer;
+      transition: all 0.225s ease-in-out;
+      border: 8px solid $text-gray;
+  }
 }
+
 
 .upload-avatar {
     display: flex;

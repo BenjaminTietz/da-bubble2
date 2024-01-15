@@ -6,6 +6,8 @@ import { getAuth, createUserWithEmailAndPassword, Auth, UserCredential } from 'f
 import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import { User } from '../../../models/user.class';
 import { Firestore } from '@angular/fire/firestore';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -15,9 +17,11 @@ export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
   firebaseErrorMessage: string;
   auth: Auth;
-  firestore: Firestore
+  firestore: Firestore;
+  userId = '';
+  user: User = new User();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     const firebaseConfig = {
       apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
       authDomain: "da-bubble-9f879.firebaseapp.com",
@@ -78,7 +82,8 @@ export class SignupComponent implements OnInit {
         console.log('User document created with ID:', userId);
 
         // Navigiere zu einer anderen Komponente für die Auswahl des Avatars oder Hochladen eines Bildes
-        this.router.navigate(['/choose-avatar']);
+        console.log('User ID before navigation:', userId);
+        this.router.navigate(['/choose-avatar', userId]);
       } catch (error: any) {
         console.error('Signup error:', error);
 

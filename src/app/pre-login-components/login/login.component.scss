@@ -80,6 +80,8 @@ form {
 
 .input-wrapper {
   position: relative;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 32px;
   img {
     position: absolute;
@@ -186,6 +188,23 @@ form {
   padding: 12px 25px 12px 25px;
   border: none;
   @include Nunito(700, 18px, 24.55px, $white);
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+    transition: all 0.225s ease-in-out;
+  }
+  &:disabled {
+    background-color: $disabled-btn;
+    cursor: not-allowed;
+  }
+}
+
+.error-style {
+  position: absolute;
+  color: red;
+  font-size: 12px;
+  bottom: -22px;
 }
 
 .guest-login-btn {
@@ -199,6 +218,13 @@ form {
   padding: 12px 25px 12px 25px;
   border: 1px solid $purple-2;
   @include Nunito(700, 18px, 24.55px, $purple-1);
+  cursor: pointer;
+
+  &:hover {
+    transition: all 0.225s ease-in-out;
+    background-color: $purple-2;
+    @include Nunito(700, 18px, 24.55px, $white);
+  }
 }
 
 footer {

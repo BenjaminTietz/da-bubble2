@@ -1,16 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormGroup, FormControl, Validators, MinLengthValidator } from '@angular/forms';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
 
-  constructor(private router: Router) {
+
+  constructor(private router: Router, private firestore: AngularFirestore) {
     const firebaseConfig = {
       apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
       authDomain: "da-bubble-9f879.firebaseapp.com",
@@ -21,6 +26,15 @@ export class LoginComponent {
     };
     initializeApp(firebaseConfig);
   }
+
+  ngOnInit(): void {
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+
+    });
+  }
+
 
   async login(email: string, password: string) {
     const auth = getAuth();
@@ -44,10 +58,15 @@ export class LoginComponent {
     }
   }
 
+  guestLogin() {
+    this.router.navigate(['/home']);
+  }
+
   onSubmit() {
-    // Hier rufst du die login-Methode mit den E-Mail- und Passwortwerten aus dem Formular auf
-    const email = (document.getElementById('email') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    this.login(email, password);
+    if (this.loginForm.valid) {
+      const email = this.loginForm.get('email')?.value;
+      const password = this.loginForm.get('password')?.value;
+      this.login(email, password);
+    }
   }
 }

@@ -19,25 +19,41 @@
           Arbeit verwendest.</span
         >
       </div>
-      <form (submit)="onSubmit()">
+      <form [formGroup]="loginForm" (submit)="onSubmit()">
         <div class="input-wrapper">
           <input
             class="input-field"
             type="email"
-            id="email"
+            formControlName="email"
             placeholder="beispielname@email.com"
           />
           <img src="../../../assets/img/email.png" alt="mail-icon" />
+          <span
+          *ngIf="
+          loginForm.get('email')?.invalid  &&
+          (loginForm.get('email')?.dirty ||
+          loginForm.get('email')?.touched)"
+          class="error-style">
+              *Diese E-Mail-Adresse ist leider ungültig.
+          </span>
         </div>
 
         <div class="input-wrapper">
           <input
             class="input-field"
             type="password"
-            id="password"
+            formControlName="password"
             placeholder="Passwort"
           />
           <img src="../../../assets/img/password.png" alt="password-icon" />
+          <span
+          *ngIf="
+          loginForm.get('password')?.invalid  &&
+          (loginForm.get('password')?.dirty ||
+          loginForm.get('password')?.touched)"
+          class="error-style">
+              Bitte geben Sie ein Passwort ein. (min. 6 Zeichen)
+          </span>
         </div>
 
         
@@ -54,8 +70,8 @@
         </div>
 
         <div class="login-btn-wrapper">
-          <button class="login-btn" type="submit">Anmelden</button>
-          <button class="guest-login-btn" type="button"><a routerLink="/home">Gäste-Login</a></button>
+          <button class="login-btn" type="submit" [disabled]="!loginForm.valid">Anmelden</button>
+          <button class="guest-login-btn" type="button"(click)="guestLogin()">Gäste-Login</button>
         </div>
       </form>
     </div>
