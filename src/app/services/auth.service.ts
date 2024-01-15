@@ -1,79 +1,80 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Component, Inject, Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormGroup, FormControl, Validators, MinLengthValidator } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, Auth, UserCredential } from 'firebase/auth';
-import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestore';
-
+import { getAuth, createUserWithEmailAndPassword, Auth, UserCredential, signOut } from 'firebase/auth';
+import { getFirestore, collection, addDoc, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
 import { Firestore } from '@angular/fire/firestore';
+import { ActivatedRoute } from '@angular/router';
+import { sendPasswordResetEmail } from 'firebase/auth';
+
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
+
 export class AuthService {
-  [x: string]: any;
   auth: Auth;
-  firestore: Firestore
-    userLoggedIn: boolean;      // other components can check on this variable for the login status of the user
+  firestore: Firestore;
 
-    constructor(private router: Router, private afAuth: AngularFireAuth) {
-        this.userLoggedIn = false;
-        const firebaseConfig = {
-          apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
-          authDomain: "da-bubble-9f879.firebaseapp.com",
-          projectId: "da-bubble-9f879",
-          storageBucket: "da-bubble-9f879.appspot.com",
-          messagingSenderId: "872329683690",
-          appId: "1:872329683690:web:21114e02f86b180bd52d93"
-        };
-        initializeApp(firebaseConfig);
-        this.auth = getAuth();
-        this.firestore = getFirestore();
-        this.afAuth.onAuthStateChanged((user) => {              // set up a subscription to always know the login status of the user
-            if (user) {
-                this.userLoggedIn = true;
-            } else {
-                this.userLoggedIn = false;
-            }
-        });
+
+    constructor(private router: Router) {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
+        authDomain: "da-bubble-9f879.firebaseapp.com",
+        projectId: "da-bubble-9f879",
+        storageBucket: "da-bubble-9f879.appspot.com",
+        messagingSenderId: "872329683690",
+        appId: "1:872329683690:web:21114e02f86b180bd52d93"
+      };
+      initializeApp(firebaseConfig);
+      this.auth = getAuth();
+      this.firestore = getFirestore();
     }
 
-    loginUser(email: string, password: string): Promise<any> {
-        return this.afAuth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                console.log('Auth Service: loginUser: success');
-                 this.router.navigate(['/home']);
-            })
-            .catch(error => {
-                console.log('Auth Service: login error...');
-                console.log('error code', error.code);
-                console.log('error', error);
-                if (error.code !== undefined && error.code !== null) {
-                  return { isValid: false, message: error.message };
-                } else {
-                  return { isValid: false, message: 'Unknown error occurred.' };
-                }
-              });
-    }
+    async logout() {
+      const authUID = sessionStorage.getItem('userAuthUID');
+  
+      if (authUID) {
+        const auth = getAuth();
+        const firestore = getFirestore();
+  
+        // Suche nach dem Dokument in der "users"-Sammlung mit der passenden "authUID"
+        const guestsCollectionRef = collection(firestore, 'users');
+        const q = query(guestsCollectionRef, where('authUID', '==', authUID));
+        const querySnapshot = await getDocs(q);
+  
+        if (!querySnapshot.empty) {
+          // Das Dokument wurde gefunden
+          querySnapshot.forEach(async (docSnap) => {
+            // Extrahiere die ID aus dem gefundenen Dokument
+            const userId = docSnap.data()['id'];
+  
+            // Verwende die ID als docRef
+            const updatedUserDocRef = doc(firestore, 'users', userId);
+  
+            // Setze das Status-Feld auf false und aktualisiere das Dokument
+            await setDoc(updatedUserDocRef, { status: false }, { merge: true });
+  
+            console.log('Logout successful!');
+  
+            // Abmeldung bei Firebase Auth
+            await signOut(auth);
 
-    signupUser(user: any): Promise<any> {
-      return this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
-        .then((result) => {
-          let emailLower = user.email.toLowerCase();
-          if (result.user) {
-            result.user.sendEmailVerification(); // immediately send the user a verification email
-          }
-        })
-        .catch(error => {
-          console.log('Auth Service: signup error', error);
-          if (error.code) {
-            return { isValid: false, message: error.message };
-          } else {
-            return { isValid: false, message: 'Unknown error occurred.' };
-          }
-        });
+            // Lösche authUID aus dem session storage
+            sessionStorage.removeItem('userAuthUID');
+  
+            // Weiterleitung zur Login-Komponente
+            this.router.navigate(['/login']);
+          });
+        } else {
+          console.error('User document not found in users collection during logout.');
+        }
+      } else {
+        console.error('UserAuthUID not found in sessionStorage during logout.');
+      }
     }
 
     resetPassword(email: string): Promise<void> {
-      return this.afAuth.sendPasswordResetEmail(email);
+      return sendPasswordResetEmail(this.auth, email);
     }
 }

@@ -3,7 +3,7 @@ import { User } from '../../../models/user.class';
 import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
-
+import { AuthService } from '../../services/auth.service';
 
 
 
@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   storedUserAuthUID: any;
 
 
-constructor(public dialog: MatDialog) {
+constructor(public dialog: MatDialog, private AuthService: AuthService) {
   
 }
 
@@ -74,6 +74,7 @@ constructor(public dialog: MatDialog) {
   }
 
   logout() {
+    this.AuthService.logout();
     console.log('logout')
   }
 

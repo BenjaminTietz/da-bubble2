@@ -54,7 +54,7 @@ export class SelectAvatarComponent {
       });
     }
 
-    this.router.navigate(['/home', this.userId]);
+    this.router.navigate(['/login']);
   }
 
   selectAvatar(avatarFileName: string) {

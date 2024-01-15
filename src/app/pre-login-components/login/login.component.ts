@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, MinLengthValidator } from '@angular/forms';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 @Component({
   selector: 'app-login',
@@ -31,6 +31,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  
+
   async login(email: string, password: string) {
     const auth = getAuth();
     const firestore = getFirestore();
@@ -39,25 +41,43 @@ export class LoginComponent implements OnInit {
       // Authentifiziere den Benutzer
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-      // Holen Sie sich den Benutzer-UID und aktualisieren Sie den Status in der Firestore-Datenbank
+      // Holen Sie sich den Benutzer-UID
       const authUID = userCredential.user.uid;
-      await setDoc(doc(firestore, 'users', authUID), { status: true }, { merge: true });
 
-      //Code Timo um die authUID in den session-storage zu schreiben:
+      // Suche nach dem Dokument in der "users"-Sammlung mit der passenden "authUID"
+      const guestsCollectionRef = collection(firestore, 'users');
+      const q = query(guestsCollectionRef, where('authUID', '==', authUID));
+      const querySnapshot = await getDocs(q);
 
-      sessionStorage.setItem('userAuthUID', authUID);
+      if (!querySnapshot.empty) {
+        // Das Dokument wurde gefunden
+        querySnapshot.forEach(async (docSnap) => {
+          // Extrahiere die ID aus dem gefundenen Dokument
+          const userId = docSnap.data()['id'];
 
-      //Code Timo Ende
+          // Verwende die ID als docRef
+          const updatedUserDocRef = doc(firestore, 'users', userId);
 
-      console.log('Login successful!');
+          // Setze das Status-Feld auf true und aktualisiere das Dokument
+          await setDoc(updatedUserDocRef, { status: true }, { merge: true });
 
-      // Weiterleitung zur Home-Komponente
-      this.router.navigate(['/home']);
+          // Speichere authUID im session storage
+          sessionStorage.setItem('userAuthUID', authUID);
+
+          console.log('Login successful!');
+
+          // Weiterleitung zur Home-Komponente
+          this.router.navigate(['/home']);
+        });
+      } else {
+        console.error('User document not found in users collection.');
+      }
     } catch (error) {
       console.error('Login error:', error);
       // Füge hier die Logik für Fehlerbehandlung hinzu, z.B. Fehlermeldung anzeigen
     }
   }
+
 
   guestLogin() { }
 
