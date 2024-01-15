@@ -60,16 +60,33 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   createPost(channel: any) {
     console.log('Create Post')
-    //get time
     //get user
-    //this.newPost.channel = channel;
-    this.newPost.date = '15.01.2024';
-    this.newPost.time = '11:45';
-    //this.newPost.user = new User();
-    console.log(this.newPost);
-    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) })
+
+    this.newPost.channelId = channel.id;
+    this.newPost.date = this.getCurrentDate();
+    this.newPost.time = this.getCurrentTime();
+
+    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) }).then(() => {
+      this.newPost.content = '';
+
+    });
+
+  }
 
 
+  getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  getCurrentDate() {
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
+    const year = now.getFullYear();
+    return `${day}.${month}.${year}`;
   }
 
 
@@ -77,7 +94,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     return {
       id: id || "",
       content: obj.content || "",
-      channel: obj.channel || "",
+      channelId: obj.channelId || "",
       user: this.setUserObject(obj.user),
       date: obj.date || "",
       time: obj.time || "",
@@ -87,8 +104,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-
-  setUserObject(obj: any) {
+  setUserObject(obj: any) { //Daten müssen noch vom aktuellen User ausgelesen werden!
     return {
       id: obj.id || "",
       authUID: obj.authUID || "",
@@ -103,6 +119,10 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   getChannelDocRef(chan_id: any) {
     return doc(this.firestore, 'channels', chan_id);
   }
+
+
+
+
 
 
 

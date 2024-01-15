@@ -8,7 +8,7 @@ export class Post {
     [x: string]: any;
     id!: string;
     content!: string;
-    channel!: Channel;
+    channelId!: string;
     user!: User;
     date!: string;
     time!: string;
@@ -21,7 +21,7 @@ export class Post {
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
         this.content = obj ? obj.content : '';
-        this.channel = obj ? obj.channel : '';
+        this.channelId = obj ? obj.channelId : '';
         this.user = obj ? obj.user : '';
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';

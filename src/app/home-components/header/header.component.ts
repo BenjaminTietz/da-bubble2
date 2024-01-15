@@ -7,4 +7,31 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  openDialogProfile() {
+    console.log('Open Profile')
+  }
+
+  logout() {
+    console.log('logout')
+  }
+
+
+
+
 }

@@ -4,6 +4,9 @@
     align-items: flex-start;
     background-color: white;
     border-radius: 20px;
+    padding: 16px;
+
+
 }
 
 
@@ -80,6 +83,12 @@
             }
         }
     }
+
+}
+
+.container-posts {
+    max-height: 50vh;
+    overflow-y: scroll;
 
 }
 

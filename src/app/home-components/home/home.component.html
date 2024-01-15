@@ -1,66 +1,74 @@
-<app-header></app-header>
+<div class="container-home">
 
-<mat-drawer-container class="mat-drawer-container" autosize>
-    <mat-drawer #drawer class="sidenav" [mode]="drawerMode" [opened]="drawerOpened">
+    <app-header></app-header>
 
-        <div class="logo-container">
-            <img class="img-logo" src="" alt="logo">
-        </div>
+    <mat-drawer-container class="mat-drawer-container" autosize>
+        <mat-drawer #drawer class="sidenav" [mode]="drawerMode" [opened]="drawerOpened">
 
-        <div class="container-drawer-content">
+            <div class="logo-container">
+                <img class="img-logo" src="" alt="logo">
+            </div>
 
-            <div class="container-channels">
+            <div class="container-drawer-content">
 
-                <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-channels">
+                <div class="container-channels">
+
+                    <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-channels">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <h3 class="header-channels">
+                                    <mat-icon>workspaces</mat-icon>
+                                    Channels
+                                </h3>
+                            </mat-panel-title>
+
+                            <mat-icon (click)="noToggle($event); openDialogAddChannel()" class="mat-icon-add-channel"
+                                matTooltip="Add channel">add</mat-icon>
+
+                        </mat-expansion-panel-header>
+
+                        <app-channel-list></app-channel-list>
+
+                    </mat-expansion-panel>
+
+                </div>
+
+
+                <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-direct-messages">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
-                            <h3 class="header-channels">
-                                <mat-icon>workspaces</mat-icon>
-                                Channels
+                            <h3 class="header-direct-messages">
+                                <mat-icon>account_circle</mat-icon>
+                                Direktnachrichten
                             </h3>
                         </mat-panel-title>
-
-                        <mat-icon (click)="noToggle($event); openDialogAddChannel()" class="mat-icon-add-channel"
-                            matTooltip="Add channel">add</mat-icon>
-
                     </mat-expansion-panel-header>
 
-                    <app-channel-list></app-channel-list>
+                    <!-- Platz für Messages-Komponente -->
 
                 </mat-expansion-panel>
+
+
 
             </div>
 
 
-            <mat-expansion-panel [togglePosition]="'before'" class="custom-expansion-panel-direct-messages">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <h3 class="header-direct-messages">
-                            <mat-icon>account_circle</mat-icon>
-                            Direktnachrichten
-                        </h3>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
 
-                <!-- Platz für Messages-Komponente -->
+        </mat-drawer>
 
-            </mat-expansion-panel>
+        <div class="container-sidenav-content">
 
-
+<!--             <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
+ -->
+            <div class="container-router">
+                <router-outlet></router-outlet>
+            </div>
 
         </div>
+    </mat-drawer-container>
 
 
 
-    </mat-drawer>
 
-    <div class="container-sidenav-content">
 
-        <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
-
-        <div class="container-router">
-            <router-outlet></router-outlet>
-        </div>
-
-    </div>
-</mat-drawer-container>
+</div>

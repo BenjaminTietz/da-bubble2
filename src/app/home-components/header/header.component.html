@@ -1,1 +1,38 @@
-<p>header works!</p>
+<div class="container-header">
+    <img class="img-logo" src="../../../assets/img/da_bubble_reset_password_logo.png" alt="Logo da-bubble">
+
+    <div class="container-search">
+        <input type="text" placeholder="Suchen">
+        <mat-icon>search</mat-icon>
+    </div>
+
+
+    <div class="container-user">
+        <span>Username</span>
+        <img src="../../../assets/img/character_1.png" alt="user-avatar">
+        <mat-icon [matMenuTriggerFor]="menuHeader">expand_more</mat-icon>
+    </div>
+
+
+    <div class="container-menu">
+        <mat-menu #menuHeader="matMenu">
+            <button mat-menu-item (click)="openDialogProfile()">
+                <mat-icon color="primary">person</mat-icon>
+                See profile
+            </button>
+
+            <button mat-menu-item (click)="logout()">
+                <mat-icon color="warn">logout</mat-icon>
+                Logout
+            </button>
+        </mat-menu>
+
+    </div>
+
+
+
+
+
+
+
+</div>

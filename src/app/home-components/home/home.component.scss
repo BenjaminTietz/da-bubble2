@@ -1,11 +1,21 @@
+.container-home {
+    background-color: #ECEEFE;
+}
+
+
 .mat-drawer-container {
-    min-height: 600px;
+    min-height: 600px; //noch anpassen dass insgesamt 100vh mit Header
+    background-color: #ECEEFE;
+
 }
 
 
 .sidenav {
     width: 300px;
     //position: fixed;
+    border-radius: 30px;
+    padding: 16px;
+    
 }
 
 
@@ -19,6 +29,7 @@
 .container-sidenav-content {
     //position: relative;
     //margin-top: 64px;
+    padding: 0 32px;
 
 
 }
@@ -59,4 +70,6 @@
 
 
 }
+
+
 

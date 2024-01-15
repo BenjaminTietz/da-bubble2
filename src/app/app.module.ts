@@ -41,6 +41,9 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 //Mat-Dialog
 import {MatDialogModule} from '@angular/material/dialog';
+//Mat-Menu
+import { MatMenuModule } from '@angular/material/menu';
+
 
 
 
@@ -102,6 +105,7 @@ import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-
     MatCardModule,
     MatButtonModule,
     MatDialogModule,
+    MatMenuModule,
     
 
 
