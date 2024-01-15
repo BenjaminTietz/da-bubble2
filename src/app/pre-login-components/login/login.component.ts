@@ -4,8 +4,6 @@ import { FormGroup, FormControl, Validators, MinLengthValidator } from '@angular
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -13,9 +11,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-
-
-  constructor(private router: Router, private firestore: AngularFirestore) {
+  constructor(private router: Router) {
     const firebaseConfig = {
       apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
       authDomain: "da-bubble-9f879.firebaseapp.com",
@@ -34,7 +30,6 @@ export class LoginComponent implements OnInit {
 
     });
   }
-
 
   async login(email: string, password: string) {
     const auth = getAuth();
@@ -58,9 +53,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  guestLogin() {
-    this.router.navigate(['/home']);
-  }
+  guestLogin() {}
 
   onSubmit() {
     if (this.loginForm.valid) {
