@@ -33,16 +33,6 @@ export class LoginComponent {
       // Holen Sie sich den Benutzer-UID und aktualisieren Sie den Status in der Firestore-Datenbank
       const authUID = userCredential.user.uid;
       await setDoc(doc(firestore, 'users', authUID), { status: true }, { merge: true });
-
-      //Code Timo für session-storage:
-
-      sessionStorage.setItem('userAuthUID', authUID)
-
-
-      // Ende Code session-storage
-
-
-
       console.log('Login successful!');
 
       // Weiterleitung zur Home-Komponente
