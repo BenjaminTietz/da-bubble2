@@ -185,6 +185,17 @@ header {
         @include Nunito(700, 18px, 24.55px, $purple-1);
         white-space: nowrap;
     }
+
+    &:hover {
+      background-color: $purple-1;
+      border: unset;
+      cursor: pointer;
+      transition: all 0.225s ease-in-out;
+      span {
+        @include Nunito(700, 18px, 24.55px, $white);
+        white-space: nowrap;
+    }
+  }
 }
 
 .continue-btn {
@@ -202,6 +213,12 @@ header {
     span {
         @include Nunito(700, 18px, 24.55px, $white);
         white-space: nowrap;
+    }
+
+    &:hover {
+      cursor: pointer;
+      transition: all 0.225s ease-in-out;
+      opacity: 0.8;
     }
 }
 .error-style {

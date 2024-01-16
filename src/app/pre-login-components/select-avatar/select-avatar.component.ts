@@ -47,7 +47,7 @@ export class SelectAvatarComponent {
 
     if (this.userId && this.selectedAvatarUrl) {
       const userDocRef = doc(this.firestore, 'users', this.userId);
-      updateDoc(userDocRef, { photoURL: this.selectedAvatarUrl }).then(() => {
+      updateDoc(userDocRef, { avatarURL: this.selectedAvatarUrl }).then(() => {
         console.log('Avatar-URL erfolgreich in der Firestore-Datenbank gespeichert.');
       }).catch(error => {
         console.error('Fehler beim Speichern der Avatar-URL:', error);

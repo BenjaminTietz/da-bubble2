@@ -137,6 +137,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       authUID: obj.authUID || "",
       name: obj.name || "",
       status: obj.status || true,
+      avatarURL: obj.avatarURL || '', //code added by Ben
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
     }
