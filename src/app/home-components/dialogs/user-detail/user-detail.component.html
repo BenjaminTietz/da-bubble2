@@ -1,4 +1,43 @@
-<h3>User:</h3>
+<div class="container-profile">
 
-<p>Name: {{ user.name }}</p>
-<img [src]="user.photoURL" alt="">
+    <div class="header-and-close">
+        <span>Profil</span>
+        <mat-icon>close</mat-icon>
+    </div>
+
+    <img [src]="user.avatarURL" alt="">
+
+    <div class="name-and-edit">
+        <span class="name">Name: {{ user.name }}</span>
+        <span class="btn-edit">Bearbeiten</span>
+    </div>
+
+    <div class="status">
+        <mat-icon *ngIf="user.status" class="online">circle</mat-icon>
+        <mat-icon *ngIf="!user.status" class="offline">motion_photos_off</mat-icon>
+        <span *ngIf="user.status" class="online">Online</span>
+        <span *ngIf="!user.status" class="online">Offline</span>
+        <!--         <span>Offline</span>
+ -->
+    </div>
+
+
+    <div class="container-email">
+        <div class="icon-mail">
+            <mat-icon>mail</mat-icon>
+        </div>
+
+        <div class="text-mail">
+            <span>E-Mail-Adresse</span>
+            <span class="link-mail-adresse"> {{ user.name }}</span> <!--müsste später noch mailadresse sein-->
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+</div>

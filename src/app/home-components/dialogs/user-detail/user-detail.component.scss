@@ -1,0 +1,124 @@
+.container-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px;
+    gap: 32px;
+    width: 360px;
+    max-width: 100%;
+
+    img {
+        border-radius: 100%;
+    }
+
+    .header-and-close {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        mat-icon {
+            cursor: pointer;
+            animation-duration: 120ms;
+
+            &:hover {
+                scale: 1.2;
+            }
+        }
+
+    }
+
+    .name-and-edit {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            font-size: 16px;
+            animation-duration: 120ms;
+            color: #444df27b;
+            cursor: pointer;
+
+            &:hover {
+                animation-duration: 120ms;
+                color: #444df2dd;
+                scale: 1.05;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .status {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px;
+
+        .online {
+            color: lightgreen;
+        }
+
+        .offline {
+            color: red;
+        }
+    }
+
+    .container-email {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 8px;
+
+        .icon-mail {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .text-mail {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 12px;
+
+            .link-mail-adresse {
+                color: #444df27b;
+                cursor: pointer;
+                animation-duration: 120ms;
+
+                &:hover {
+                    animation-duration: 120ms;
+                    color: #444df2dd;
+                    scale: 1.05;
+                }
+
+
+
+            }
+
+
+        }
+
+
+
+
+    }
+
+
+
+}
+
+
+.cdk-overlay-pane {
+    width: 100%;
+}
