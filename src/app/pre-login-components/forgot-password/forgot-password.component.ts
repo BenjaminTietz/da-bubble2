@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { initializeApp } from 'firebase/app';
 import { Firestore } from '@angular/fire/firestore';
-import { getAuth, Auth } from 'firebase/auth';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { getAuth, Auth, AuthError } from 'firebase/auth';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore} from 'firebase/firestore';
 @Component({
@@ -10,10 +11,12 @@ import { getFirestore} from 'firebase/firestore';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss'],
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent implements OnInit {
   email: string = '';
   auth: Auth;
   firestore: Firestore;
+  resetPasswordForm!: FormGroup;
+  resetPasswordFormError: string | null = null;
 
   constructor(private router: Router) {
     const firebaseConfig = {
@@ -29,8 +32,17 @@ export class ForgotPasswordComponent {
     this.firestore = getFirestore();
   }
 
+  ngOnInit(): void {
+    this.resetPasswordForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+    });
+  }
 
   resetPassword(): Promise<void> {
+    if (!this.resetPasswordForm.valid) {
+      this.resetPasswordFormError = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
+      return Promise.reject();
+    }
     return sendPasswordResetEmail(this.auth, this.email);
   }
 }
