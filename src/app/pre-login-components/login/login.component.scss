@@ -33,7 +33,7 @@ header {
 
   span {
     color: $black;
-    @include Nunito(400, 16px, 18.8px, $black);
+    @include Nunito(700, 26px, 30px, $black);
   }
 }
 
@@ -302,3 +302,97 @@ footer {
     @include Figtree(400, 18px, 21.6px, $purple-2);
   }
 }
+
+.intro-wrapper {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  max-width: 100%;
+  height: 100vh;
+  background-color: $purple-1;
+  z-index: 5;
+  animation: delay-opacity 5s ease-in;
+  animation-fill-mode: forwards; /* Behält die Endwerte der Animation bei */
+}
+
+@keyframes delay-opacity {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.intro-text {
+  display: flex;
+  align-items: center;
+  width: 242px;
+  height: 70px;
+  margin-left: 75px;
+  margin-top: 75px;
+  gap: 16px;
+  animation: delay-logo-container 3s ease-in;
+}
+
+@keyframes delay-logo-container {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+    color: white;
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-100vw, -100vh);
+    color: black;
+  }
+}
+
+.animate-logo {
+  width: 70px;
+  height: 70px;
+  animation: slide-in 0.6s ease-in-out;
+  background-color: $purple-1;
+  z-index: 10;
+
+  @keyframes slide-in {
+    0% {
+      transform: translateX(100px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+}
+
+
+.animate-text {
+  @include Nunito(700, 26px, 30px, $white);
+  animation: text 1s ease-in 1.5s;
+  @keyframes text {
+    0% {
+      opacity: 0;
+      transform: translateY(100px);
+      color: $white;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      color: $black;
+      transform: translateY(0px);
+    }
+  }
+}
+
+

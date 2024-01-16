@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
 import { AuthService } from '../../services/auth.service';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -30,14 +31,23 @@ export class LoginComponent implements OnInit {
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
 
     });
+
+    let introWrapper = document.querySelector('.intro-wrapper') as HTMLElement;
+
+    introWrapper?.addEventListener('animationend', () => {
+      // Warten Sie mindestens 3 Sekunden, bevor Sie display: none setzen
+      setTimeout(() => {
+        introWrapper.style.display = 'none';
+      }, 1500);
+    });
   }
 
   guestLogin() { }
 
   async onSubmit() {
     if (this.loginForm.valid) {
-      const email = this.loginForm.get('email')?.value;
-      const password = this.loginForm.get('password')?.value;
+      let email = this.loginForm.get('email')?.value;
+      let password = this.loginForm.get('password')?.value;
 
       try {
         this.loginError = null;
@@ -51,4 +61,5 @@ export class LoginComponent implements OnInit {
   loginWithGoogle() {
     this.AuthService.loginWithGoogle();
   }
+
 }

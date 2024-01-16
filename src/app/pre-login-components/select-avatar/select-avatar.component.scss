@@ -33,7 +33,7 @@ header {
 
   span {
     color: $black;
-    @include Nunito(400, 16px, 18.8px, $black);
+    @include Nunito(700, 26px, 30px, $black);
   }
 }
 
