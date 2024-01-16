@@ -3,6 +3,7 @@
 @import "../../../assets/styles/fonts.scss";
 
 .choose-avatar-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -43,6 +44,7 @@ header {
   align-items: center;
   width: 100vw;
   height: 100vh;
+  margin-top: 32px;
 }
 
 .choose-avatar-box {
@@ -252,6 +254,48 @@ header {
   @include Nunito(700, 18px, 24.55px, $white);
 }
 
+.popup-wrapper {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 273px;
+  height: 149px;
+  right: 0;
+  top: 40%;
+  border-radius: 30px 30px 0px 30px;
+  padding: 50px;
+  gap: 10px;
+  background-color: $purple-1;
+  transition: all 0.225s ease-in-out;
+  animation: slide-in 0.5s ease-in-out;
+
+  @keyframes slide-in {
+    0% {
+
+      transform: translatex(400px);
+      opacity: 0;
+    }
+    100% {
+
+      transform: translatex(0);
+      opacity: 1;
+    }
+  }
+}
+
+
+.popup {
+  display: flex;
+  align-items: center;
+  width: 173px;
+  height: 49px;
+  
+  span {
+    @include Nunito(700, 36px, 49.1px, $white);
+  text-align: center;
+  }
+}
 footer {
   display: flex;
   justify-content: center;

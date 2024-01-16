@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
       // Warten Sie mindestens 3 Sekunden, bevor Sie display: none setzen
       setTimeout(() => {
         introWrapper.style.display = 'none';
-      }, 1500);
+      }, 1800);
     });
   }
 
