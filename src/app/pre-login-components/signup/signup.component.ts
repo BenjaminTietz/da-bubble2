@@ -7,6 +7,7 @@ import { getFirestore, collection, addDoc, doc, setDoc } from 'firebase/firestor
 import { User } from '../../../models/user.class';
 import { Firestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -21,7 +22,7 @@ export class SignupComponent implements OnInit {
   userId = '';
   user: User = new User();
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private router: Router, private route: ActivatedRoute, private AuthService: AuthService) {
     const firebaseConfig = {
       apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
       authDomain: "da-bubble-9f879.firebaseapp.com",

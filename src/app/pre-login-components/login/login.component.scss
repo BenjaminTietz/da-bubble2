@@ -167,8 +167,18 @@ form {
   gap: 20px;
   padding: 11px 32px 11px 32px;
   margin-top: 64px;
+  cursor: pointer;
   span {
     @include Nunito(400, 18px, 21.6px, $purple-1);
+  }
+
+  &:hover {
+    
+    transition: all 0.225s ease-in-out;
+    border: 2px solid $purple-1;
+    span {
+      @include Nunito(700, 18px, 21.6px, $purple-1);
+    }
   }
 }
 

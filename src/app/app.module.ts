@@ -2,6 +2,7 @@ import { NgModule, inject } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
+
 // forms
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //firebase

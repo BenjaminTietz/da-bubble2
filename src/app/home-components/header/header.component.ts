@@ -75,7 +75,6 @@ constructor(public dialog: MatDialog, private AuthService: AuthService) {
 
   logout() {
     this.AuthService.logout();
-    console.log('logout')
   }
 
 
