@@ -50,11 +50,58 @@ header {
     @include Nunito(400, 18px, 24.55px, $black);
     align-items: right;
   }
+}
+
+.forgot-password {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 196px;
+  height: 42px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  padding: 10px 15px 10px 15px;
+  gap: 10px;
+  
+  a {
+    text-decoration: none;
+    @include Figtree(400, 18px, 21.6px, $purple-2);
+    white-space: nowrap;
+  }
+
+  &:hover {
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
+    background-color: $bg-color;
+
+    a {
+      @include Figtree(700, 18px, 21.6px, $purple-2);
+    }
+  }
+}
+
+.link-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 153px;
+  height: 42px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  padding: 10px 15px 10px 15px;
+  gap: 10px;
 
   a {
     text-decoration: none;
     @include Figtree(400, 18px, 21.6px, $purple-2);
     align-items: right;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
+    border: solid 1px $purple-2;
   }
 }
 
@@ -71,11 +118,6 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  a {
-    text-decoration: none;
-    @include Figtree(400, 18px, 21.6px, $purple-2);
-  }
 }
 
 .input-wrapper {
@@ -183,6 +225,7 @@ form {
 }
 
 .login-btn-wrapper {
+  position: relative;
     display: flex;
   margin-top: 64px;
   gap: 30px;
@@ -215,6 +258,15 @@ form {
   color: red;
   font-size: 12px;
   bottom: -22px;
+}
+
+.login-error-style {
+  position: absolute;
+  color: red;
+  font-size: 12px;
+  top: -40px;
+  left: -64px;
+  white-space: nowrap;
 }
 
 .guest-login-btn {

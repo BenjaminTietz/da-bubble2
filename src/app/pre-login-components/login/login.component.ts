@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  loginError: string | null = null;
   constructor(private router: Router, private AuthService: AuthService) {
     const firebaseConfig = {
       apiKey: "AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc",
@@ -33,12 +34,17 @@ export class LoginComponent implements OnInit {
 
   guestLogin() { }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.loginForm.valid) {
       const email = this.loginForm.get('email')?.value;
       const password = this.loginForm.get('password')?.value;
-      
-      this.AuthService.login(email, password);
+
+      try {
+        this.loginError = null;
+        await this.AuthService.login(email, password);
+      } catch (error: any) {
+        this.loginError = error.toString();
+      }
     }
   }
 

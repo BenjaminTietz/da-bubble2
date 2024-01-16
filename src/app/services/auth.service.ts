@@ -7,6 +7,7 @@ import {
   signOut,
   signInWithEmailAndPassword,
   UserCredential,
+  AuthError,
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -90,6 +91,7 @@ export class AuthService {
     } catch (error) {
       console.error('Login error:', error);
       // Füge hier die Logik für Fehlerbehandlung hinzu, z.B. Fehlermeldung anzeigen
+      throw this.handleAuthError(error as AuthError);
     }
   }
 
@@ -135,6 +137,15 @@ export class AuthService {
       }
     } else {
       console.error('UserAuthUID not found in sessionStorage during logout.');
+    }
+  }
+
+  private handleAuthError(error: AuthError): string {
+    switch (error.code) {
+      case 'auth/invalid-credential':
+        return 'Benutzer nicht gefunden. Bitte überprüfen Sie die E-Mail-Adresse und ihr Passwort.';
+      default:
+        return 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.';
     }
   }
 

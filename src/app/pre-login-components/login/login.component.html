@@ -7,7 +7,7 @@
 
     <div class="signup">
       <span>Neu bei DABubble?</span>
-      <a routerLink="/signup">Konto erstellen</a>
+      <div class="link-container"><a routerLink="/signup">Konto erstellen</a></div>
     </div>
   </header>
   <div class="content">
@@ -57,7 +57,7 @@
         </div>
 
         
-          <a routerLink="/forgot-password">Passwort vergessen?</a>
+          <div class="forgot-password"><a routerLink="/forgot-password">Passwort vergessen?</a></div>
         
         <div class="divider">
           <div class="light-purple-line"></div>
@@ -70,6 +70,9 @@
         </div>
 
         <div class="login-btn-wrapper">
+          <div *ngIf="loginError" class="login-error-style">
+            {{ loginError }}
+          </div>
           <button class="login-btn" type="submit" [disabled]="!loginForm.valid">Anmelden</button>
           <button class="guest-login-btn" type="button"(click)="guestLogin()">Gäste-Login</button>
         </div>
@@ -77,7 +80,7 @@
     </div>
   </div>
   <footer>
-    <a routerLink="/imprint">Impressum</a>
-    <a routerLink="/privacy-policy">Datenschutz</a>
+    <div class="link-container"><a routerLink="/imprint">Impressum</a></div>
+    <div class="link-container"><a routerLink="/privacy-policy">Datenschutz</a></div>
   </footer>
 </div>

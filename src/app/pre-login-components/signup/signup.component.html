@@ -70,7 +70,7 @@
         </div>
         <div class="input-checkbox-wrapper">
           <input class="input-checkbox" type="checkbox" formControlName="acceptTerms" />
-          <h2>Ich stimme der <a routerLink="/privacy-policy">Datenschutzerklärung</a> zu.</h2>
+          <h2>Ich stimme der <div class="privacy-policy-container"><a routerLink="/privacy-policy">Datenschutzerklärung</a> zu.</div></h2>
           <span
           *ngIf="
           signupForm.get('acceptTerms')?.invalid  &&
@@ -90,7 +90,7 @@
     </div>
   </div>
   <footer>
-    <a routerLink="/imprint">Impressum</a>
-    <a routerLink="/privacy-policy">Datenschutz</a>
+    <div class="link-container"><a routerLink="/imprint">Impressum</a></div>
+    <div class="link-container"><a routerLink="/privacy-policy">Datenschutz</a></div>
   </footer>
 </div>

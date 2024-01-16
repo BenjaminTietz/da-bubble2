@@ -58,6 +58,7 @@ constructor(public dialog: MatDialog, private AuthService: AuthService) {
       authUID: obj.authUID || "",
       name: obj.name || "",
       status: obj.status || true,
+      avatarURL: obj.avatarURL || '',  // code added Ben
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
     }
