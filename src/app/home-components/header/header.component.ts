@@ -20,9 +20,9 @@ export class HeaderComponent implements OnInit {
   storedUserAuthUID: any;
 
 
-constructor(public dialog: MatDialog, private AuthService: AuthService) {
-  
-}
+  constructor(public dialog: MatDialog, private AuthService: AuthService) {
+
+  }
 
 
   ngOnInit(): void {
@@ -61,17 +61,24 @@ constructor(public dialog: MatDialog, private AuthService: AuthService) {
       avatarURL: obj.avatarURL || '',  // code added Ben
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
+      email: obj.email || ''
     }
   }
 
 
 
 
-  openDialogProfile() {
-    console.log('Open Profile')
-    const dialog = this.dialog.open(UserDetailComponent);
-    dialog.componentInstance.user = new User(this.user);
+  openDialogProfile(): void {
+    const dialog = this.dialog.open(UserDetailComponent, {
+      position: {
+        top: '32px',
+        right: '32px'
+      },
+      maxWidth: '100%',
+      panelClass: 'dialog-profile-detail'
 
+    });
+    dialog.componentInstance.user = new User(this.user);
   }
 
   logout() {

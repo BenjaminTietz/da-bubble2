@@ -10,7 +10,8 @@ export class User {
     avatarURL!: string;
     photoURL!: string;
     channels: Channel[] = [];
-    
+    email!: string;
+
 
 
 
@@ -22,7 +23,7 @@ export class User {
         this.avatarURL = obj ? obj.avatarURL : '';
         this.photoURL = obj ? obj.photoURL : '';
         this.channels = obj ? obj.channels : [];
-
+        this.email = obj ? obj.email : '';
 
     }
 

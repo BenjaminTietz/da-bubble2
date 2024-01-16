@@ -140,6 +140,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       avatarURL: obj.avatarURL || '', //code added by Ben
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
+      email: obj.email || ''
     }
   }
 

@@ -6,7 +6,6 @@
     padding: 16px;
     gap: 32px;
     width: 360px;
-    max-width: 100%;
 
     img {
         border-radius: 100%;
@@ -17,6 +16,10 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        span {
+            font-size: 20px;
+        }
 
         mat-icon {
             cursor: pointer;
@@ -116,9 +119,4 @@
 
 
 
-}
-
-
-.cdk-overlay-pane {
-    width: 100%;
 }
