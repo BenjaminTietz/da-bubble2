@@ -34,8 +34,6 @@ export class UserEditComponent implements OnInit {
 
 
   saveUserEdit() {
-    console.log('save user')
-
     updateDoc(this.getDocRef(), {
       email: this.newEmail,
       name: this.newName
