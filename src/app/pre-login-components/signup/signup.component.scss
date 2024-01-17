@@ -87,6 +87,7 @@ form {
   background-color: $bg-color;
   border: none;
   cursor: pointer;
+  @include Nunito(500, 18px, 21.6px, $text-gray);
 }
 
 .signup-box {
@@ -257,4 +258,77 @@ footer {
   background-color: $bg-color;
   gap: 16px;
 
+}
+
+
+@media only screen and (max-width: 700px) {
+  header {
+    justify-content: center;
+  }
+
+}
+
+@media only screen and (max-width: 650px) {
+  .signup-box {
+    width: 96%;
+    height: 60%;
+    max-height: 100%;
+  }
+  .signup-top {
+    h1 {
+      @include Nunito(700, 32px, 38.4px, $purple-1);
+    
+    }
+    span {
+      @include Nunito(400, 17px, 20.4px, $black);
+    }
+  }
+  .input-field {
+    width: 400px;
+  }
+  .input-wrapper {
+    margin-bottom: 16px;
+  }
+
+  .login-btn-wrapper {
+    margin-top: 32px;
+  }
+
+  .signup-btn-wrapper {
+    width: 358px;
+  }
+
+  .input-checkbox-wrapper {
+    width: 358px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .input-field {
+    width: 258px;
+  }
+  .input-wrapper {
+    margin-bottom: 16px;
+
+    img {
+      top: 18px;
+      left: 16px;
+    }
+  }
+
+  .divider {
+    margin-top: 32px;
+  }
+
+  .login-google-btn {
+    width: 258px;
+  }
+
+  .signup-top {
+    width: 358px;
+  }
+  .login-top {
+    width: 100%;
+  }
+  
 }
