@@ -1,0 +1,131 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
+.imprint-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100vw;
+    max-width: 100%;
+    background-color: $bg-color;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.logo {
+    display: flex;
+    align-items: center;
+    width: 242px;
+    height: 70px;
+    margin-left: 75px;
+    margin-top: 75px;
+    gap: 16px;
+    img {
+      width: 70px;
+      height: 70px;
+    }
+  
+    span {
+      color: $black;
+      @include Nunito(700, 26px, 30px, $black);
+    }
+  }
+
+  .imprint-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 16px;
+  }
+
+  .imprint-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 606px;
+    height: 769px;
+    border-radius: 30px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.08);
+
+        img {
+            width: 40px;
+            height: 40px;
+    
+            &:hover {
+                width: 40px;
+                height: 40px;
+                background-color: $bg-color;
+                border-radius: 100%;
+                opacity: 0.8;
+                transition: all 0.225s ease-in-out;
+            }
+        }
+
+    p {
+        @include Nunito(400, 20px, 24px, $black);
+        text-align: center;
+        margin-top: 16px;
+    }
+    h1 {
+        @include Nunito(700, 46px, 55.2px, $purple-1);
+        margin-top: 16px;
+    }
+    h2 {
+        @include Nunito(700, 26px, 30px, $black);
+        margin-top: 16px;
+    }
+
+    .back-btn {
+        position: absolute;
+            top: 22px;
+            left: 80px;
+      }
+  }
+
+  .link-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 153px;
+    height: 42px;
+    box-sizing: border-box;
+    border-radius: 25px;
+    padding: 10px 15px 10px 15px;
+    gap: 10px;
+  
+    a {
+      text-decoration: none;
+      @include Figtree(400, 18px, 21.6px, $purple-2);
+      align-items: right;
+      white-space: nowrap;
+    }
+  
+    &:hover {
+      cursor: pointer;
+      transition: all 0.225s ease-in-out;
+      border: solid 1px $purple-2;
+    }
+  }
+
+  footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100px;
+    background-color: $bg-color;
+    gap: 16px;
+  
+  }
+
+  
