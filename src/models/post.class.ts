@@ -6,7 +6,7 @@ import { Reaction } from "./reaction.class";
 
 export class Post {
     [x: string]: any;
-    id!: string;
+    id!: number;
     content!: string;
     channelId!: string;
     user!: User;
