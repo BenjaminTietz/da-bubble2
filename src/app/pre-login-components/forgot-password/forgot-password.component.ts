@@ -4,8 +4,9 @@ import { initializeApp } from 'firebase/app';
 import { Firestore } from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { getAuth, Auth, AuthError } from 'firebase/auth';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { sendPasswordResetEmail, updateEmail } from 'firebase/auth';
 import { getFirestore} from 'firebase/firestore';
+import { User } from '../../../models/user.class';
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
@@ -17,6 +18,7 @@ export class ForgotPasswordComponent implements OnInit {
   firestore: Firestore;
   resetPasswordForm!: FormGroup;
   resetPasswordFormError: string | null = null;
+
 
   constructor(private router: Router) {
     const firebaseConfig = {
@@ -36,6 +38,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.resetPasswordForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
     });
+    
   }
 
   resetPassword(): void {

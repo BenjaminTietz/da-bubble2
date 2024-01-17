@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Auth, confirmPasswordReset, getAuth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { AuthService } from '../../services/auth.service';
+import { User } from '../../../models/user.class';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-reset-password',
@@ -14,7 +16,10 @@ export class ResetPasswordComponent implements OnInit {
   confirmPassword: string = '';
   resetPasswordError: string | null = null;
   auth: Auth;
-
+  currentUser!: User;
+  oobCode: string | null = null;
+  resetPasswordForm!: FormGroup;
+  
   constructor(private route: ActivatedRoute, private router: Router, private AuthService: AuthService) {
     this.auth = getAuth(); // Stelle sicher, dass getAuth() von firebase/auth importiert ist
     const firebaseConfig = {
@@ -29,40 +34,44 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.resetPasswordForm = new FormGroup({
+      password: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    });
+
+    this.route.queryParams.subscribe((params: { [key: string]: string }) => {
       const oobCode = params['oobCode'];
-  
+    
       if (oobCode) {
-        // Hier könntest du weitere Überprüfungen durchführen oder direkt zur ResetPasswordComponent navigieren
-        this.router.navigate(['/reset-password']);
+        this.oobCode = oobCode;
+        console.log('oobCode:', oobCode);
       }
     });
   }
 
   resetPassword(): void {
-    const oobCode = this.route.snapshot.queryParams['oobCode'];
-
-    if (!oobCode) {
-      // Handle fehlenden oobCode
-      return;
+    if (this.resetPasswordForm.valid) {
+      const passwordControl = this.resetPasswordForm.get('password');
+      const confirmPasswordControl = this.resetPasswordForm.get('confirmPassword');
+  
+      if (passwordControl && confirmPasswordControl) {
+        const password = passwordControl.value; // Hier das Passwort direkt aus dem Formular abrufen
+  
+        if (password !== confirmPasswordControl.value) {
+          this.resetPasswordError = 'Die Passwörter stimmen nicht überein.';
+          return;
+        }
+  
+        confirmPasswordReset(this.auth, this.oobCode!, password)
+          .then(() => {
+            console.log('Passwort erfolgreich geändert');
+            this.router.navigate(['/login']);
+          })
+          .catch((error) => {
+            console.error('Fehler beim Ändern des Passworts:', error);
+            this.resetPasswordError = 'Fehler beim Ändern des Passworts. Bitte versuche es erneut.';
+          });
+      }
     }
-
-    if (this.password !== this.confirmPassword) {
-      this.resetPasswordError = 'Die Passwörter stimmen nicht überein.';
-      return;
-    }
-
-    confirmPasswordReset(this.auth, oobCode, this.password)
-      .then(() => {
-        // Erfolgreich
-        console.log('Passwort erfolgreich geändert');
-        // Optional: Weiterleitung zur Anmeldeseite
-        this.router.navigate(['/login']);
-      })
-      .catch((error) => {
-        // Fehler behandeln
-        console.error('Fehler beim Ändern des Passworts:', error.message);
-        this.resetPasswordError = 'Fehler beim Ändern des Passworts. Bitte versuche es erneut.';
-      });
   }
 }
