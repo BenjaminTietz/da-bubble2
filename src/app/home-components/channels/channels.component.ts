@@ -24,6 +24,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   channelData: any;
   channel!: Channel;
   dataLoaded: boolean = false;
+
   unsubChannel!: () => void;
 
   unsubPosts!: () => void;
@@ -125,7 +126,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       user: this.setUserObject(obj.user),
       date: obj.date || "",
       time: obj.time || "",
-      answers: obj.answers || [],
+      answers: obj.answers ? obj.answers.map((answer: any) => this.setAnswerObject(answer)) : [],
       reactions: obj.reactions || [],
     }
   }
@@ -143,6 +144,27 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       email: obj.email || ''
     }
   }
+
+
+
+  setAnswerObject(obj: any) {
+    return {
+      id: obj.id || "",
+      content: obj.content || "",
+      user: obj.user || "",
+      post: obj.post || "",
+      date: obj.date || "",
+      time: obj.time || "",
+      reactions: obj.reactions || "", // noch set reactions?
+    }
+
+  }
+
+
+
+
+
+
 
 
   getChannelDocRef(chan_id: any) {

@@ -1,3 +1,64 @@
+.wrapper-channel-answers {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 32px;
+
+
+    .container-answers {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: white;
+        border-radius: 20px;
+        padding: 16px;
+
+        .answers-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+
+            .answers-header-left-side {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            mat-icon {
+                cursor: pointer;
+                animation-duration: 120ms;
+
+                &:hover {
+                    animation-duration: 120ms;
+                    scale: 1.15;
+                }
+            }
+        }
+
+
+
+        
+
+
+
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+
 .container-channel {
     display: flex;
     flex-direction: column;
