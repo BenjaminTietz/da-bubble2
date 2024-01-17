@@ -19,6 +19,8 @@ export class ResetPasswordComponent implements OnInit {
   currentUser!: User;
   oobCode: string | null = null;
   resetPasswordForm!: FormGroup;
+  loginError: string | null = null;
+  
   
   constructor(private route: ActivatedRoute, private router: Router, private AuthService: AuthService) {
     this.auth = getAuth(); // Stelle sicher, dass getAuth() von firebase/auth importiert ist

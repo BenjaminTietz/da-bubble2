@@ -77,48 +77,44 @@ header {
   }
   a {
     position: absolute;
-        top: 0px;
-        left: -48px;
+    top: 0px;
+    left: -48px;
   }
-    img {
-        width: 40px;
-        height: 40px;
+  img {
+    width: 40px;
+    height: 40px;
 
-        &:hover {
-          width: 40px;
-          height: 40px;
-          background-color: $bg-color;
-          border-radius: 100%;
-          opacity: 0.8;
-      }
+    &:hover {
+      width: 40px;
+      height: 40px;
+      background-color: $bg-color;
+      border-radius: 100%;
+      opacity: 0.8;
     }
+  }
 }
 
 .selection-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 472px;
-    height: 448px;
-    gap: 32px;
-    margin-bottom: 168px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 472px;
+  height: 448px;
+  gap: 32px;
+  margin-bottom: 168px;
 }
 
 .default-profile {
-    width: 168px;
-    height: 168px;
-    border-radius: 100px;
-    box-sizing: border-box;
-  
+  width: 168px;
+  height: 168px;
+  border-radius: 100px;
+  box-sizing: border-box;
 
-
-    
-    &:hover {
-      cursor: pointer;
-      transition: all 0.225s ease-in-out;
-      border: 8px solid $text-gray;
-    }
-  
+  &:hover {
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
+    border: 8px solid $text-gray;
+  }
 }
 .avatar-profile {
   width: 168px;
@@ -128,117 +124,116 @@ header {
   gap: 10px;
 }
 .avatar-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    gap: 32px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 32px;
 
-    h2 {
-        @include Nunito(700, 32px, 43.65px, $black);
-        text-align: center;
-    }
-    span {
-        @include Nunito(400, 20px, 27.28px, $black);
-    }
-}
-
-.avatar-selection {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 72px;
-    gap: 8px;
-}
-
-.avatar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 72px;
-    height: 72px;
-    border-radius: 41px;
-    border: 8px unset ;
-    box-sizing: border-box;
-    img {
-        width: 64px;
-        height: 64px;
-        border-radius: 41px;
-    }
-
-    &:hover {
-      cursor: pointer;
-      transition: all 0.225s ease-in-out;
-      border: 8px solid $text-gray;
+  h2 {
+    @include Nunito(700, 32px, 43.65px, $black);
+    text-align: center;
+  }
+  span {
+    @include Nunito(400, 20px, 27.28px, $black);
   }
 }
 
+.avatar-selection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 72px;
+  gap: 8px;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 41px;
+  border: 8px unset;
+  box-sizing: border-box;
+  img {
+    width: 64px;
+    height: 64px;
+    border-radius: 41px;
+  }
+
+  &:hover {
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
+    border: 8px solid $text-gray;
+  }
+}
 
 .upload-avatar {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    height: 49px;
-    gap: 24px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 49px;
+  gap: 24px;
 
-    span {
-        @include Nunito(400, 20px, 27.28px, $black);
-    }
+  span {
+    @include Nunito(400, 20px, 27.28px, $black);
+  }
 }
 
 .upload-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    width: 187px;
-    height: 49px;
-    border-radius: 25px;
-    padding: 12px 25px 12px 25px;
-    border: 1px solid $purple-2;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 187px;
+  height: 49px;
+  border-radius: 25px;
+  padding: 12px 25px 12px 25px;
+  border: 1px solid $purple-2;
+  gap: 10px;
 
+  span {
+    @include Nunito(700, 18px, 24.55px, $purple-1);
+    white-space: nowrap;
+  }
+
+  &:hover {
+    background-color: $purple-1;
+    border: unset;
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
     span {
-        @include Nunito(700, 18px, 24.55px, $purple-1);
-        white-space: nowrap;
-    }
-
-    &:hover {
-      background-color: $purple-1;
-      border: unset;
-      cursor: pointer;
-      transition: all 0.225s ease-in-out;
-      span {
-        @include Nunito(700, 18px, 24.55px, $white);
-        white-space: nowrap;
+      @include Nunito(700, 18px, 24.55px, $white);
+      white-space: nowrap;
     }
   }
 }
 
 .continue-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    width: 187px;
-    height: 49px;
-    border-radius: 25px;
-    padding: 12px 25px 12px 25px;
-    border: 1px solid $purple-2;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 187px;
+  height: 49px;
+  border-radius: 25px;
+  padding: 12px 25px 12px 25px;
+  border: 1px solid $purple-2;
+  gap: 10px;
 
-    span {
-        @include Nunito(700, 18px, 24.55px, $white);
-        white-space: nowrap;
-    }
+  span {
+    @include Nunito(700, 18px, 24.55px, $white);
+    white-space: nowrap;
+  }
 
-    &:hover {
-      cursor: pointer;
-      transition: all 0.225s ease-in-out;
-      opacity: 0.8;
-    }
+  &:hover {
+    cursor: pointer;
+    transition: all 0.225s ease-in-out;
+    opacity: 0.8;
+  }
 }
 .error-style {
   color: red;
@@ -257,9 +252,9 @@ header {
 }
 
 .continue-btn {
-    position: absolute;
-    right: 48px;
-    bottom: 48px;
+  position: absolute;
+  right: 48px;
+  bottom: 48px;
   width: 137px;
   height: 49px;
   box-sizing: border-box;
@@ -273,7 +268,7 @@ header {
 
 .popup-wrapper {
   position: absolute;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   width: 273px;
@@ -289,28 +284,25 @@ header {
 
   @keyframes slide-in {
     0% {
-
       transform: translatex(400px);
       opacity: 0;
     }
     100% {
-
       transform: translatex(0);
       opacity: 1;
     }
   }
 }
 
-
 .popup {
   display: flex;
   align-items: center;
   width: 173px;
   height: 49px;
-  
+
   span {
     @include Nunito(700, 36px, 49.1px, $white);
-  text-align: center;
+    text-align: center;
   }
 }
 
@@ -351,4 +343,77 @@ footer {
     transition: all 0.225s ease-in-out;
     border: solid 1px $purple-2;
   }
+}
+
+@media only screen and (min-width: 1250px) {
+}
+@media only screen and (min-width: 700px) {
+}
+@media only screen and (max-width: 700px) {
+  header {
+    justify-content: center;
+  }
+  .content {
+    width: 100vw;
+    //height: fit-content;
+    margin-top: 0px;
+  }
+  .choose-avatar-wrapper {
+justify-content: flex-start;
+  }
+  .choose-avatar-box {
+    width: 398px;
+    height: 585px;
+  }
+
+  .choose-avatar-top {
+    width: 100%;
+    h1 {
+      @include Nunito(700, 32px, 38.4px, $purple-1);
+    }
+  }
+
+  .default-profile {
+    width: 120px;
+    height: 120px;
+  }
+  .selection-wrapper {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0px;
+  }
+
+  .avatar-content {
+    h2 {
+      @include Nunito(700, 32px, 43.65px, $black);
+    }
+    span {
+      @include Nunito(400, 20px, 27.28px, $black);
+    }
+  }
+  .avatar-selection {
+    width: 100%;
+    height: 72px;
+    gap: 8px;
+  }
+
+  .avatar-container {
+    width: 56px;
+    height: 56px;
+    padding: 4px;
+    gap: 10px;
+    img {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
+
+@media only screen and (max-width: 650px) {
+}
+
+@media only screen and (max-width: 550px) {
+}
+
+@media only screen and (max-width: 380px) {
 }
