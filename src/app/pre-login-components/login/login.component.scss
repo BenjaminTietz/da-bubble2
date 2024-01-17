@@ -421,8 +421,18 @@ footer {
     }
   }
 }
-
+@media only screen and (min-width: 700px) {
+  .login-wrapper {
+    height:unset;
+    max-height: fit-content;
+    overflow-x: hidden;
+  }
+}
 @media only screen and (max-width: 700px) {
+  .login-wrapper {
+    height: 100%;
+    overflow-x: hidden;
+  }
   header {
     justify-content: center;
   }
@@ -495,9 +505,13 @@ footer {
 }
 
 @media only screen and (max-width: 650px) {
+  .login-wrapper {
+    height: 100%;
+    overflow-x: hidden;
+  }
   .login-box {
     width: 96%;
-    height: 60vh;
+    height: fit-content;
     max-height: 100%;
   }
   .input-field {
@@ -519,26 +533,95 @@ footer {
   .login-btn-wrapper {
     margin-top: 32px;
   }
+
+  .login-top {
+    width: 100%;
+    gap: 16px;
+  }
+
 }
 
-@media only screen and (max-width: 650px) {
+@media only screen and (max-width: 550px) {
+  .logo {
+    margin-top: 22px;
+  }
+  footer {
+    display: none;
+  }
   .input-field {
     width: 358px;
   }
   .input-wrapper {
-    margin-bottom: 16px;
+    margin-bottom: 22px;
   }
 
   .divider {
-    margin-top: 32px;
+    margin-top: unset;
   }
 
   .login-google-btn {
     width: 358px;
+    margin-top: 8px;
   }
 
   .login-top {
     width: 100%;
+    gap: 16px;
+    
+    h1 {
+      @include Nunito(700, 32px, 38.4px, $purple-1);
+    }
+
+    span {
+      @include Nunito(400, 17px, 20.4px, $black);
+    }
   }
   
+  .login-wrapper {
+    justify-content: space-around;
+  }
+
+  .login-btn-wrapper {
+    margin-top: 8px;
+  }
+
+  .login-google-btn {
+    margin-top: unset;
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .logo {
+    margin-top: 16px;
+  }
+  .input-field {
+    width: 300px;
+  }
+  .input-wrapper {
+    margin-bottom: 16px;
+
+    img {
+      top: 18px;
+      left: 16px;}
+  }
+
+  .divider {
+    margin-top: unset;
+    width: 286px;
+  }
+
+  .login-google-btn {
+    width: 300px;
+    margin-top: unset;
+  }
+
+  .login-top {
+    width: 100%;
+    gap: unset;
+  }
+  
+  .login-btn-wrapper {
+    margin-top: 4px;
+    gap: 16px;
+  }
 }
