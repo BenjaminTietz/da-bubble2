@@ -12,7 +12,7 @@
       <span>DABubble</span>
     </div>
 
-    <div class="signup">
+    <div class="signup mobile-dispay-none">
       <span>Neu bei DABubble?</span>
       <div class="link-container"><a routerLink="/signup">Konto erstellen</a></div>
     </div>
@@ -81,10 +81,14 @@
             {{ loginError }}
           </div>
           <button class="login-btn" type="submit" [disabled]="!loginForm.valid">Anmelden</button>
-          <button class="guest-login-btn" type="button"(click)="guestLogin()">Gäste-Login</button>
+          <button class="guest-login-btn" type="button" (click)="guestLogin()">Gäste-Login</button>
         </div>
       </form>
     </div>
+  </div>
+  <div class="mobile-signup">
+    <span>Neu bei DABubble?</span>
+    <div class="link-container"><a routerLink="/signup">Konto erstellen</a></div>
   </div>
   <footer>
     <div class="link-container"><a routerLink="/imprint">Impressum</a></div>

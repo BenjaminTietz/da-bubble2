@@ -38,11 +38,24 @@ export class ForgotPasswordComponent implements OnInit {
     });
   }
 
-  resetPassword(): Promise<void> {
+  resetPassword(): void {
     if (!this.resetPasswordForm.valid) {
       this.resetPasswordFormError = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-      return Promise.reject();
+      return;
     }
-    return sendPasswordResetEmail(this.auth, this.email);
+  
+    this.email = this.resetPasswordForm.value.email;
+  
+    sendPasswordResetEmail(this.auth, this.email)
+      .then(() => {
+        // Erfolgreich
+        console.log('Passwortrücksetzungs-E-Mail wurde gesendet');
+        // Hier könntest du den Benutzer zu einer Bestätigungsseite weiterleiten
+      })
+      .catch((error: AuthError) => {
+        // Fehler behandeln
+        console.error('Fehler beim Senden der Passwortrücksetzungs-E-Mail:', error.message);
+      });
   }
+  
 }

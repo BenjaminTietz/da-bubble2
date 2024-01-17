@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
 import { AuthService } from '../../services/auth.service';
 import { delay } from 'rxjs';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,17 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  guestLogin() { }
+  async guestLogin() {
+      let email = 'guest@guest.com';
+      let password = '123456';
+
+      try {
+        this.loginError = null;
+        await this.AuthService.login(email, password);
+      } catch (error: any) {
+        this.loginError = error.toString();
+      }
+  }
 
   async onSubmit() {
     if (this.loginForm.valid) {
