@@ -10,6 +10,7 @@
   width: 100vw;
   max-width: 100%;
   background-color: $bg-color;
+  overflow-x: hidden;
 }
 
 header {
@@ -196,6 +197,13 @@ form {
   bottom: -22px;
 }
 
+.error-style {
+  position: absolute;
+  color: red;
+  font-size: 12px;
+  bottom: -36px;
+}
+
 .signup-btn-wrapper {
   display: flex;
   justify-content: flex-end;
@@ -266,14 +274,20 @@ footer {
   header {
     justify-content: center;
   }
-
+  .mobile-signup {
+    margin-top: 16px;
+  }
+footer {
+  margin-top: 32px;
+}
 }
 
 @media only screen and (max-width: 650px) {
   .signup-box {
-    width: 96%;
-    height: 60%;
+    width: 85%;
+    height: 700px;
     max-height: 100%;
+    margin-right: 8px;
   }
   .signup-top {
     h1 {
@@ -297,6 +311,7 @@ footer {
 
   .signup-btn-wrapper {
     width: 358px;
+    justify-content: center;
   }
 
   .input-checkbox-wrapper {
@@ -307,6 +322,7 @@ footer {
 @media only screen and (max-width: 550px) {
   .input-field {
     width: 258px;
+    @include Nunito(500, 12px, 19.2px, $text-gray);
   }
   .input-wrapper {
     margin-bottom: 16px;
@@ -330,6 +346,14 @@ footer {
   }
   .login-top {
     width: 100%;
+  }
+  .input-checkbox-wrapper {
+    display: flex;
+    flex-direction: column;
+    h2 {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 
@@ -355,5 +379,8 @@ footer {
     h2 {
       flex-direction: column;
     }
+  }
+  form {
+    gap: 24px;
   }
 }
