@@ -30,6 +30,14 @@ export class UserDetailComponent {
 
     });
     dialog.componentInstance.user = new User(this.user);
+    dialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.user = result;
+      }
+    })
+
+
+
   }
 
 
