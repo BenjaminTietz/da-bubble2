@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Post } from '../../../models/post.class';
 import { User } from '../../../models/user.class';
 import { getDocs } from 'firebase/firestore';
+import { Answer } from '../../../models/answer.class';
 
 
 
@@ -35,8 +36,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   newPost: Post = new Post();
 
-  postDetail: number = 4; //prüfen auf welche Nummer initial setzen
+  postDetail: number = 0; //prüfen auf welche Nummer initial setzen
   showAnswers: boolean = false;
+  newAnswer: Answer = new Answer();
 
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
@@ -98,12 +100,21 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     this.newPost.date = this.getCurrentDate();
     this.newPost.time = this.getCurrentTime();
 
-    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) }).then(() => {
+    console.log(channel.posts.length)
+
+    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, channel.posts.length)) }).then(() => {
       this.newPost.content = '';
 
-    });
+    })
+
+
 
   }
+
+
+
+
+
 
 
   getCurrentTime() {
@@ -122,9 +133,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-  setPostObject(obj: any, id: string,): Post {
+  setPostObject(obj: any, id: number,): Post {
     return {
-      id: id || "",
+      id: id,
       content: obj.content || "",
       channelId: obj.channelId || "",
       user: this.setUserObject(obj.user),
@@ -155,8 +166,8 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     return {
       id: obj.id || "",
       content: obj.content || "",
-      user: obj.user || "",
-      post: obj.post || "",
+      user: this.setUserObject(obj.user),
+      postId: obj.postId || "",
       date: obj.date || "",
       time: obj.time || "",
       reactions: obj.reactions || "", // noch set reactions?
@@ -169,6 +180,45 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Code für Answers
 
+  createAnswer(post: any, chan_id: any) {
+    this.newAnswer.user = this.user;
+    this.newAnswer.date = this.getCurrentDate();
+    this.newAnswer.time = this.getCurrentTime();
+    this.newAnswer.postId = post.id;
+
+/*     const postKey = post.id.answers;
+ */    const postKey = `posts.${post.id}.answers`;
+
+    console.log(postKey)
+    console.log(this.newAnswer)
+
+
+    /*     updateDoc(this.getChannelDocRef(chan_id), {
+          [postKey]: arrayUnion(this.setAnswerObject(this.newAnswer))
+        })
+     */
+
+  }
+
+
+
+
+
+
+
+  /*   createPost(channel: any) {
+      this.newPost.user = this.user;
+      this.newPost.channelId = channel.id;
+      this.newPost.date = this.getCurrentDate();
+      this.newPost.time = this.getCurrentTime();
+  
+      updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) }).then(() => {
+        this.newPost.content = '';
+  
+      });
+  
+    } */
+
 
 
 
@@ -176,7 +226,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   hideAnswers() {
     this.showAnswers = false;
-    this.postDetail = -1; //prüfen auf welche nummer setzen
+    this.postDetail = 0; //prüfen auf welche nummer setzen
   }
 
 
@@ -188,7 +238,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   getChannelDocRef(chan_id: any) {
     return doc(this.firestore, 'channels', chan_id);
   }
-
 
 
 

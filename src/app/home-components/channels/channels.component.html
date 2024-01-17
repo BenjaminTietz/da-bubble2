@@ -69,7 +69,7 @@
 
 
 
-    <div *ngIf="!showAnswers && dataLoaded" class="container-answers">
+    <div *ngIf="!showAnswers && dataLoaded && channel.posts[postDetail]" class="container-answers">
         <div class="answers-header">
             <div class="answers-header-left-side">
                 <span>Thread</span>
@@ -107,32 +107,64 @@
 
 
         <div class="line-answers">
-            {{ channel.posts[postDetail].answers.length }} Antwort<span
-                *ngIf="channel.posts[postDetail].answers.length == 0 || channel.posts[postDetail].answers.length > 1">en</span>
+            <div class="amount-answers">
+                {{ channel.posts[postDetail].answers.length }} Antwort<span
+                    *ngIf="channel.posts[postDetail].answers.length == 0 || channel.posts[postDetail].answers.length > 1">en</span>
+            </div>
+            <div class="line"></div>
+
         </div>
 
 
-        <div class="container-single-answers">
-            <div *ngFor="let answer of channel.posts[postDetail].answers" class="single answers">
-                <div>
-                    {{ answer.user.name }}
+        <div *ngFor="let answer of channel.posts[postDetail].answers" class="single-answers">
+           
+            <div class="container-user-img">
+                <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
+                    alt="img user">
+            </div>
+
+            <div class="container-post">
+                <div class="name-and-time">
+                    <b>{{ answer.user.name }}</b>
+                    <span>{{ answer.time }} Uhr</span>
+                </div>
+
+                <div class="post-content">
                     {{ answer.content }}
-                    {{ answer.date }}
-                    {{ answer.time }}
+                </div>
+
+                <div class="reactions">
 
                 </div>
 
-
-
-
             </div>
 
-
-
-
-
-
         </div>
+
+
+
+        <div class="container-new-message">
+            <textarea [(ngModel)]="newAnswer.content" name="" id="" cols="30" rows="auto"
+                [placeholder]="'Antworten...'"></textarea>
+
+            <div class="container-icons">
+                <div class="icons-left">
+                    <mat-icon matTooltip="add file">add</mat-icon>
+                    <div class="vertical-line"></div>
+                    <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+                    <mat-icon>alternate_email</mat-icon>
+                </div>
+
+                <div class="icons-right">
+                    <mat-icon (click)="createAnswer(channel.posts[postDetail], channel.id)"
+                        matTooltip="send">send</mat-icon>
+                </div>
+            </div>
+        </div>
+
+
+
+
 
 
 

@@ -9,7 +9,7 @@ export class Answer {
     id!: string;
     content!: string;
     user!: User;
-    post!: Post;
+    postId!: number;
     date!: string;
     time!: string;
     reactions!: Reaction[];
@@ -21,7 +21,7 @@ export class Answer {
         this.id = obj ? obj.id : '';
         this.content = obj ? obj.content : '';
         this.user = obj ? obj.user : '';
-        this.post = obj ? obj.post : '';
+        this.postId = obj ? obj.postId : '';
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';
         this.reactions = obj ? obj.reactions : [];
