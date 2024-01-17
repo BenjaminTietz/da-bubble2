@@ -421,9 +421,16 @@ footer {
     }
   }
 }
+@media only screen and (min-width: 1250px) {
+  .login-wrapper {
+    height:100vh;
+    max-height: fit-content;
+    overflow-x: hidden;
+  }
+}
 @media only screen and (min-width: 700px) {
   .login-wrapper {
-    height:unset;
+    height:100vh;
     max-height: fit-content;
     overflow-x: hidden;
   }
