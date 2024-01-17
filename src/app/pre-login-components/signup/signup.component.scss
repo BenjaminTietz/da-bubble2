@@ -132,6 +132,7 @@ form {
             background-color: $bg-color;
             border-radius: 100%;
             opacity: 0.8;
+            transition: all 0.225s ease-in-out;
         }
     }
 }
@@ -161,19 +162,19 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 196px;
+  width: 193px;
   height: 42px;
   box-sizing: border-box;
   border-radius: 25px;
   padding: 10px 15px 10px 15px;
-  margin-left: 16px;
+  margin-right: 8px;
   
   a {
     text-decoration: none;
     @include Figtree(400, 18px, 21.6px, $purple-2);
     white-space: nowrap;
     margin-left: 32px;
-    margin-right: 16px;
+    margin-right: 8px;
   }
 
   &:hover {
