@@ -331,5 +331,29 @@ footer {
   .login-top {
     width: 100%;
   }
-  
+}
+
+@media only screen and (max-width: 380px) {
+  .signup-wrapper {
+    overflow-x: hidden;
+  }
+  .signup-top {
+    width: 290px;
+  }
+  .signup-btn-wrapper {
+    width: 258px;
+  }
+  .content {
+    max-width: 100%;
+  }
+  .input-field {
+    @include Nunito(500, 12px, 19.2px, $text-gray);
+  }
+
+  .input-checkbox-wrapper {
+    flex-direction: column;
+    h2 {
+      flex-direction: column;
+    }
+  }
 }
