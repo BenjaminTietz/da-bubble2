@@ -35,6 +35,10 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   newPost: Post = new Post();
 
+  postDetail: number = 4; //prüfen auf welche Nummer initial setzen
+  showAnswers: boolean = false;
+
+
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   };
 
@@ -160,6 +164,20 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   }
 
+
+
+
+  //Code für Answers
+
+
+
+
+
+
+  hideAnswers() {
+    this.showAnswers = false;
+    this.postDetail = -1; //prüfen auf welche nummer setzen
+  }
 
 
 

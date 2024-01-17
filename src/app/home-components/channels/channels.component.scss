@@ -40,8 +40,54 @@
         }
 
 
+        .original-post {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            width: 80%;
+            padding: 24px;
+            gap: 24px;
 
-        
+            .container-user-img {
+                width: 10%;
+
+                img {
+                    width: 90%;
+                    border-radius: 100%;
+                }
+            }
+
+            .container-post {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                gap: 8px;
+
+
+                .name-and-time {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 16px;
+                }
+
+
+                .post-content {
+                    padding: 12px 8px;
+                    background-color: #ECEEFE;
+                    border-radius: 0 30px 30px 30px;
+
+                }
+
+
+
+            }
+
+
+
+
+        }
 
 
 
@@ -49,13 +95,7 @@
 
 
 
-
-
 }
-
-
-
-
 
 
 

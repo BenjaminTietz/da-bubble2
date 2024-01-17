@@ -17,13 +17,10 @@
 
         <div class="container-posts">
             <div class="container-single-post" *ngFor="let post of channel.posts">
-
-
                 <div class="container-user-img">
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
                 </div>
-
 
                 <div class="container-post">
                     <div class="name-and-time">
@@ -44,22 +41,15 @@
 
                     <div class="reactions">
 
-
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
 
         <div class="container-new-message">
-
             <textarea [(ngModel)]="newPost.content" name="" id="" cols="30" rows="auto"
                 [placeholder]="'Nachricht an #' + channel.chanName"></textarea>
-
 
             <div class="container-icons">
                 <div class="icons-left">
@@ -69,36 +59,70 @@
                     <mat-icon>alternate_email</mat-icon>
                 </div>
 
-
                 <div class="icons-right">
                     <mat-icon (click)="createPost(channel)" matTooltip="send">send</mat-icon>
                 </div>
-
-
             </div>
-
         </div>
-
-
     </div>
 
 
 
 
-    <div class="container-answers">
+    <div *ngIf="!showAnswers && dataLoaded" class="container-answers">
         <div class="answers-header">
             <div class="answers-header-left-side">
                 <span>Thread</span>
                 <span># {{ channel.chanName }}</span>
             </div>
 
-            <mat-icon>close</mat-icon>
+            <mat-icon (click)="hideAnswers()">close</mat-icon>
         </div>
 
+
+        <div class="original-post">
+
+            <div class="container-user-img">
+                <img [src]="channel.posts[postDetail].user.avatarURL ? '../../../'+channel.posts[postDetail].user.avatarURL : channel.posts[postDetail].user.photoURL"
+                    alt="img user">
+            </div>
+
+            <div class="container-post">
+                <div class="name-and-time">
+                    <b>{{ channel.posts[postDetail].user.name }}</b>
+                    <span>{{ channel.posts[postDetail].time }} Uhr</span>
+                </div>
+
+                <div class="post-content">
+                    {{ channel.posts[postDetail].content }}
+                </div>
+
+                <div class="reactions">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="line-answers">
+            {{ channel.posts[postDetail].answers.length }} Antwort<span
+                *ngIf="channel.posts[postDetail].answers.length == 0 || channel.posts[postDetail].answers.length > 1">en</span>
+        </div>
+
+
         <div class="container-single-answers">
-            <div *ngFor="let answer of channel.posts" class="single answers">
-                {{ answer.answers }}
-                {{ answer.content }}
+            <div *ngFor="let answer of channel.posts[postDetail].answers" class="single answers">
+                <div>
+                    {{ answer.user.name }}
+                    {{ answer.content }}
+                    {{ answer.date }}
+                    {{ answer.time }}
+
+                </div>
+
+
 
 
             </div>
