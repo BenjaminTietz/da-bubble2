@@ -1,0 +1,66 @@
+// global styles imports
+@import "../../../../assets/styles/colors.scss";
+@import "../../../../assets/styles/fonts.scss";
+
+mat-card {
+    justify-content: center;
+    width: 872px;
+    height: 539px;
+    border-radius: 30px!important;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    ;
+}
+
+mat-card-header {
+
+}
+
+
+mat-card-title {
+    @include Nunito(700, 24px, 32.74px, $black);
+    margin-bottom: 16px;
+}
+
+mat-card-subtitle {
+    @include Nunito(400, 18px, 24.55px, $black);
+    margin-bottom: 16px;
+}
+
+mat-card-content {
+
+    h3 {
+        @include Nunito(700, 18px, 24.55px, $black);
+        margin-bottom: 16px;
+    }
+
+    input {
+        height: 65px;
+        width:100%;
+        border-radius: 40px;
+        border-width: 1px;
+        border-color: $light-purple-lines;
+        border-style: solid;
+        text-align: left;
+        margin-right: -20px;
+        @include Nunito(400, 18px, 24.55px, $text-gray);
+
+        outline: none;
+    }
+}
+
+mat-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+button {
+    width: 125px;
+    height: 49px;
+    border-radius: 25px;
+    padding: 12px 25px 12px 25px;
+    gap: 10px;
+    background-color: $purple-1!important;
+    @include Nunito(700, 18px, 24.55px, $white);
+}
