@@ -110,28 +110,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Code für Posts
 
-
-  //Version um Posts als Objekte in ein Array zu schreiben:
-
-  /*   createPost(channel: any) {
-      this.newPost.user = this.user;
-      this.newPost.channelId = channel.id;
-      this.newPost.date = this.getCurrentDate();
-      this.newPost.time = this.getCurrentTime();
   
-      console.log(channel.posts.length)
-  
-      updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, channel.posts.length)) }).then(() => {
-        this.newPost.content = '';
-  
-      })
-    }
-   */
-
-
-  //Version für Posts als Subcollection:
-
-
   createPost(channel: any) {
     this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
