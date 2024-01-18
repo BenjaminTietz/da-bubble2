@@ -12,9 +12,25 @@ mat-card {
 }
 
 mat-card-header {
+    position: relative;
 
 }
 
+.close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    cursor: pointer;
+    animation-duration: 120ms;
+
+    &:hover {
+        transition: all 120ms ease-in-out;
+        background-color: $bg-color;
+    }
+}
 
 mat-card-title {
     @include Nunito(700, 24px, 32.74px, $black);
@@ -31,6 +47,7 @@ mat-card-content {
     h3 {
         @include Nunito(700, 18px, 24.55px, $black);
         margin-bottom: 16px;
+        margin-top: 16px;
     }
 
     input {
@@ -53,6 +70,7 @@ mat-card-actions {
     align-items: center;
     justify-content: flex-end;
     gap: 16px;
+    margin-top: 16px;
 }
 
 button {
@@ -63,4 +81,8 @@ button {
     gap: 10px;
     background-color: $purple-1!important;
     @include Nunito(700, 18px, 24.55px, $white);
+
+    &:hover {
+        opacity: 0.8;
+    }
 }
