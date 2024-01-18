@@ -1,3 +1,8 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
+
 .container-home {
     background-color: #ECEEFE;
     height: 100vh;
@@ -50,6 +55,7 @@
     font-size: 16px;
     margin-bottom: 0;
 
+    @include Nunito(700, 20px, 27.28px, $black);
     mat-icon {
         height: 16px;
         width: 16px;
@@ -72,5 +78,36 @@
 
 }
 
+.logo-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 32px;
+    margin-top: 16px;
+    gap: 4px;
+    h1 {
+        margin: unset!important;
+        white-space: nowrap;
+        @include Nunito(700, 24px, 32.74px, $black);
+    }
+
+}
+
+.img-logo {
+    height: 60px;
+    width: 60px;
+}
+
+.start-conversation {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    &:hover {
+        transition: all 0.225s ease-in-out;
+        background-color: rgba(0, 0, 255, 0.139);
+        cursor: pointer;
+    }
+}
 
 
