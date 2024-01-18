@@ -14,9 +14,10 @@
 
 
 
+        <!--Code für Posts als Subcollection-->
 
         <div class="container-posts">
-            <div class="container-single-post" *ngFor="let post of channel.posts">
+            <div class="container-single-post" *ngFor="let post of listPosts">
                 <div class="container-user-img">
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
@@ -46,6 +47,42 @@
             </div>
         </div>
 
+
+
+
+        <!--Code für posts als Objekt in der channel-collection-->
+
+        <!--         <div class="container-posts">
+            <div class="container-single-post" *ngFor="let post of channel.posts">
+                <div class="container-user-img">
+                    <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
+                        alt="img user">
+                </div>
+
+                <div class="container-post">
+                    <div class="name-and-time">
+                        <b>{{ post.user.name }}</b>
+                        <span>{{ post.time }} Uhr</span>
+                    </div>
+
+                    <div class="post-content">
+                        {{ post.content }}
+                    </div>
+
+                    <div class="answers">
+                        <span>{{ post.answers.length }} Antworten</span>
+                        <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
+                            1].time
+                            }}</span>
+                    </div>
+
+                    <div class="reactions">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+ -->
 
         <div class="container-new-message">
             <textarea [(ngModel)]="newPost.content" name="" id="" cols="30" rows="auto"
@@ -117,7 +154,7 @@
 
 
         <div *ngFor="let answer of channel.posts[postDetail].answers" class="single-answers">
-           
+
             <div class="container-user-img">
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
                     alt="img user">

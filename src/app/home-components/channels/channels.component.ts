@@ -29,7 +29,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   unsubChannel!: () => void;
 
   unsubPosts!: () => void;
-
+  listPosts: any = [];
 
   user: User = new User();
   storedUserAuthUID: any;
@@ -52,11 +52,27 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     this.route.params.subscribe(params => {
       this.channelID = params['id'];
       this.loadChannelData(this.channelID);
+      this.unsubPosts = this.subPostsList(this.channelID);
     });
+
+
+
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
 
+  }
+
+
+
+  subPostsList(chan_id: any) {
+    const q = query(this.getPostSubcollectionRef(chan_id), where('channelId', '==', chan_id), orderBy('date'), orderBy('time'));
+    return onSnapshot(q, (list) => {
+      this.listPosts = [];
+      list.forEach(element => {
+        this.listPosts.push(this.setPostObject(element.data(), element.id));
+      });
+    });
   }
 
 
