@@ -2,19 +2,43 @@
 
     <div class="container-channel" *ngIf="dataLoaded">
 
-
-        <h4>Channel</h4>
-        <p>id: {{ channel.id }}</p>
-        <p>name: {{ channel.chanName }}</p>
-        <p>description: {{ channel.description }}</p>
-        <p>creator: {{ channel.creator.name }} / {{ channel.creator.id }} </p>
-        <h4>users:</h4>
-        <p *ngFor="let user of channel.users"> {{ user.name }}</p>
-        <h4>Posts:</h4>
+        <div class="container-channel-header">
+            <div class="name-header">
+                <span># {{ channel.chanName }}</span>
+                <mat-icon>expand_more</mat-icon>
+            </div>
 
 
 
-        <!--Code für Posts als Subcollection-->
+            <div class="header-member">
+
+
+                <div class="img-member">
+                    <img *ngFor="let user of channel.users" [src]="user.photoURL ? user.photoURL : user.avatarURL "
+                        alt="user images">
+                    <!-- Später wieder löschen, nur für css da: -->
+                    <img src="../../../assets/img/character_1.png" alt="">
+                    <img src="../../../assets/img/character_2.png" alt="">
+                    <img src="../../../assets/img/character_3.png" alt="">
+
+                    <!--  Code bis hierher löschen         -->
+
+
+                    <div class="amount-user">
+                        <span>{{ channel.users.length }}</span>
+                    </div>
+                </div>
+
+                <div class="add-member">
+                    <mat-icon (click)="openDialogAddUserToChannel(channel)">person_add</mat-icon>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
 
         <div class="container-posts">
             <div class="container-single-post" *ngFor="let post of listPosts; let i = index">
@@ -34,7 +58,8 @@
                     </div>
 
                     <div (click)="openAnswers(i)" class="answers">
-                        <span>{{ post.answers.length }} Antworten</span>
+                        <span>{{ post.answers.length }} Antwort<span
+                                *ngIf="post.answers.length == 0 || post.answers.length > 1">en</span></span>
                         <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
                             1].time
                             }}</span>
@@ -70,7 +95,7 @@
 
 
 
-    <div *ngIf="!showAnswers && dataLoaded && listPosts[postDetail]" class="container-answers">
+    <div *ngIf="showAnswers && dataLoaded && listPosts[postDetail]" class="container-answers">
         <div class="answers-header">
             <div class="answers-header-left-side">
                 <span>Thread</span>
@@ -157,7 +182,7 @@
                 </div>
 
                 <div class="icons-right">
-                    <mat-icon (click)="createAnswer(channel.posts[postDetail], channel.id)"
+                    <mat-icon (click)="createAnswer(channel.id, listPosts[postDetail])"
                         matTooltip="send">send</mat-icon>
                 </div>
             </div>

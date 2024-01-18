@@ -1,0 +1,24 @@
+<div class="container-add-user">
+
+    <div class="header-close">
+        <span>Leute hinzufügen</span>
+        <mat-icon [mat-dialog-close]="">close</mat-icon>
+    </div>
+
+    <div class="channel-name">
+        <span># {{ channel.chanName }}</span>
+    </div>
+
+    <div class="container-input">
+        <input (input)="searchUser()" [(ngModel)]="searchInput" type="text">
+
+    </div>
+
+
+
+    <div class="container-button">
+        <button>Hinzufügen</button>
+    </div>
+
+
+</div>

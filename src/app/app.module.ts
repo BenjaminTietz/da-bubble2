@@ -69,6 +69,7 @@ import { getFirestore } from 'firebase/firestore';
 import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-channel/dialog-add-channel.component';
 import { UserDetailComponent } from './home-components/dialogs/user-detail/user-detail.component';
 import { UserEditComponent } from './home-components/dialogs/user-edit/user-edit.component';
+import { AddUserToChannelComponent } from './home-components/dialogs/add-user-to-channel/add-user-to-channel.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { UserEditComponent } from './home-components/dialogs/user-edit/user-edit
     ChannelListComponent,
     DialogAddChannelComponent,
     UserDetailComponent,
-    UserEditComponent
+    UserEditComponent,
+    AddUserToChannelComponent
   ],
   imports: [
     BrowserModule,

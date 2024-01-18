@@ -7,6 +7,7 @@ import { Post } from '../../../models/post.class';
 import { User } from '../../../models/user.class';
 import { getDocs } from 'firebase/firestore';
 import { Answer } from '../../../models/answer.class';
+import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
 
 
 
@@ -54,9 +55,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.loadChannelData(this.channelID);
       this.unsubPosts = this.subPostsList(this.channelID);
     });
-
-
-
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
@@ -110,7 +108,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Code für Posts
 
-  
+
   createPost(channel: any) {
     this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
@@ -132,7 +130,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       (err) => { console.log(err); }
     ).then(
       () => {
-
       }
     );
   }
@@ -140,10 +137,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   getPostSubcollectionRef(chan_id: any) {
     return collection(this.firestore, 'channels', chan_id, 'posts')
-  }
-
-  getPostDocRef(chan_id: any) {
-    return doc(this.getPostSubcollectionRef(chan_id))
   }
 
 
@@ -213,35 +206,29 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Code für Answers
 
-  createAnswer(post: any, chan_id: any) {
+  createAnswer(chan_id: any, post: any) {
     this.newAnswer.user = this.user;
     this.newAnswer.date = this.getCurrentDate();
     this.newAnswer.time = this.getCurrentTime();
     this.newAnswer.postId = post.id;
 
-/*     const postKey = post.id.answers;
- */    const postKey = `posts.${post.id}.answers`;
-
-    console.log(postKey)
-    console.log(this.newAnswer)
-
-
-    /*     updateDoc(this.getChannelDocRef(chan_id), {
-          [postKey]: arrayUnion(this.setAnswerObject(this.newAnswer))
-        })
-     */
-
+    updateDoc(this.getPostDocRef(chan_id, post.id), {
+      answers: arrayUnion(this.setAnswerObject(this.newAnswer))
+    }).then(() => {
+      this.newAnswer.content = '';
+    })
   }
 
+
+  getPostDocRef(chan_id: any, post_id: any) {
+    return doc(this.firestore, "channels", chan_id, "posts", post_id);
+  }
 
 
   openAnswers(i: any) {
+    this.showAnswers = true;
     this.postDetail = i;
-    console.log('Open Answers to Post ', i)
   }
-
-
-
 
 
   hideAnswers() {
@@ -250,13 +237,12 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
+  //Code für add user to channel
 
+  openDialogAddUserToChannel(channel: any) {
+    const dialog = this.dialog.open(AddUserToChannelComponent);
+    dialog.componentInstance.channel = new Channel(this.channel);
 
-
-
-
-  getChannelDocRef(chan_id: any) {
-    return doc(this.firestore, 'channels', chan_id);
   }
 
 
@@ -264,8 +250,19 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
 
+
+
+
+  //Verschiedenes:
+
+  getChannelDocRef(chan_id: any) {
+    return doc(this.firestore, 'channels', chan_id);
+  }
+
+
   ngOnDestroy(): void {
     this.unsubChannel();
+    this.unsubPosts();
   }
 
 
