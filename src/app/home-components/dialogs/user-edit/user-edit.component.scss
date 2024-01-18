@@ -1,3 +1,7 @@
+// global styles imports
+@import "../../../../assets/styles/colors.scss";
+@import "../../../../assets/styles/fonts.scss";
+
 .container-profile {
     display: flex;
     flex-direction: column;
@@ -18,7 +22,7 @@
         justify-content: space-between;
 
         span {
-            font-size: 20px;
+            @include Nunito(700, 24px, 21.74px, $black);
         }
 
 
@@ -48,7 +52,7 @@
             gap: 16px;
 
             span {
-                font-size: 20px;
+                @include Nunito(700, 20px, 27.28px, $black)
             }
         }
 
@@ -62,7 +66,7 @@
                 width: 80%;
                 outline: none;
                 border: none;
-                font-size: 18px;
+                @include Nunito(500, 18px, 21.6px, $text-gray)
             }            
         }
     }
@@ -84,7 +88,7 @@
             gap: 16px;
 
             span {
-                font-size: 20px;
+                @include Nunito(700, 20px, 27.28px, $black)
             }
         }
 
@@ -98,7 +102,7 @@
                 width: 80%;
                 outline: none;
                 border: none;
-                font-size: 18px;
+                @include Nunito(500, 18px, 21.6px, $text-gray)
             }            
         }
     }
@@ -129,12 +133,14 @@
             background-color: transparent;
             color: #444df2;
             border: 1px solid #444df2;
+            @include Nunito(700, 18px, 24.55px, $purple-2);
         }
 
         .btn-save {
             background-color: #444df2;
             color: white;
             border: none;
+            @include Nunito(700, 18px, 24.55px, $white);
         }
     }
 

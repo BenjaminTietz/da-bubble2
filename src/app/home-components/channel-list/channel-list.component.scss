@@ -1,3 +1,7 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -10,7 +14,7 @@ ul {
         align-items: center;
         gap: 16px;
         cursor: pointer;
-
+        @include Nunito(400, 18px, 24.55px, $black);
         &:hover {
             background-color: rgba(0, 0, 0, 0.1);
         }
