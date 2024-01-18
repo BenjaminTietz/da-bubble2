@@ -1,3 +1,8 @@
+// global styles imports
+@import "../../../../assets/styles/colors.scss";
+@import "../../../../assets/styles/fonts.scss";
+
+
 .container-profile {
     display: flex;
     flex-direction: column;
@@ -18,7 +23,7 @@
         justify-content: space-between;
 
         span {
-            font-size: 20px;
+            @include Nunito(700, 24px, 32.74px, $black);
         }
 
         mat-icon {
@@ -39,12 +44,11 @@
         justify-content: space-between;
 
         .name {
-            font-size: 20px;
-            font-weight: bold;
+            @include Nunito(700, 32px, 43.65px, $black);
         }
 
         .btn-edit {
-            font-size: 16px;
+            @include Nunito(600, 18px, 24.55px, $purple-3);
             animation-duration: 120ms;
             color: #444df27b;
             cursor: pointer;
@@ -64,7 +68,9 @@
         align-items: center;
         justify-content: flex-start;
         gap: 16px;
-
+        span {
+            @include Nunito(400, 20px, 27.28px, lightgreen);
+        }
         .online {
             color: lightgreen;
         }
@@ -93,6 +99,7 @@
             justify-content: flex-start;
             align-items: flex-start;
             gap: 12px;
+            @include Nunito(700, 20px, 27.28px, $black);
 
             .link-mail-adresse {
                 color: #444df27b;

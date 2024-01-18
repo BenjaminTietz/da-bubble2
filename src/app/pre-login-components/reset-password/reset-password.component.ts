@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth, confirmPasswordReset, getAuth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
@@ -21,6 +21,8 @@ export class ResetPasswordComponent implements OnInit {
   resetPasswordForm!: FormGroup;
   loginError: string | null = null;
   
+  @ViewChild('popupDesktop') popupDesktop!: ElementRef;
+  @ViewChild('popupMobile') popupMobile!: ElementRef;
   
   constructor(private route: ActivatedRoute, private router: Router, private AuthService: AuthService) {
     this.auth = getAuth(); // Stelle sicher, dass getAuth() von firebase/auth importiert ist
@@ -66,14 +68,33 @@ export class ResetPasswordComponent implements OnInit {
   
         confirmPasswordReset(this.auth, this.oobCode!, password)
           .then(() => {
-            console.log('Passwort erfolgreich geändert');
-            this.router.navigate(['/login']);
+
+              this.resetPasswordForm.reset(); 
+              console.log('Passwortrücksetzungs-E-Mail wurde gesendet');
+
+              this.triggerPopup();
+              setTimeout(() => {
+                this.triggerPopup();
+                this.router.navigate(['/login']);
+              }, 3000);
           })
           .catch((error) => {
             console.error('Fehler beim Ändern des Passworts:', error);
             this.resetPasswordError = 'Fehler beim Ändern des Passworts. Bitte versuche es erneut.';
           });
       }
+    }
+  }
+
+  triggerPopup() {
+    let popupElementDesktop: HTMLElement = this.popupDesktop.nativeElement;
+    let popupElementMobile: HTMLElement = this.popupMobile.nativeElement;
+  
+    // Check browser width and toggle between desktop and mobile popups
+    if (window.innerWidth >= 700) {
+      popupElementDesktop.classList.toggle('display-none');
+    } else {
+      popupElementMobile.classList.toggle('display-none');
     }
   }
 }

@@ -1,3 +1,7 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
 .container-header {
     padding: 16px;
     display: flex;
@@ -23,6 +27,7 @@
             outline: none;
             border: none;
             width: 80%;
+            @include Nunito(400, 24px, 32.74px, $text-gray);
         }
 
         mat-icon {
@@ -39,8 +44,7 @@
 
 
         span {
-            font-size: 20px;
-            font-weight: bold;
+            @include Nunito(700, 32px, 43.65px, $black);
         }
 
         img {

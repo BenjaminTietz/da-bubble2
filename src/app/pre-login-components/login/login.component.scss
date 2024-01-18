@@ -342,13 +342,14 @@ footer {
     center fixed;
   background-color: $purple-1;
   z-index: 5;
-  animation: delay-opacity 5s ease-in;
+  animation: delay-opacity 6s ease-in;
   animation-fill-mode: forwards;
 }
 
 @keyframes delay-opacity {
   0% {
     opacity: 1;
+    background-color: $purple-1;
   }
   50% {
     opacity: 0.5;
@@ -391,7 +392,6 @@ footer {
   animation: slide-in 0.6s ease-in-out;
   animation-fill-mode: forwards;
   z-index: 10;
-
   @keyframes slide-in {
     0% {
       transform: translateX(100px);
@@ -404,20 +404,22 @@ footer {
 
 .animate-text {
   @include Nunito(700, 26px, 30px, $white);
-  animation: text 1s ease-in 1.5s;
+  animation: text 2s ease-out;
+  animation-fill-mode: forwards;
   @keyframes text {
     0% {
       opacity: 0;
-      transform: translateY(100px);
+      transform: translateX(-150px);
       color: $white;
     }
-    50% {
-      opacity: 0;
+    80% {
+      opacity: 0.5;
+      color: $white;
     }
     100% {
       opacity: 1;
       color: $black;
-      transform: translateY(0px);
+      transform: translateX(16px);
     }
   }
 }
