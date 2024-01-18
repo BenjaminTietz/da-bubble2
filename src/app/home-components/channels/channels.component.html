@@ -106,7 +106,7 @@
 
 
 
-    <div *ngIf="!showAnswers && dataLoaded && channel.posts[postDetail]" class="container-answers">
+    <div *ngIf="!showAnswers && dataLoaded && listPosts[postDetail]" class="container-answers">
         <div class="answers-header">
             <div class="answers-header-left-side">
                 <span>Thread</span>
@@ -120,18 +120,18 @@
         <div class="original-post">
 
             <div class="container-user-img">
-                <img [src]="channel.posts[postDetail].user.avatarURL ? '../../../'+channel.posts[postDetail].user.avatarURL : channel.posts[postDetail].user.photoURL"
+                <img [src]="listPosts[postDetail].user.avatarURL ? '../../../'+listPosts[postDetail].user.avatarURL : listPosts[listPosts].user.photoURL"
                     alt="img user">
             </div>
 
             <div class="container-post">
                 <div class="name-and-time">
-                    <b>{{ channel.posts[postDetail].user.name }}</b>
-                    <span>{{ channel.posts[postDetail].time }} Uhr</span>
+                    <b>{{ listPosts[postDetail].user.name }}</b>
+                    <span>{{ listPosts[postDetail].time }} Uhr</span>
                 </div>
 
                 <div class="post-content">
-                    {{ channel.posts[postDetail].content }}
+                    {{ listPosts[postDetail].content }}
                 </div>
 
                 <div class="reactions">
@@ -145,15 +145,15 @@
 
         <div class="line-answers">
             <div class="amount-answers">
-                {{ channel.posts[postDetail].answers.length }} Antwort<span
-                    *ngIf="channel.posts[postDetail].answers.length == 0 || channel.posts[postDetail].answers.length > 1">en</span>
+                {{ listPosts[postDetail].answers.length }} Antwort<span
+                    *ngIf="listPosts[postDetail].answers.length == 0 || listPosts[postDetail].answers.length > 1">en</span>
             </div>
             <div class="line"></div>
 
         </div>
 
 
-        <div *ngFor="let answer of channel.posts[postDetail].answers" class="single-answers">
+        <div *ngFor="let answer of listPosts[postDetail].answers" class="single-answers">
 
             <div class="container-user-img">
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
