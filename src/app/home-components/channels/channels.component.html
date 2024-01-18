@@ -17,7 +17,7 @@
         <!--Code für Posts als Subcollection-->
 
         <div class="container-posts">
-            <div class="container-single-post" *ngFor="let post of listPosts">
+            <div class="container-single-post" *ngFor="let post of listPosts; let i = index">
                 <div class="container-user-img">
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
@@ -33,7 +33,7 @@
                         {{ post.content }}
                     </div>
 
-                    <div class="answers">
+                    <div (click)="openAnswers(i)" class="answers">
                         <span>{{ post.answers.length }} Antworten</span>
                         <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
                             1].time

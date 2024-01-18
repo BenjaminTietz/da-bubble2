@@ -256,6 +256,12 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
 
+  openAnswers(i: any) {
+    this.postDetail = i;
+    console.log('Open Answers to Post ', i)
+  }
+
+
 
 
 
