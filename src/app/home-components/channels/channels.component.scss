@@ -297,6 +297,13 @@
             justify-content: flex-start;
             align-items: center;
             gap: 16px;
+            cursor: pointer;
+            animation-duration: 120ms;
+
+            &:hover {
+                animation-duration: 120ms;
+                text-decoration: underline;
+            }
 
         }
 
