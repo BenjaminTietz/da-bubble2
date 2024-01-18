@@ -94,27 +94,65 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Code für Posts
 
+
+  //Version um Posts als Objekte in ein Array zu schreiben:
+
+  /*   createPost(channel: any) {
+      this.newPost.user = this.user;
+      this.newPost.channelId = channel.id;
+      this.newPost.date = this.getCurrentDate();
+      this.newPost.time = this.getCurrentTime();
+  
+      console.log(channel.posts.length)
+  
+      updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, channel.posts.length)) }).then(() => {
+        this.newPost.content = '';
+  
+      })
+    }
+   */
+
+
+  //Version für Posts als Subcollection:
+
+
   createPost(channel: any) {
     this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
     this.newPost.date = this.getCurrentDate();
     this.newPost.time = this.getCurrentTime();
 
-    console.log(channel.posts.length)
-
-    updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, channel.posts.length)) }).then(() => {
+    addDoc(this.getPostSubcollectionRef(channel.id), this.setPostObject(this.newPost, '')).then((docRef) => {
       this.newPost.content = '';
+      const newID = docRef?.id;
+      this.updatePostWithId(channel, newID, channel.id);
 
     })
-
-
-
   }
 
 
+  async updatePostWithId(item: Post, newId: any, chan_id: any) {
+    const docRef = doc(this.getPostSubcollectionRef(chan_id), newId);
+    await updateDoc(docRef, { id: newId }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => {
+
+      }
+    );
+  }
 
 
+  getPostSubcollectionRef(chan_id: any) {
+    return collection(this.firestore, 'channels', chan_id, 'posts')
+  }
 
+  getPostDocRef(chan_id: any) {
+    return doc(this.getPostSubcollectionRef(chan_id))
+  }
+
+
+  //Ende Code für Post als Subcollection
 
 
   getCurrentTime() {
@@ -133,9 +171,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-  setPostObject(obj: any, id: number,): Post {
+  setPostObject(obj: any, id: string,): Post {
     return {
-      id: id,
+      id: id || "",
       content: obj.content || "",
       channelId: obj.channelId || "",
       user: this.setUserObject(obj.user),
@@ -199,25 +237,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
      */
 
   }
-
-
-
-
-
-
-
-  /*   createPost(channel: any) {
-      this.newPost.user = this.user;
-      this.newPost.channelId = channel.id;
-      this.newPost.date = this.getCurrentDate();
-      this.newPost.time = this.getCurrentTime();
-  
-      updateDoc(this.getChannelDocRef(channel.id), { posts: arrayUnion(this.setPostObject(this.newPost, '')) }).then(() => {
-        this.newPost.content = '';
-  
-      });
-  
-    } */
 
 
 

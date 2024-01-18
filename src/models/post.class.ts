@@ -6,7 +6,7 @@ import { Reaction } from "./reaction.class";
 
 export class Post {
     [x: string]: any;
-    id!: number;
+    id!: string;
     content!: string;
     channelId!: string;
     user!: User;
@@ -27,11 +27,11 @@ export class Post {
         this.time = obj ? obj.time : '';
         this.answers = obj ? obj.answers : [];
         this.reactions = obj ? obj.reactions : [];
-        
+
     }
 
 
-    
+
 
 
 }
