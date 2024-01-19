@@ -14,6 +14,8 @@ import { ChannelsComponent } from './home-components/channels/channels.component
 
 //guards
 import { AuthGuard } from './services/auth.guard';
+import { PrivateMessagesComponent } from './home-components/private-messages/private-messages.component';
+import { StartConversationComponent } from './home-components/start-conversation/start-conversation.component';
 //services
 
 //material
@@ -37,7 +39,8 @@ export const routes: Routes = [
     path: 'home', component: HomeComponent,
     children: [
       { path: 'channels/:id', component: ChannelsComponent },
-      //{ path: 'channels', component: ChannelsComponent },
+      { path: 'private-messages/:id', component: PrivateMessagesComponent },
+      { path: 'start-conversation', component: StartConversationComponent },
     ]
   },
   { path: 'home/:userId', component: HomeComponent },

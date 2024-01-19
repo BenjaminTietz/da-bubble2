@@ -70,6 +70,9 @@ import { DialogAddChannelComponent } from './home-components/dialogs/dialog-add-
 import { UserDetailComponent } from './home-components/dialogs/user-detail/user-detail.component';
 import { UserEditComponent } from './home-components/dialogs/user-edit/user-edit.component';
 import { AddUserToChannelComponent } from './home-components/dialogs/add-user-to-channel/add-user-to-channel.component';
+import { PmListComponent } from './home-components/pm-list/pm-list.component';
+import { PrivateMessagesComponent } from './home-components/private-messages/private-messages.component';
+import { StartConversationComponent } from './home-components/start-conversation/start-conversation.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +92,10 @@ import { AddUserToChannelComponent } from './home-components/dialogs/add-user-to
     DialogAddChannelComponent,
     UserDetailComponent,
     UserEditComponent,
-    AddUserToChannelComponent
+    AddUserToChannelComponent,
+    PmListComponent,
+    PrivateMessagesComponent,
+    StartConversationComponent
   ],
   imports: [
     BrowserModule,

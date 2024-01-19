@@ -8,7 +8,8 @@
             <div class="logo-container">
                 <img class="img-logo" src="../../assets/img/workspace_logo.png" alt="logo">
                 <h1>Code learning</h1>
-                <img class="start-conversation" src="../../assets/img/start-conversation.png" alt="logo">
+                <img routerLink="/home/start-conversation/" class="start-conversation"
+                    src="../../assets/img/start-conversation.png" alt="logo">
             </div>
 
             <div class="container-drawer-content">
@@ -46,7 +47,7 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <!-- Platz für Messages-Komponente -->
+                    <app-pm-list></app-pm-list>
 
                 </mat-expansion-panel>
 
@@ -60,7 +61,7 @@
 
         <div class="container-sidenav-content">
 
-<!--             <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
+            <!--             <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
  -->
             <div class="container-router">
                 <router-outlet></router-outlet>

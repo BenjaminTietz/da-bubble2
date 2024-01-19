@@ -53,11 +53,13 @@ mat-card-content {
     input {
         height: 65px;
         width:100%;
+        box-sizing: border-box;
         border-radius: 40px;
         border-width: 1px;
         border-color: $light-purple-lines;
         border-style: solid;
         text-align: left;
+        padding-left: 24px;
         margin-right: -20px;
         @include Nunito(400, 18px, 24.55px, $text-gray);
 

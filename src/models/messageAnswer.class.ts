@@ -1,30 +1,23 @@
-
 import { User } from "./user.class";
 import { Reaction } from "./reaction.class";
-import { MessageAnswer } from "./messageAnswer.class";
 
 
-
-export class Message {
+export class MessageAnswer {
     [x: string]: any;
     id!: number;
     text!: string;
-    chatId!: string;
+    messageId!: string;
     user!: User;
-    messageAnwser!: MessageAnswer[];
     reactions!: Reaction[];
-
 
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
         this.text = obj ? obj.name : '';
-        this.chatId = obj ? obj.chat : '';
+        this.messageId = obj ? obj.messageId : '';
         this.user = obj ? obj.user : '';
-        this.messageAnwser = obj ? obj.messageAnwser : [];
         this.reactions = obj ? obj.reactions : [];
 
     }
 
 }
-
