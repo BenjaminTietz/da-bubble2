@@ -114,8 +114,9 @@
             display: flex;
             align-items: flex-start;
             justify-content: flex-start;
-            width: 80%;
-            padding: 24px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 16px 0;
             gap: 24px;
 
             .container-user-img {
@@ -431,4 +432,26 @@
 
     }
 
+}
+
+
+
+.cursor-no {
+    cursor: not-allowed !important;
+}
+
+.container-delete {
+    mat-icon {
+        color: rgba(255, 0, 0, 0.403);
+        cursor: pointer;
+        animation-duration: 120ms;
+
+        &:hover {
+            scale: 1.1;
+            animation-duration: 120ms;
+            color: red;
+        }
+
+
+    }
 }

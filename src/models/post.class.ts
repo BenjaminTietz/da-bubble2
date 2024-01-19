@@ -12,7 +12,7 @@ export class Post {
     user!: User;
     date!: string;
     time!: string;
-    answers!: Answer[];
+    answers!: number;
     reactions!: Reaction[];
 
 
@@ -25,7 +25,7 @@ export class Post {
         this.user = obj ? obj.user : '';
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';
-        this.answers = obj ? obj.answers : [];
+        this.answers = obj ? obj.answers : 0;
         this.reactions = obj ? obj.reactions : [];
 
     }

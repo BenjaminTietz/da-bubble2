@@ -8,6 +8,7 @@ import { User } from '../../../models/user.class';
 import { getDocs } from 'firebase/firestore';
 import { Answer } from '../../../models/answer.class';
 import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
+import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.component';
 
 
 
@@ -32,6 +33,10 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   unsubPosts!: () => void;
   listPosts: any = [];
 
+  unsubAnswers!: () => void;
+  listAnswers: any = [];
+
+
   user: User = new User();
   storedUserAuthUID: any;
 
@@ -54,6 +59,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.channelID = params['id'];
       this.loadChannelData(this.channelID);
       this.unsubPosts = this.subPostsList(this.channelID);
+      this.showAnswers = false;
     });
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
@@ -135,6 +141,17 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
+  async updatePostAmountAnswers(post_id: any, amount: any, chan_id: any) {
+    const docRef = doc(this.getPostSubcollectionRef(chan_id), post_id);
+    await updateDoc(docRef, { answers: amount }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => { }
+    );
+  }
+
+
+
   getPostSubcollectionRef(chan_id: any) {
     return collection(this.firestore, 'channels', chan_id, 'posts')
   }
@@ -167,7 +184,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       user: this.setUserObject(obj.user),
       date: obj.date || "",
       time: obj.time || "",
-      answers: obj.answers ? obj.answers.map((answer: any) => this.setAnswerObject(answer)) : [],
+      answers: obj.answers ? obj.answers : 0,
       reactions: obj.reactions || [],
     }
   }
@@ -207,17 +224,34 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Code für Answers
 
   createAnswer(chan_id: any, post: any) {
-    this.newAnswer.user = this.user;
-    this.newAnswer.date = this.getCurrentDate();
-    this.newAnswer.time = this.getCurrentTime();
-    this.newAnswer.postId = post.id;
+    if (this.newAnswer.content) {
+      this.newAnswer.user = this.user;
+      this.newAnswer.date = this.getCurrentDate();
+      this.newAnswer.time = this.getCurrentTime();
+      this.newAnswer.postId = post.id;
 
-    updateDoc(this.getPostDocRef(chan_id, post.id), {
-      answers: arrayUnion(this.setAnswerObject(this.newAnswer))
-    }).then(() => {
-      this.newAnswer.content = '';
-    })
+      addDoc(this.getAnswerSubcollectionRef(chan_id, post.id), this.setAnswerObject(this.newAnswer)).then((docRef) => {
+        this.newAnswer.content = '';
+        const newID = docRef?.id;
+        this.updatePostAmountAnswers(post.id, this.listAnswers.length, chan_id)
+        this.updateAnswerWithId(post.id, newID, chan_id)
+      })
+    }
   }
+
+
+  async updateAnswerWithId(post_id: any, newId: any, chan_id: any) {
+    const docRef = doc(this.getAnswerSubcollectionRef(chan_id, post_id), newId);
+    await updateDoc(docRef, { id: newId }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => { }
+    );
+  }
+
+
+
+
 
 
   getPostDocRef(chan_id: any, post_id: any) {
@@ -225,10 +259,42 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-  openAnswers(i: any) {
+  openAnswers(chan_id: any, post: any, i: any) {
     this.showAnswers = true;
     this.postDetail = i;
+    this.unsubAnswers = this.subAnswersList(chan_id, post.id);
   }
+
+
+  subAnswersList(chan_id: any, post_id: any) {
+    const q = query(this.getAnswerSubcollectionRef(chan_id, post_id), where('postId', '==', post_id), orderBy('date'), orderBy('time'));
+    return onSnapshot(q, (list) => {
+      this.listAnswers = [];
+      list.forEach(element => {
+        this.listAnswers.push(this.setAnswerObject(element.data()));
+      });
+    });
+  }
+
+
+  deleteAnswer(answer: any) {
+    const dialog = this.dialog.open(DeleteAnswerComponent);
+    dialog.componentInstance.answer = new Answer(answer);
+    dialog.componentInstance.chan_id = this.channel.id;
+
+    dialog.afterClosed().subscribe(result => {
+      this.updatePostAmountAnswers(answer.postId, this.listAnswers.length, this.channel.id)
+    })
+
+  }
+
+
+
+
+  getAnswerSubcollectionRef(chan_id: any, post_id: any) {
+    return collection(this.firestore, 'channels', chan_id, 'posts', post_id, 'answers')
+  }
+
 
 
   hideAnswers() {
@@ -263,6 +329,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.unsubChannel();
     this.unsubPosts();
+    this.unsubAnswers();
   }
 
 

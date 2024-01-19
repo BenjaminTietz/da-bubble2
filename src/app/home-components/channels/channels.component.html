@@ -57,9 +57,10 @@
                         {{ post.content }}
                     </div>
 
-                    <div (click)="openAnswers(i)" class="answers">
-                        <span>{{ post.answers.length }} Antwort<span
-                                *ngIf="post.answers.length == 0 || post.answers.length > 1">en</span></span>
+                    <div (click)="openAnswers(channel.id , post, i)" class="answers">
+                        <span>{{ post.answers }} Antwort<span
+                                *ngIf="post.answers == 0 || post.answers > 1">en</span></span>
+                        <!--Lösung für letzte Antwort noch finden-->
                         <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
                             1].time
                             }}</span>
@@ -74,7 +75,7 @@
 
 
         <div class="container-new-message">
-            <textarea [(ngModel)]="newPost.content" name="" id="" cols="30" rows="auto"
+            <textarea maxlength="160" [(ngModel)]="newPost.content" name="" id="" cols="30" rows="auto"
                 [placeholder]="'Nachricht an #' + channel.chanName"></textarea>
 
             <div class="container-icons">
@@ -132,17 +133,19 @@
         </div>
 
 
+        <!--Test mit Answers als Subcollection-->
+
         <div class="line-answers">
             <div class="amount-answers">
-                {{ listPosts[postDetail].answers.length }} Antwort<span
-                    *ngIf="listPosts[postDetail].answers.length == 0 || listPosts[postDetail].answers.length > 1">en</span>
+                {{ listAnswers.length }} Antwort<span
+                    *ngIf="listAnswers.length == 0 || listAnswers.length > 1">en</span>
             </div>
             <div class="line"></div>
 
         </div>
 
 
-        <div *ngFor="let answer of listPosts[postDetail].answers" class="single-answers">
+        <div *ngFor="let answer of listAnswers" class="single-answers">
 
             <div class="container-user-img">
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
@@ -165,12 +168,16 @@
 
             </div>
 
+            <div *ngIf="answer.user.id == this.user.id" class="container-delete">
+                <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
+            </div>
+
+
         </div>
 
 
-
         <div class="container-new-message">
-            <textarea [(ngModel)]="newAnswer.content" name="" id="" cols="30" rows="auto"
+            <textarea maxlength="160" [(ngModel)]="newAnswer.content" name="" id="" cols="30" rows="auto"
                 [placeholder]="'Antworten...'"></textarea>
 
             <div class="container-icons">
@@ -183,7 +190,8 @@
 
                 <div class="icons-right">
                     <mat-icon (click)="createAnswer(channel.id, listPosts[postDetail])"
-                        matTooltip="send">send</mat-icon>
+                        [matTooltip]="newAnswer.content ? 'send' : 'Zuerst Antwort eintippen'"
+                        [ngClass]="newAnswer.content ? '' : 'cursor-no'">send</mat-icon>
                 </div>
             </div>
         </div>

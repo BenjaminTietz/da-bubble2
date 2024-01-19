@@ -44,6 +44,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatDialogModule} from '@angular/material/dialog';
 //Mat-Menu
 import { MatMenuModule } from '@angular/material/menu';
+//Mat-Divider
+import {MatDividerModule} from '@angular/material/divider';
 
 
 
@@ -73,6 +75,7 @@ import { AddUserToChannelComponent } from './home-components/dialogs/add-user-to
 import { PmListComponent } from './home-components/pm-list/pm-list.component';
 import { PrivateMessagesComponent } from './home-components/private-messages/private-messages.component';
 import { StartConversationComponent } from './home-components/start-conversation/start-conversation.component';
+import { DeleteAnswerComponent } from './home-components/dialogs/delete-answer/delete-answer.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +98,8 @@ import { StartConversationComponent } from './home-components/start-conversation
     AddUserToChannelComponent,
     PmListComponent,
     PrivateMessagesComponent,
-    StartConversationComponent
+    StartConversationComponent,
+    DeleteAnswerComponent
   ],
   imports: [
     BrowserModule,
@@ -119,7 +123,7 @@ import { StartConversationComponent } from './home-components/start-conversation
     MatButtonModule,
     MatDialogModule,
     MatMenuModule,
-    
+    MatDividerModule,
 
 
   ],
