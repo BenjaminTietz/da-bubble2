@@ -97,7 +97,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   loadChannelData(id: string) {
-    this.unsubChannel = onSnapshot(doc(this.firestore, 'channels', this.channelID), (doc) => {
+    this.unsubChannel = onSnapshot(doc(this.firestore, 'channels', id), (doc) => {
+      console.log(this.channelID);
+      console.log(id);
       this.channel = new Channel(doc.data())
       this.dataLoaded = true;
     });
@@ -119,6 +121,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.newPost.content = '';
       const newID = docRef?.id;
       this.updatePostWithId(channel, newID, channel.id);
+      this.ngOnInit();
 
     })
   }
@@ -129,8 +132,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     await updateDoc(docRef, { id: newId }).catch(
       (err) => { console.log(err); }
     ).then(
-      () => {
-      }
+      () => { }
     );
   }
 
