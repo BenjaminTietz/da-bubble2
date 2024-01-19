@@ -35,7 +35,9 @@
                 </div>
 
                 <div class="icons-right">
-                    <mat-icon  matTooltip="send">send</mat-icon>
+                    <mat-icon matTooltip="send">
+                        <a [routerLink]="['/home/private-messages', selectedItemId]">Starte private Unterhaltung</a>
+                    </mat-icon>
                 </div>
             </div>
         </div>

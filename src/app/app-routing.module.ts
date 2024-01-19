@@ -39,11 +39,12 @@ export const routes: Routes = [
     path: 'home', component: HomeComponent,
     children: [
       { path: 'channels/:id', component: ChannelsComponent },
-      { path: 'private-messages/:id', component: PrivateMessagesComponent },
       { path: 'start-conversation', component: StartConversationComponent },
+      { path: 'private-messages/:id', component: PrivateMessagesComponent },
     ]
   },
   { path: 'home/:userId', component: HomeComponent },
+  { path: 'private-messages/:id', component: PrivateMessagesComponent },
 ];
 
 

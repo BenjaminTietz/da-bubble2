@@ -7,6 +7,7 @@ import { onChildMoved } from 'firebase/database';
 import { Chat } from '../../../models/chat.class';
 import { User } from '../../../models/user.class';
 import { updateDoc } from 'firebase/firestore';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -21,8 +22,10 @@ export class StartConversationComponent implements OnInit {
   userResults: any[] = [];
   auth: Auth;
   firestore: Firestore;
+  currentUser: any;
+selectedItemId: any|string;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
       authDomain: 'da-bubble-9f879.firebaseapp.com',
@@ -37,8 +40,16 @@ export class StartConversationComponent implements OnInit {
     this.firestore = getFirestore();
   }
   ngOnInit() {
+
+    this.route.params.subscribe(params => {
+      const chatId = params['id'];
+      console.log('Received Chat ID:', chatId);
+      // Führe die erforderlichen Aktionen mit der Chat-ID durch
+    });
+
     this.loadUserResults();
     this.loadChannelResults();
+
   }
 
   // Initialize the search results and load the user and channel results local arrays
@@ -79,64 +90,112 @@ export class StartConversationComponent implements OnInit {
   // Create a private chat with the selected users
 
   async createPrivateChat() {
-    const userId = "0qlW3ZW5a5pR0tFCdSoE"; // Der Benutzer, der den Chat erstellt
+    const userId = sessionStorage.getItem('userAuthUID');
+    console.log(userId);
+    // Annahme: Hier ermittelst du die Chat-ID, zum Beispiel durch eine vorherige Abfrage an die Datenbank
+  // Declare the chatDoc variable
+  let chatDoc: any;
 
-    // Declare the chatDoc variable
-    let chatDoc: any;
-
-    // Get the chat document
-    const chatId = chatDoc.id; // Hier die chatId aus dem Dokument extrahieren
-
-    // Füge weitere Benutzer zum Chat hinzu
-    const additionalUserIds = ["UserId2", "UserId3"]; // Beispiel-IDs, ersetze sie durch die tatsächlichen Benutzer-IDs
-    const privateChat: Chat = {
-      participants: [],
-      id: '',
-      messages: []
-    }; // Replace 'Chat' with the actual type of the chat object
+  // Füge weitere Benutzer zum Chat hinzu
+  const additionalUserIds = ["UserId2", "UserId3"]; // Beispiel-IDs, ersetze sie durch die tatsächlichen Benutzer-IDs
+  const privateChat: Chat = {
+    participants: [],
+    id: '', // Falls du eine zufällige ID generieren möchtest, kannst du dies hier tun
+    messages: []
+  };
   
-    
-    additionalUserIds.forEach(userId => {
-      const user: User = {
-        id: userId,
-        authUID: '',
-        name: '',
-        status: false,
-        avatarURL: '',
-        photoURL: '',
-        channels: [],
-        email: ''
-      }; // Replace 'User' with the actual type of the user object
-      privateChat.participants.push(user);
-    });
+  const currentUserQuery = query(collection(this.firestore, 'users'), where('authUID', '==', userId));
+  const currentUserSnapshot = await getDocs(currentUserQuery);
+  const currentUser = currentUserSnapshot.docs[0].data();
+
+  const currentUserInChat: User = {
+    id: currentUser['id'],
+    authUID: currentUser['authUID'],
+    name: currentUser['name'],
+    status: currentUser['status'],
+    avatarURL: currentUser['avatarURL'],
+    photoURL: currentUser['photoURL'],
+    channels: currentUser['channels'],
+    email: currentUser['email']
+  };
+
+  privateChat.participants.push(currentUserInChat);
+    // Annahme: Hier rufst du die aktuelle Liste der Teilnehmer aus der Datenbank ab
+    // Beispiel: const existingParticipants = await getParticipantsFromDatabase(chatId);
+    // privateChat.participants = existingParticipants.concat(additionalUserIds);
+  
+  // Füge weitere Benutzer zum Chat hinzu
+  additionalUserIds.forEach(async (additionalUserId) => {
+    const additionalUserQuery = query(collection(this.firestore, 'users'), where('id', '==', additionalUserId));
+    const additionalUserSnapshot = await getDocs(additionalUserQuery);
+    const additionalUser = additionalUserSnapshot.docs[0].data();
+
+    const additionalUserInChat: User = {
+      id: additionalUser['id'],
+      authUID: additionalUser['authUID'],
+      name: additionalUser['name'],
+      status: additionalUser['status'],
+      avatarURL: additionalUser['avatarURL'],
+      photoURL: additionalUser['photoURL'],
+      channels: additionalUser['channels'],
+      email: additionalUser['email']
+    };
+
+    privateChat.participants.push(additionalUserInChat);
+    console.log(privateChat.participants);
+  });
+
   
     // Aktualisiere den Chat in der Datenbank
+    // Beispiel: await updateChatInDatabase(chatId, { participants: privateChat.participants });
+  
     // ...
   
-    const chatRef = doc(this.firestore, 'chats', chatId) as DocumentReference<Chat>;
-    await updateDoc(chatRef, {
-      participants: privateChat.participants
-    });
-  
-    console.log(`Benutzer zu privatem Chat ${chatId} hinzugefügt.`);
   }
 
   async startChat(selectedItem: any) {
-    const userId = "0qlW3ZW5a5pR0tFCdSoE"; // Der Benutzer, der den Chat erstellt
+    const userAuthUID = sessionStorage.getItem('userAuthUID');
   
-    // Beispiel: Erstelle ein Chat-Objekt
+    if (!userAuthUID) {
+      console.error('AuthUID im Session Storage nicht gefunden.');
+      return;
+    }
+  
+    // 1. Finde den aktuellen Benutzer in der users-Sammlung
+    const userQuery = query(collection(this.firestore, 'users'), where('authUID', '==', userAuthUID));
+    const userSnapshot = await getDocs(userQuery);
+  
+    if (userSnapshot.empty) {
+      console.error('Aktueller Benutzer nicht in der users-Sammlung gefunden.');
+      return;
+    }
+  
+    const currentUser = userSnapshot.docs[0].data();
+  
+    // 2. Erstelle ein Chat-Objekt mit den Informationen des aktuellen Benutzers
     const chat: Chat = {
       id: '', // Du kannst hier eine zufällige ID generieren oder die von Firestore generierte ID verwenden
-      participants: [selectedItem], // Füge den ausgewählten Benutzer/Kanal hinzu
+      participants: [{
+        id: currentUser['id'],
+        name: currentUser['name'],
+        photoURL: currentUser['photoURL'],
+        authUID: '',
+        status: false,
+        avatarURL: '',
+        channels: [],
+        email: ''
+      }], // Füge den ausgewählten Benutzer/Kanal hinzu
       messages: []
     };
   
+    // 3. Speichere das Chat-Objekt in der Datenbank
+    let docRef: any;
     try {
-      // Beispiel: Speichere das Chat-Objekt in der Datenbank
-      const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
+      docRef = await addDoc(collection(this.firestore, 'chats'), chat);
       console.log(`Chat mit ${selectedItem.name || selectedItem.chanName} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id}`);
     } catch (error) {
       console.error('Fehler beim Speichern des Chats:', error);
     }
+    this.router.navigate(['/home/private-messages', docRef.id]);
   }
 }
