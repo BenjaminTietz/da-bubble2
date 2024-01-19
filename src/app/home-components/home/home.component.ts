@@ -1,24 +1,27 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogAddChannelComponent } from '../dialogs/dialog-add-channel/dialog-add-channel.component';
-
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   title = 'da-bubble';
 
   public isScreenSmall!: boolean;
   drawerMode: 'side' | 'over' = 'side';
   drawerOpened: boolean = false;
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, public chatService: ChatService) {
     this.checkScreenSize();
   }
 
+  ngOnInit(): void {
+    //this.chatService.loadChats();  Board schmiert ab
+  }
 
   private checkScreenSize() {
     this.isScreenSmall = window.innerWidth < 850;

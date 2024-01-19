@@ -1,4 +1,4 @@
-<p>Chat</p>
-<p>Chat</p>
-<p>Chat</p>
-<p>Chat</p>
+<div *ngFor="let chat of chatService.getChats()">
+    <p>{{ chat.id }}</p>
+    <!-- Informationen aus dem Chat anzeigen -->
+</div>
