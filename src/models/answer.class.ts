@@ -9,7 +9,7 @@ export class Answer {
     id!: string;
     content!: string;
     user!: User;
-    postId!: number;
+    postId!: string;
     date!: string;
     time!: string;
     reactions!: Reaction[];
