@@ -329,7 +329,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.unsubChannel();
     this.unsubPosts();
-    this.unsubAnswers();
+    //this.unsubAnswers();
   }
 
 
