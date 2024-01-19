@@ -98,8 +98,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   loadChannelData(id: string) {
     this.unsubChannel = onSnapshot(doc(this.firestore, 'channels', id), (doc) => {
-      console.log(this.channelID);
-      console.log(id);
       this.channel = new Channel(doc.data())
       this.dataLoaded = true;
     });
