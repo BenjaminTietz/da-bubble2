@@ -1,1 +1,44 @@
-<p>start-conversation works!</p>
+<div class="start-conversation-wrapper">
+    <div class="start-conversation-top">
+      <h1>Neue Nachricht</h1>
+      <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText" (ngModelChange)="search()">
+    </div>
+
+    <div class="start-conversation-messages">
+        <div *ngIf="channelResults.length > 0">
+            <h2>Kanal Ergebnisse</h2>
+            <ul>
+                <li *ngFor="let channel of channelResults" (click)="startChat(channel)">{{ channel.chanName || channel.description || 'Unbekannter Kanal' }}</li>
+
+            </ul>
+          </div>
+          
+          <div *ngIf="userResults.length > 0">
+            <h2>Benutzer Ergebnisse</h2>
+            <ul>
+                <li *ngFor="let user of userResults" (click)="startChat(user)">{{ user.name || user.username || 'Unbekannter Benutzer' }}</li>
+
+            </ul>
+          </div>
+        <!-- Hier kommen die Nachrichten hin -->
+    </div>
+    <div class="start-conversation-bottom">
+        <div class="container-new-message">
+            <textarea></textarea>
+
+            <div class="container-icons">
+                <div class="icons-left">
+                    <mat-icon matTooltip="add file">add</mat-icon>
+                    <div class="vertical-line"></div>
+                    <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+                    <mat-icon>alternate_email</mat-icon>
+                </div>
+
+                <div class="icons-right">
+                    <mat-icon  matTooltip="send">send</mat-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

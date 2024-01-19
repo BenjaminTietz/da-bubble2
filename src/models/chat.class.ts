@@ -5,7 +5,7 @@ import { Message } from "./message.class";
 export class Chat {
     [x: string]: any;
     id!: string;
-    user!: User[];
+    participants!: User[];
     messages!: Message[];
 
     
@@ -13,7 +13,7 @@ export class Chat {
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
-        this.user = obj ? obj.user : [];
+        this.participants! = obj ? obj.participants : [];
         this.messages = obj ? obj.messages : []
 
     }
