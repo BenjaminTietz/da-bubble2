@@ -8,7 +8,7 @@ import { Chat } from '../../../models/chat.class';
 import { User } from '../../../models/user.class';
 import { updateDoc } from 'firebase/firestore';
 import { ActivatedRoute } from '@angular/router';
-
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-start-conversation',
@@ -24,8 +24,10 @@ export class StartConversationComponent implements OnInit {
   firestore: Firestore;
   currentUser: any;
 selectedItemId: any|string;
+selectedUsers: any[] = [];
+selectedItem: any;
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(private router: Router, private route: ActivatedRoute, private chatService: ChatService) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
       authDomain: 'da-bubble-9f879.firebaseapp.com',
@@ -49,9 +51,20 @@ selectedItemId: any|string;
 
     this.loadUserResults();
     this.loadChannelResults();
-
+    this.getCurrentUser();
   }
 
+    // Rufe getCurrentUser asynchron auf
+    async getCurrentUser() {
+      const currentUser = await this.chatService.getCurrentUser();
+  
+      if (currentUser) {
+        // Hier kannst du mit dem aktuellen Benutzer arbeiten
+        console.log('Current User:', currentUser);
+      } else {
+        console.error('Fehler beim Abrufen des aktuellen Benutzers.');
+      }
+    }
   // Initialize the search results and load the user and channel results local arrays
 
   async loadUserResults() {
@@ -87,73 +100,103 @@ selectedItemId: any|string;
     this.userResults = this.userResults.filter(user => user.name && user.name.includes(username));
   }
 
+
+
+  addToRecipientList(user: any) {
+    // Prüfe, ob der Benutzer bereits ausgewählt ist
+    const existingUser = this.selectedUsers.find(selectedUser => selectedUser.id === user.id);
+  
+    if (!existingUser) {
+      this.selectedUsers.push(user);
+      console.log('Benutzer hinzugefügt:', user);
+    } else {
+      console.log('Benutzer bereits ausgewählt:', user);
+    }
+  }
+
   // Create a private chat with the selected users
 
   async createPrivateChat() {
     const userId = sessionStorage.getItem('userAuthUID');
-    console.log(userId);
-    // Annahme: Hier ermittelst du die Chat-ID, zum Beispiel durch eine vorherige Abfrage an die Datenbank
-  // Declare the chatDoc variable
-  let chatDoc: any;
-
-  // Füge weitere Benutzer zum Chat hinzu
-  const additionalUserIds = ["UserId2", "UserId3"]; // Beispiel-IDs, ersetze sie durch die tatsächlichen Benutzer-IDs
-  const privateChat: Chat = {
-    participants: [],
-    id: '', // Falls du eine zufällige ID generieren möchtest, kannst du dies hier tun
-    messages: []
-  };
   
-  const currentUserQuery = query(collection(this.firestore, 'users'), where('authUID', '==', userId));
-  const currentUserSnapshot = await getDocs(currentUserQuery);
-  const currentUser = currentUserSnapshot.docs[0].data();
-
-  const currentUserInChat: User = {
-    id: currentUser['id'],
-    authUID: currentUser['authUID'],
-    name: currentUser['name'],
-    status: currentUser['status'],
-    avatarURL: currentUser['avatarURL'],
-    photoURL: currentUser['photoURL'],
-    channels: currentUser['channels'],
-    email: currentUser['email']
-  };
-
-  privateChat.participants.push(currentUserInChat);
-    // Annahme: Hier rufst du die aktuelle Liste der Teilnehmer aus der Datenbank ab
-    // Beispiel: const existingParticipants = await getParticipantsFromDatabase(chatId);
-    // privateChat.participants = existingParticipants.concat(additionalUserIds);
+    if (!userId) {
+      console.error('AuthUID im Session Storage nicht gefunden.');
+      return;
+    }
   
-  // Füge weitere Benutzer zum Chat hinzu
-  additionalUserIds.forEach(async (additionalUserId) => {
-    const additionalUserQuery = query(collection(this.firestore, 'users'), where('id', '==', additionalUserId));
-    const additionalUserSnapshot = await getDocs(additionalUserQuery);
-    const additionalUser = additionalUserSnapshot.docs[0].data();
-
-    const additionalUserInChat: User = {
-      id: additionalUser['id'],
-      authUID: additionalUser['authUID'],
-      name: additionalUser['name'],
-      status: additionalUser['status'],
-      avatarURL: additionalUser['avatarURL'],
-      photoURL: additionalUser['photoURL'],
-      channels: additionalUser['channels'],
-      email: additionalUser['email']
+    const privateChat: Chat = {
+      participants: [],
+      id: '', // Falls du eine zufällige ID generieren möchtest, kannst du dies hier tun
+      messages: []
     };
-
-    privateChat.participants.push(additionalUserInChat);
-    console.log(privateChat.participants);
-  });
-
   
-    // Aktualisiere den Chat in der Datenbank
-    // Beispiel: await updateChatInDatabase(chatId, { participants: privateChat.participants });
+    // Füge den aktuellen Benutzer zum Chat hinzu
+    const currentUserQuery = query(collection(this.firestore, 'users'), where('authUID', '==', userId));
+    const currentUserSnapshot = await getDocs(currentUserQuery);
+    const currentUser = currentUserSnapshot.docs[0].data();
   
-    // ...
+    const currentUserInChat: User = {
+      id: currentUser['id'],
+      authUID: currentUser['authUID'],
+      name: currentUser['name'],
+      status: currentUser['status'],
+      avatarURL: currentUser['avatarURL'],
+      photoURL: currentUser['photoURL'],
+      channels: currentUser['channels'],
+      email: currentUser['email']
+    };
   
+    privateChat.participants.push(currentUserInChat);
+  
+    // Füge weitere Benutzer zum Chat hinzu
+    const additionalUserIds = ["UserId2", "UserId3"]; // Beispiel-IDs, ersetze sie durch die tatsächlichen Benutzer-IDs
+    for (const additionalUserId of additionalUserIds) {
+      const additionalUserQuery = query(collection(this.firestore, 'users'), where('id', '==', additionalUserId));
+      const additionalUserSnapshot = await getDocs(additionalUserQuery);
+      const additionalUser = additionalUserSnapshot.docs[0].data();
+  
+      if (additionalUser) {
+        const additionalUserInChat: User = {
+          id: additionalUser['id'],
+          authUID: additionalUser['authUID'],
+          name: additionalUser['name'],
+          status: additionalUser['status'],
+          avatarURL: additionalUser['avatarURL'],
+          photoURL: additionalUser['photoURL'],
+          channels: additionalUser['channels'],
+          email: additionalUser['email']
+        };
+  
+        privateChat.participants.push(additionalUserInChat);
+      }
+    }
+  
+    // Überprüfe, ob participants definiert ist und mindestens einen Teilnehmer enthält
+    if (!privateChat.participants || privateChat.participants.length === 0) {
+      console.error('Ungültige Teilnehmerdaten.');
+      return;
+    }
+  
+    try {
+      // Füge den Chat in die Datenbank ein
+      const docRef = await addDoc(collection(this.firestore, 'chats'), privateChat);
+  
+      // Aktualisiere die ID im erstellten Chat-Objekt
+      privateChat.id = docRef.id;
+  
+      // Aktualisiere den Chat in der Datenbank mit der neuen ID
+      await updateDoc(doc(this.firestore, 'chats', docRef.id), { id: docRef.id });
+  
+      console.log(`Chat mit ${privateChat.participants.map(participant => participant.name).join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id}`);
+  
+      // Navigiere zur Chat-Seite
+      this.router.navigate(['/home/private-messages', docRef.id]);
+    } catch (error) {
+      console.error('Fehler beim Speichern des Chats:', error);
+    }
   }
 
-  async startChat(selectedItem: any) {
+  async startChat() {
     const userAuthUID = sessionStorage.getItem('userAuthUID');
   
     if (!userAuthUID) {
@@ -174,28 +217,56 @@ selectedItemId: any|string;
   
     // 2. Erstelle ein Chat-Objekt mit den Informationen des aktuellen Benutzers
     const chat: Chat = {
-      id: '', // Du kannst hier eine zufällige ID generieren oder die von Firestore generierte ID verwenden
+      id: '', // Wird unten aktualisiert
       participants: [{
         id: currentUser['id'],
         name: currentUser['name'],
         photoURL: currentUser['photoURL'],
-        authUID: '',
+        authUID: currentUser['authUID'],
         status: false,
         avatarURL: '',
         channels: [],
         email: ''
-      }], // Füge den ausgewählten Benutzer/Kanal hinzu
+      }],
       messages: []
     };
   
-    // 3. Speichere das Chat-Objekt in der Datenbank
-    let docRef: any;
+    // 3. Füge den ausgewählten Benutzer (selectedItem) zum participants-Array hinzu
+    if (this.selectedItem) {
+      const selectedUser: User = {
+        id: this.selectedItem['id'],
+        authUID: this.selectedItem['authUID'],
+        name: this.selectedItem['name'],
+        status: this.selectedItem['status'],
+        avatarURL: this.selectedItem['avatarURL'],
+        photoURL: this.selectedItem['photoURL'],
+        channels: this.selectedItem['channels'],
+        email: this.selectedItem['email']
+      };
+      
+      chat.participants.push(selectedUser);
+    } else {
+      console.error('Kein ausgewähltes Element.');
+      return;
+    }
+  
+    // 4. Speichere das Chat-Objekt in der Datenbank und aktualisiere die ID
+    let docRef: DocumentReference<DocumentData> = {} as DocumentReference<DocumentData>;
     try {
       docRef = await addDoc(collection(this.firestore, 'chats'), chat);
-      console.log(`Chat mit ${selectedItem.name || selectedItem.chanName} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id}`);
+      console.log(`Chat mit ${this.selectedItem.name || this.selectedItem.chanName} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id}`);
+
+      // Aktualisiere die ID im erstellten Chat-Objekt
+      chat.id = docRef.id;
+
+      // Aktualisiere den Chat in der Datenbank mit der neuen ID
+      await updateDoc(doc(this.firestore, 'chats', docRef.id), { id: docRef.id });
     } catch (error) {
       console.error('Fehler beim Speichern des Chats:', error);
     }
-    this.router.navigate(['/home/private-messages', docRef.id]);
+
+    if (docRef) {
+      this.router.navigate(['/home/private-messages', docRef.id]);
+    }
   }
 }

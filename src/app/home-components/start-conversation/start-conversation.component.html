@@ -8,7 +8,7 @@
         <div *ngIf="channelResults.length > 0">
             <h2>Kanal Ergebnisse</h2>
             <ul>
-                <li *ngFor="let channel of channelResults" (click)="startChat(channel)">{{ channel.chanName || channel.description || 'Unbekannter Kanal' }}</li>
+                <li *ngFor="let channel of channelResults">{{ channel.chanName || channel.description || 'Unbekannter Kanal' }}</li>
 
             </ul>
           </div>
@@ -16,9 +16,10 @@
           <div *ngIf="userResults.length > 0">
             <h2>Benutzer Ergebnisse</h2>
             <ul>
-                <li *ngFor="let user of userResults" (click)="startChat(user)">{{ user.name || user.username || 'Unbekannter Benutzer' }}</li>
-
-            </ul>
+                <li *ngFor="let user of userResults" (click)="selectedItem = user; addToRecipientList(user)">
+                    {{ user.name || 'Unbekannter Benutzer' }}
+                  </li>
+              </ul>
           </div>
         <!-- Hier kommen die Nachrichten hin -->
     </div>
@@ -34,11 +35,9 @@
                     <mat-icon>alternate_email</mat-icon>
                 </div>
 
-                <div class="icons-right">
-                    <mat-icon matTooltip="send">
-                        <a [routerLink]="['/home/private-messages', selectedItemId]">Starte private Unterhaltung</a>
-                    </mat-icon>
-                </div>
+                <div class="icons-right" (click)="startChat()">
+                    <mat-icon  matTooltip="send">send</mat-icon>
+                  </div>
             </div>
         </div>
     </div>
