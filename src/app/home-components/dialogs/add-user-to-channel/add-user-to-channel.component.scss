@@ -87,16 +87,18 @@
     justify-content: flex-start;
     width: 100%;
     box-sizing: border-box;
-    gap: 4px;
-    border-radius: 30px;
+    //gap: 4px;
 
     .container-user-search-result {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        padding: 8px 16px;
+        //padding: 8px 16px;
         cursor: pointer;
         animation-duration: 120ms;
+        border-radius: 30px;
+        width: 100%;
+        box-sizing: border-box;
 
         &:hover {
             background-color: #ECEEFE;

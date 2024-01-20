@@ -13,7 +13,8 @@ import { User } from '../../../../models/user.class';
 export class AddUserToChannelComponent implements OnDestroy {
 
   firestore: Firestore = inject(Firestore);
-  searchInput!: string;
+  searchInput: string = '';
+  dataLoaded: boolean = false;
 
 
   channel!: Channel;
@@ -33,6 +34,7 @@ export class AddUserToChannelComponent implements OnDestroy {
       list.forEach(element => {
         this.listUsers.push(this.setUser(element.data(), element.id));
       });
+      this.dataLoaded = true;
     });
   }
 
@@ -72,7 +74,9 @@ export class AddUserToChannelComponent implements OnDestroy {
   }
 
 
-
+  selectUser(user: any) {
+    console.log('select user ', user)
+  }
 
 
 
