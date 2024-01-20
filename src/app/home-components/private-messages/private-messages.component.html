@@ -18,39 +18,41 @@
     </div>
     <h2>Neue Nachrichten</h2>
     <div class="user-chat">
-    {{ messageText }}
-  </div>
+      {{ messageText }}
+    </div>
     <!-- Iteriere über die Nachrichten im Chat und zeige den Text an -->
     <p>Wird nur einmalig gerendert, hier sub zur subcollection chats.chat.answers &/messages </p>
-    <div *ngFor="let message of messages">
+    <div *ngFor="let message of listMessages">
       <h3>{{ message.user.name }}</h3>
-      <img [src]="message.user.photoURL" alt="user avatar" />
+      <img [src]="message.user.avatarURL" alt="user avatar" />
       <p>{{ message.text }}</p>
     </div>
-  </div>
-  
-<div class="conversation-with-user">
-  <div class="chat-bottom">
-    <img [src]="'assets/img/character_1.png'" alt="user avatar" />
-    <h1>Noah Braun</h1>
-  </div>
-  <p>Diese Unterhaltung findet nur zwischen dir und Noah Braun statt. </p>
-  <div class="start-conversation-bottom">
-    <div class="container-new-message">
-      <textarea [(ngModel)]="messageText"></textarea>
 
-      <div class="container-icons">
-        <div class="icons-left">
-          <mat-icon matTooltip="add file">add</mat-icon>
-          <div class="vertical-line"></div>
-          <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
-          <mat-icon>alternate_email</mat-icon>
-        </div>
+  </div>
 
-        <div class="icons-right" (click)="onSendMessage()">
-          <mat-icon matTooltip="send">send</mat-icon>
+
+  <div class="conversation-with-user">
+    <div class="chat-bottom">
+      <img [src]="'assets/img/character_1.png'" alt="user avatar" />
+      <h1>Noah Braun</h1>
+    </div>
+    <p>Diese Unterhaltung findet nur zwischen dir und Noah Braun statt. </p>
+    <div class="start-conversation-bottom">
+      <div class="container-new-message">
+        <textarea [(ngModel)]="messageText"></textarea>
+
+        <div class="container-icons">
+          <div class="icons-left">
+            <mat-icon matTooltip="add file">add</mat-icon>
+            <div class="vertical-line"></div>
+            <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+            <mat-icon>alternate_email</mat-icon>
+          </div>
+
+          <div class="icons-right" (click)="addMessage(chatId)"> <!--(click)="onSendMessage()"-->
+            <mat-icon matTooltip="send">send</mat-icon>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>

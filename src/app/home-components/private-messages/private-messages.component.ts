@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   getFirestore,
-  Firestore,
+  //Firestore,
   collection,
   query,
   where,
@@ -11,7 +11,8 @@ import {
   addDoc,
   doc,
   DocumentReference,
-  orderBy, onSnapshot
+  orderBy, 
+  //onSnapshot
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
@@ -26,6 +27,8 @@ import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
+import { Firestore, onSnapshot } from '@angular/fire/firestore';
+
 
 
 @Component({
@@ -46,7 +49,11 @@ export class PrivateMessagesComponent implements OnInit,
 
   //Timo
   unsubMessages!: () => void;
-  listMessages: [] = [];
+  listMessages: any = [];
+  newMessage: Message = new Message();
+  storedUserAuthUID: any;
+  user: User = new User();
+  firestore: Firestore = inject(Firestore);
 
 
 
@@ -62,12 +69,51 @@ export class PrivateMessagesComponent implements OnInit,
       this.chatId = params['id'];
       this.loadChatData();
       this.unsubMessages = this.subMessagesList(this.chatId); // Timo
-      //this.unsubPosts = this.subPostsList(this.channelID);
     });
     console.log('Chat-ID:', this.chatId);
     console.log('Chat-Daten:', this.chatData);
     console.log('Is routing active?', this.router.url);
+
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    this.getUser();
+    console.log(this.user)
+
   }
+
+
+  getUser() {
+    let q;
+    if (this.storedUserAuthUID) {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
+    } else {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
+    }
+
+    return onSnapshot(q, (docSnap: any) => {
+      docSnap.forEach((doc: any) => {
+        this.user = new User(this.setUserObject(doc.data()))
+      })
+    })
+
+  }
+
+  getUsersRef() {
+    return collection(this.firestore, 'users');
+  }
+
+  setUserObject(obj: any) {
+    return {
+      id: obj.id || "",
+      authUID: obj.authUID || "",
+      name: obj.name || "",
+      status: obj.status || true,
+      avatarURL: obj.avatarURL || '', //code added by Ben
+      photoURL: obj.photoURL || '',
+      channels: obj.channels || [],
+      email: obj.email || ''
+    }
+  }
+
 
 
   //Timo
@@ -92,14 +138,71 @@ export class PrivateMessagesComponent implements OnInit,
       id: id || "",
       text: obj.text || "",
       chatId: obj.chatId || "",
-      user: obj.user || "",
+      user: obj.user || this.user,
       date: obj.date || "",
       time: obj.time || "",
       messageAnwser: obj.messageAnswer || "",
       reactions: obj.reactions || "",
-
     }
   }
+
+
+  async addMessage(chat_id: any) {
+    await this.getUser();
+    console.log(this.user)
+
+
+    this.newMessage.text = this.messageText;
+    this.newMessage.chatId = this.chatId;
+    this.newMessage.user = this.user;
+    this.newMessage.date = this.getCurrentDate();
+    this.newMessage.time = this.getCurrentTime();
+
+    console.log(this.newMessage);
+
+    addDoc(this.getMessageSubcollectionRef(chat_id), this.setMessageObject(this.newMessage, '')).then((docRef) => {
+      this.messageText = '';
+      const newID = docRef?.id;
+      this.updateMessageWithId(newID, chat_id);
+      //this.ngOnInt();
+
+    })
+
+
+  }
+
+
+
+
+  async updateMessageWithId(newId: any, chat_id: any) {
+    const docRef = doc(this.getMessageSubcollectionRef(chat_id), newId);
+    await updateDoc(docRef, { id: newId }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => { }
+    );
+  }
+
+
+
+
+  getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  getCurrentDate() {
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
+    const year = now.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
+
+
+
 
 
 
