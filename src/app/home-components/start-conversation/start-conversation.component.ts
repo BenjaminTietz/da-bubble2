@@ -26,8 +26,6 @@ import { FormsModule } from '@angular/forms';
 import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
 
-
-
 @Component({
   selector: 'app-start-conversation',
   templateUrl: './start-conversation.component.html',
@@ -247,23 +245,44 @@ export class StartConversationComponent implements OnInit {
   }
 
   private buildPrivateChat(currentUser: User, additionalUsers: User[]): Chat {
+    // Konvertiere die Benutzerobjekte in ein datenbankfreundliches Format
+    
+    const additionalUsersForDB: User[] = additionalUsers.map((user) =>
+      this.userToDatabaseFormat(user)
+    );
+
     return {
-      participants: [currentUser, ...additionalUsers],
+      participants: additionalUsersForDB,
       id: '',
       messages: [],
-      chatStartedBy: currentUser, // Fix: Assign currentUser to chatStartedBy
       date: '',
-      time: ''
+      time: '',
+      chatStartedBy: currentUser, // Add the chatStartedBy property
+    };
+  }
+
+  private userToDatabaseFormat(user: User): any {
+    return {
+      id: user.id,
+      name: user.name,
+      status: user.status,
+      authUID: user.authUID,
+      avatarURL: user.avatarURL,
+      photoURL: user.photoURL,
+      // ... andere Eigenschaften, die du speichern möchtest
     };
   }
 
   private async savePrivateChat(
     privateChat: Chat
   ): Promise<DocumentReference<DocumentData>> {
-    const docRef = await addDoc(collection(this.firestore, 'chats'), {
-      ...privateChat,
-      id: '',
-    });
+    const { chatStartedBy, ...chatDataWithoutStartedBy } = privateChat;
+
+    const docRef = await addDoc(
+      collection(this.firestore, 'chats'),
+      chatDataWithoutStartedBy
+    );
+
     privateChat.id = docRef.id;
     await updateDoc(doc(this.firestore, 'chats', docRef.id), { id: docRef.id });
     return docRef;
@@ -304,56 +323,51 @@ export class StartConversationComponent implements OnInit {
       return;
     }
   
-    const currentUser = userSnapshot.docs[0].data();
+    const currentUserData = userSnapshot.docs[0].data();
   
     // 2. Erstelle ein Chat-Objekt mit den Informationen des aktuellen Benutzers
     const chat: Chat = {
       id: '', // Wird unten aktualisiert
-      participants: [
-        {
-          id: currentUser['id'],
-          name: currentUser['name'],
-          photoURL: currentUser['photoURL'],
-          authUID: currentUser['authUID'],
-          status: false,
-          avatarURL: '',
-          channels: [],
-          email: '',
-        },
-      ],
+      participants: this.selectedUsers.map(user => this.userToDatabaseFormat(user)),
       messages: [],
-      chatStartedBy: new User, // Fix: Assign currentUser to chatStartedBy
+      chatStartedBy: { // Direkt die Benutzerdaten in chatStartedBy einfügen
+        id: currentUserData['id'],
+        name: currentUserData['name'],
+        photoURL: currentUserData['photoURL'],
+        authUID: currentUserData['authUID'],
+        status: false,
+        avatarURL: '',
+        channels: [],
+        email: '',
+      },
       date: '',
-      time: ''
+      time: '',
     };
   
-    // 3. Füge das gesamte selectedUsers-Array zum participants-Array hinzu
-    chat.participants.push(...this.selectedUsers);
-  
     try {
-      // 4. Speichere das Chat-Objekt in der Datenbank
+      // 3. Speichere das Chat-Objekt in der Datenbank
       const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
       console.log(
         `Chat mit ${this.selectedUsers
           .map((user) => user.name)
           .join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${
-        docRef.id
+          docRef.id
         }`
       );
   
       // Aktualisiere die ID im erstellten Chat-Objekt
       chat.id = docRef.id;
   
-      // 5. Aktualisiere den Chat in der Datenbank mit der neuen ID und der neuen Nachricht
+      // 4. Aktualisiere den Chat in der Datenbank mit der neuen ID und der neuen Nachricht
       const newMessage: Message = {
         id: docRef.id, // Die ID der Nachricht wird auf die ID des Chats gesetzt
         text: this.messageText,
         chatId: docRef.id,
         user: {
-          id: currentUser['id'],
-          name: currentUser['name'],
-          photoURL: currentUser['photoURL'],
-          authUID: currentUser['authUID'],
+          id: currentUserData['id'],
+          name: currentUserData['name'],
+          photoURL: currentUserData['photoURL'],
+          authUID: currentUserData['authUID'],
           status: false,
           avatarURL: '',
           channels: [],
@@ -362,7 +376,7 @@ export class StartConversationComponent implements OnInit {
         messageAnwser: [],
         reactions: [],
         date: '',
-        time: ''
+        time: '',
       };
   
       await updateDoc(doc(this.firestore, 'chats', docRef.id), {

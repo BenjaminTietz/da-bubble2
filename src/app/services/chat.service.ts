@@ -103,19 +103,48 @@ export class ChatService {
   
       const chatsSnapshot = await getDocs(chatsQuery);
   
-      this.chats = chatsSnapshot.docs.map((doc) => {
-        const chatData: DocumentData = doc.data();
+      this.chats = chatsSnapshot.docs
+        .map((doc) => {
+          const chatData: DocumentData = doc.data();
   
-        // Füge die authUID des aktuellen Benutzers zur participants-Liste hinzu
-        const updatedParticipants = chatData['participants'] || [];
-        updatedParticipants.push(currentUser);
+          // Überprüfen, ob 'participants' im Chat-Dokument ein Array ist
+          if (Array.isArray(chatData['participants'])) {
+            const participants: User[] = [];
   
-        return {
-          id: doc.id,
-          participants: updatedParticipants,
-          messages: chatData['messages'] || [],
-        } as Chat;
-      });
+            // Durchsuche die participants und filtere nach dem aktuellen Nutzer
+            for (const participant of chatData['participants']) {
+              participants.push(participant);
+            }
+  
+            // Überprüfe, ob der Benutzer bereits in der Liste ist, bevor er hinzugefügt wird
+            if (!participants.some((participant) => participant.authUID === currentUser.authUID)) {
+              // Add the current user to the participants list
+              participants.push(currentUser);
+            }
+  
+            // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu
+            return {
+              id: doc.id,
+              participants: participants,
+              messages: chatData['messages'] || [],
+              date: '',
+              time: '',
+              chatStartedBy: {
+                id: '',
+                authUID: '',
+                name: '',
+                status: false,
+                avatarURL: '',
+                photoURL: '',
+                channels: [],
+                email: ''
+              } // Assign an empty object instead of null
+            } as Chat;
+          }
+  
+          return undefined; // Rückgabewert für den Fall, dass die Bedingung nicht erfüllt ist
+        })
+        .filter((chat): chat is Chat => chat !== undefined); // Filtere undefined-Werte aus
   
       return this.chats;
     } catch (error) {
@@ -123,6 +152,8 @@ export class ChatService {
       return [];
     }
   }
+  
+  
 
   async getChatsByParticipant(authUID: string): Promise<Chat[]> {
     const chatsQuery = query(
@@ -169,7 +200,16 @@ export class ChatService {
             messages: chatData['messages'] || [],
             date: '',
             time: '',
-            chatStartedBy: {} as User
+            chatStartedBy: {
+              id: '',
+              authUID: '',
+              name: '',
+              status: false,
+              avatarURL: '',
+              photoURL: '',
+              channels: [],
+              email: ''
+            } // Assign an empty object instead of null
           };
   
           chats.push(filteredChat);

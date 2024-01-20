@@ -11,6 +11,7 @@
     <!-- Iteriere über die Teilnehmer und zeige ihre Informationen an -->
     <h2>Chat ID</h2>
     <p>{{ chatId }}</p>
+    <h2>Chat Name</h2>
     <h2>Teilnehmer</h2>
     <div *ngFor="let participant of selectedUsers">
       {{ getParticipantInfo(participant) }}
