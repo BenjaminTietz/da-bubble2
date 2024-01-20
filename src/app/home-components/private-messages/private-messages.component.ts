@@ -149,26 +149,51 @@ export class PrivateMessagesComponent implements OnInit,
 
   async addMessage(chat_id: any) {
     await this.getUser();
-    console.log(this.user)
-
-
-    this.newMessage.text = this.messageText;
-    this.newMessage.chatId = this.chatId;
-    this.newMessage.user = this.user;
-    this.newMessage.date = this.getCurrentDate();
-    this.newMessage.time = this.getCurrentTime();
-
-    console.log(this.newMessage);
-
-    addDoc(this.getMessageSubcollectionRef(chat_id), this.setMessageObject(this.newMessage, '')).then((docRef) => {
+  
+    // Create a new message object
+    const newMessage: Message = {
+      id: '',
+      text: this.messageText,
+      chatId: this.chatId,
+      user: this.getUserObjectForFirestore(), // Convert User to a plain JavaScript object
+      date: this.getCurrentDate(),
+      time: this.getCurrentTime(),
+      messageAnwser: [],
+      reactions: [],
+    };
+  
+    // Add the new message to the Firestore subcollection
+    try {
+      const docRef = await addDoc(
+        this.getMessageSubcollectionRef(chat_id),
+        this.setMessageObject(newMessage, '')
+      );
+  
+      // Retrieve the new document ID
+      const newID = docRef.id;
+  
+      // Update the message with its ID
+      await this.updateMessageWithId(newID, chat_id);
+  
+      // Clear the messageText input
       this.messageText = '';
-      const newID = docRef?.id;
-      this.updateMessageWithId(newID, chat_id);
-      //this.ngOnInt();
-
-    })
-
-
+    } catch (error) {
+      console.error('Error adding message:', error);
+    }
+  }
+  
+  getUserObjectForFirestore() {
+    // Convert the User object to a plain JavaScript object
+    return {
+      id: this.user.id,
+      authUID: this.user.authUID,
+      name: this.user.name,
+      status: this.user.status,
+      avatarURL: this.user.avatarURL,
+      photoURL: this.user.photoURL,
+      channels: this.user.channels,
+      email: this.user.email,
+    };
   }
 
 
