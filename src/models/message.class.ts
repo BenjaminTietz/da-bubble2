@@ -7,7 +7,7 @@ import { MessageAnswer } from "./messageAnswer.class";
 
 export class Message {
     [x: string]: any;
-    id!: number;
+    id!: string;
     text!: string;
     chatId!: string;
     user!: User;

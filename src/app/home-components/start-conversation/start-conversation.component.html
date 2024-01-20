@@ -8,10 +8,11 @@
         <div *ngIf="channelResults.length > 0">
             <h2>Kanal Ergebnisse</h2>
             <ul>
-                <li *ngFor="let channel of channelResults">{{ channel.chanName || channel.description || 'Unbekannter Kanal' }}</li>
-
+                <li *ngFor="let channel of channelResults" (click)="selectChannel(channel)">
+                    {{ channel.chanName || channel.description || 'Unbekannter Kanal' }}
+                </li>
             </ul>
-          </div>
+        </div>
           
           <div *ngIf="userResults.length > 0">
             <h2>Benutzer Ergebnisse</h2>
@@ -25,21 +26,21 @@
     </div>
     <div class="start-conversation-bottom">
         <div class="container-new-message">
-            <textarea></textarea>
-
-            <div class="container-icons">
-                <div class="icons-left">
-                    <mat-icon matTooltip="add file">add</mat-icon>
-                    <div class="vertical-line"></div>
-                    <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
-                    <mat-icon>alternate_email</mat-icon>
-                </div>
-
-                <div class="icons-right" (click)="startChat()">
-                    <mat-icon  matTooltip="send">send</mat-icon>
-                  </div>
+          <textarea [(ngModel)]="messageText"></textarea>
+      
+          <div class="container-icons">
+            <div class="icons-left">
+              <mat-icon matTooltip="add file">add</mat-icon>
+              <div class="vertical-line"></div>
+              <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+              <mat-icon>alternate_email</mat-icon>
             </div>
+      
+            <div class="icons-right" (click)="startChat()">
+              <mat-icon  matTooltip="send">send</mat-icon>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
 </div>
