@@ -62,6 +62,16 @@ export class AddUserToChannelComponent implements OnDestroy {
   }
 
 
+  searchFunction(user: any) {
+    if (user.name.toLowerCase().includes(this.searchInput.toLowerCase())
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
 
 
 

@@ -14,9 +14,19 @@
 
     </div>
 
+    <div class="search-results">
+        <div *ngFor="let user of listUsers" class="container-user-search-result">
+            <img *ngIf="searchFunction(user)" [src]="user.avatarURL" alt="">
+            <span *ngIf="searchFunction(user)">{{ user.name }}</span>
+
+        </div>
 
 
-    <div class="container-button">
+    </div>
+
+
+
+    <div class=" container-button">
         <button>Hinzufügen</button>
     </div>
 
