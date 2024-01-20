@@ -24,6 +24,9 @@ import { ChatService } from '../../services/chat.service';
 import { Channel } from '../../../models/channel.class';
 import { FormsModule } from '@angular/forms';
 import { Message } from '../../../models/message.class';
+import { MessageAnswer } from '../../../models/messageAnswer.class';
+
+
 
 @Component({
   selector: 'app-start-conversation',
@@ -248,6 +251,9 @@ export class StartConversationComponent implements OnInit {
       participants: [currentUser, ...additionalUsers],
       id: '',
       messages: [],
+      chatStartedBy: currentUser, // Fix: Assign currentUser to chatStartedBy
+      date: '',
+      time: ''
     };
   }
 
@@ -316,6 +322,9 @@ export class StartConversationComponent implements OnInit {
         },
       ],
       messages: [],
+      chatStartedBy: new User, // Fix: Assign currentUser to chatStartedBy
+      date: '',
+      time: ''
     };
   
     // 3. Füge das gesamte selectedUsers-Array zum participants-Array hinzu
@@ -352,6 +361,8 @@ export class StartConversationComponent implements OnInit {
         },
         messageAnwser: [],
         reactions: [],
+        date: '',
+        time: ''
       };
   
       await updateDoc(doc(this.firestore, 'chats', docRef.id), {

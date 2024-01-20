@@ -114,7 +114,9 @@ OnDestroy {
         chatId: this.chatId,
         user: currentUser,
         messageAnwser: [], // Falls benötigt
-        reactions: [], // Falls benötigt
+        reactions: [],
+        date: '',
+        time: ''
       };
   
       this.saveMessageToDatabase(newMessage);
