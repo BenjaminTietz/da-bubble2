@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Message } from '../../models/message.class';
 import { MessageAnswer } from '../../models/messageAnswer.class';
 import { User } from '../../models/user.class';
-import { getFirestore, Firestore, collection, query, where, getDocs, CollectionReference, DocumentData, addDoc, doc, DocumentReference } from 'firebase/firestore';
+import { getFirestore, Firestore, collection, query, where, getDocs, CollectionReference, DocumentData, addDoc, doc, DocumentReference, onSnapshot, orderBy } from 'firebase/firestore';
 import { Chat } from '../../models/chat.class';
 import { initializeApp } from 'firebase/app';
 import { getAuth, Auth, AuthError } from 'firebase/auth';

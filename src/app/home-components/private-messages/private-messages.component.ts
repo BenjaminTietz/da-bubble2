@@ -11,6 +11,7 @@ import {
   addDoc,
   doc,
   DocumentReference,
+  orderBy, onSnapshot
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
@@ -26,13 +27,14 @@ import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 
+
 @Component({
   selector: 'app-private-messages',
   templateUrl: './private-messages.component.html',
   styleUrl: './private-messages.component.scss',
 })
-export class PrivateMessagesComponent implements OnInit, 
-OnDestroy {
+export class PrivateMessagesComponent implements OnInit,
+  OnDestroy {
   chatId: any;
   selectedUsers: User[] = [];
   chatData: any;
@@ -41,24 +43,66 @@ OnDestroy {
   private chatDataSubscription: Subscription | undefined;
   reciver: User[] = [];
   sender: User[] = [];
-  
+
+  //Timo
+  unsubMessages!: () => void;
+  listMessages: [] = [];
+
+
+
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private chatService: ChatService,
     private router: Router  // Inject the Router service
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
       this.loadChatData();
+      this.unsubMessages = this.subMessagesList(this.chatId); // Timo
       //this.unsubPosts = this.subPostsList(this.channelID);
     });
     console.log('Chat-ID:', this.chatId);
     console.log('Chat-Daten:', this.chatData);
     console.log('Is routing active?', this.router.url);
   }
+
+
+  //Timo
+  subMessagesList(chat_id: any) {
+    const q = query(this.getMessageSubcollectionRef(chat_id), where('chatId', '==', chat_id), orderBy('date'), orderBy('time'));
+    return onSnapshot(q, (list) => {
+      this.listMessages = [];
+      list.forEach(element => {
+        this.listMessages.push(this.setMessageObject(element.data(), element.id));
+      });
+    });
+  }
+
+
+  getMessageSubcollectionRef(chat_id: any) {
+    return collection(this.chatService.firestore, 'chats', chat_id, 'messages')
+  }
+
+
+  setMessageObject(obj: any, id: string,): Message {
+    return {
+      id: id || "",
+      text: obj.text || "",
+      chatId: obj.chatId || "",
+      user: obj.user || "",
+      date: obj.date || "",
+      time: obj.time || "",
+      messageAnwser: obj.messageAnswer || "",
+      reactions: obj.reactions || "",
+
+    }
+  }
+
+
+
 
   ngOnDestroy(): void {
     // Unsubscribe from the chatDataSubscription to avoid memory leaks
@@ -99,7 +143,7 @@ OnDestroy {
         channels: [],
         email: ''
       };
-  
+
       // Erstelle eine neue Nachricht in der Unterkollektion "messages" des Chats
       const messagesCollection = collection(getFirestore(), 'chats', this.chatId, 'messages');
       const newMessageRef = await addDoc(messagesCollection, {
@@ -107,7 +151,7 @@ OnDestroy {
         user: currentUser,
         // Weitere Felder der Nachricht hier hinzufügen
       });
-  
+
       console.log('Nachricht gesendet:', this.messageText);
       const newMessage: Message = {
         id: newMessageRef.id,
@@ -119,9 +163,9 @@ OnDestroy {
         date: '',
         time: ''
       };
-  
+
       this.saveMessageToDatabase(newMessage);
-  
+
       this.messageText = '';
     }
   }
