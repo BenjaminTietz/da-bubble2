@@ -8,6 +8,8 @@ export class MessageAnswer {
     text!: string;
     messageId!: string;
     user!: User;
+    date!: string;
+    time!: string;
     reactions!: Reaction[];
 
 
@@ -16,6 +18,8 @@ export class MessageAnswer {
         this.text = obj ? obj.name : '';
         this.messageId = obj ? obj.messageId : '';
         this.user = obj ? obj.user : '';
+        this.date = obj ? obj.date : '';
+        this.time = obj ? obj.time : '';
         this.reactions = obj ? obj.reactions : [];
 
     }

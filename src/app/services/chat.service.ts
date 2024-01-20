@@ -14,10 +14,12 @@ import { getAuth, Auth, AuthError } from 'firebase/auth';
 export class ChatService {
   private messages: Message[] = [];
   private messageAnswers: MessageAnswer[] = [];
-
+  chatStartedBy: User | null = null; // Aktualisiert auf User | null
   chats: Chat[] = [];
   auth: Auth;
   firestore: Firestore;
+  date!: string;
+  time!: string;
 
   constructor(private router: Router, ) {
     const firebaseConfig = {
@@ -34,25 +36,26 @@ export class ChatService {
   }
 
   async getCurrentUser(): Promise<User | undefined> {
-    console.log('getCurrentUser()');
     const userAuthUID = sessionStorage.getItem('userAuthUID');
-
+  
     if (!userAuthUID) {
       console.error('AuthUID im Session Storage nicht gefunden.');
       return undefined;
     }
-
+  
     const userQuery = query(collection(this.firestore, 'users'), where('authUID', '==', userAuthUID));
     const userSnapshot = await getDocs(userQuery);
-
-    if (userSnapshot.empty) {
+  
+    const currentUserDoc = userSnapshot.docs[0];
+  
+    if (!currentUserDoc) {
       console.error('Aktueller Benutzer nicht in der users-Sammlung gefunden.');
       return undefined;
     }
-
-    const currentUserData = userSnapshot.docs[0].data();
-
-    const currentUser: User = {
+  
+    const currentUserData = currentUserDoc.data();
+  
+    return {
       id: currentUserData['id'],
       authUID: currentUserData['authUID'],
       name: currentUserData['name'],
@@ -62,11 +65,7 @@ export class ChatService {
       channels: currentUserData['channels'],
       email: currentUserData['email'],
       // ... weitere Eigenschaften
-    };
-
-    return currentUser;
-
-    console.log(currentUser);
+    } as User;
   }
 
   // ... restliche Methoden
@@ -93,19 +92,31 @@ export class ChatService {
 
   async getChats(): Promise<Chat[]> {
     const chatsQuery = collection(this.firestore, 'chats');
-
+  
     try {
+      const currentUser = await this.getCurrentUser();
+  
+      if (!currentUser) {
+        console.error('Aktueller Benutzer nicht gefunden.');
+        return [];
+      }
+  
       const chatsSnapshot = await getDocs(chatsQuery);
-
+  
       this.chats = chatsSnapshot.docs.map((doc) => {
         const chatData: DocumentData = doc.data();
+  
+        // Füge die authUID des aktuellen Benutzers zur participants-Liste hinzu
+        const updatedParticipants = chatData['participants'] || [];
+        updatedParticipants.push(currentUser);
+  
         return {
           id: doc.id,
-          participants: chatData['participants'] || [],
+          participants: updatedParticipants,
           messages: chatData['messages'] || [],
         } as Chat;
       });
-
+  
       return this.chats;
     } catch (error) {
       console.error('Fehler beim Laden der Chats:', error);
@@ -114,50 +125,60 @@ export class ChatService {
   }
 
   async getChatsByParticipant(authUID: string): Promise<Chat[]> {
-  const chatsQuery = query(
-    collection(this.firestore, 'chats'),
-    where('participants', 'array-contains-any', [authUID])
-  );
-  const chatsSnapshot = await getDocs(chatsQuery);
-
-  const chats: Chat[] = [];
-
-  await Promise.all(
-    chatsSnapshot.docs.map(async (doc) => {
-      const chatData: DocumentData = doc.data();
-
-      // Überprüfen, ob 'participants' im Chat-Dokument ein Array ist
-      if (Array.isArray(chatData['participants'])) {
-        const participants: User[] = [];
-
-        // Durchsuche die participants und filtere nach dem aktuellen Nutzer
-        for (const participant of chatData['participants']) {
-          participants.push(participant);
-        }
-
-        // Ensure that the current user is included in the participants
-        if (!participants.some((participant) => participant.authUID === authUID)) {
-          // Add the current user to the participants list
-          const currentUser = await this.getCurrentUser();
-          if (currentUser) {
-            participants.push(currentUser);
+    const chatsQuery = query(
+      collection(this.firestore, 'chats'),
+      where('participants', 'array-contains-any', [authUID])
+    );
+    const chatsSnapshot = await getDocs(chatsQuery);
+  
+    const currentUser = await this.getCurrentUser();
+  
+    if (!currentUser) {
+      console.error('Aktueller Benutzer nicht gefunden.');
+      return [];
+    }
+  
+    const chats: Chat[] = [];
+  
+    await Promise.all(
+      chatsSnapshot.docs.map(async (doc) => {
+        const chatData: DocumentData = doc.data();
+  
+        // Überprüfen, ob 'participants' im Chat-Dokument ein Array ist
+        if (Array.isArray(chatData['participants'])) {
+          const participants: User[] = [];
+  
+          // Durchsuche die participants und filtere nach dem aktuellen Nutzer
+          for (const participant of chatData['participants']) {
+            participants.push(participant);
           }
+  
+          // Ensure that the current user is included in the participants
+          if (!participants.some((participant) => participant.authUID === authUID)) {
+            // Überprüfe, ob der Benutzer bereits in der Liste ist, bevor er hinzugefügt wird
+            if (!participants.some((participant) => participant.authUID === currentUser.authUID)) {
+              // Add the current user to the participants list
+              participants.push(currentUser);
+            }
+          }
+  
+          // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu
+          const filteredChat: Chat = {
+            id: doc.id,
+            participants: participants,
+            messages: chatData['messages'] || [],
+            date: '',
+            time: '',
+            chatStartedBy: {} as User
+          };
+  
+          chats.push(filteredChat);
         }
-
-        // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu
-        const filteredChat: Chat = {
-          id: doc.id,
-          participants: participants,
-          messages: chatData['messages'] || [], // Ensure messages is defined and provide a default value
-        };
-
-        chats.push(filteredChat);
-      }
-    })
-  );
-
-  return chats;
-}
+      })
+    );
+  
+    return chats;
+  }
 
   
 async loadChats() {

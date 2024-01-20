@@ -264,6 +264,11 @@ export class StartConversationComponent implements OnInit {
   }
 
   async startChat() {
+    if (this.selectedChannel) {
+      // Logic to post a post with the selected channel must be implemented before navigating to the channel
+      this.router.navigate(['/home/channels', this.selectedChannel.id]);
+      return;
+    }
     const userAuthUID = sessionStorage.getItem('userAuthUID');
   
     if (!userAuthUID) {

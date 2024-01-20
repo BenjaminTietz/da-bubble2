@@ -11,6 +11,8 @@ export class Message {
     text!: string;
     chatId!: string;
     user!: User;
+    date!: string;
+    time!: string;
     messageAnwser!: MessageAnswer[];
     reactions!: Reaction[];
 
@@ -21,6 +23,8 @@ export class Message {
         this.text = obj ? obj.name : '';
         this.chatId = obj ? obj.chat : '';
         this.user = obj ? obj.user : '';
+        this.date = obj ? obj.date : '';
+        this.time = obj ? obj.time : '';
         this.messageAnwser = obj ? obj.messageAnwser : [];
         this.reactions = obj ? obj.reactions : [];
 

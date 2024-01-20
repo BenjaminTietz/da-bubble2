@@ -1,6 +1,10 @@
 <div class="start-conversation-wrapper">
   <div class="start-conversation-top">
-    <h1>Neue Nachricht</h1>
+    <div class=" chat-header">
+      <img [src]="'assets/img/character_1.png'" alt="user avatar" />
+      <h1>Noah Braun</h1>
+    </div>
+    <h1>Neuer Chat</h1>
   </div>
 
   <div class="start-conversation-messages">
@@ -11,15 +15,25 @@
     <div *ngFor="let participant of selectedUsers">
       {{ getParticipantInfo(participant) }}
     </div>
-    <h2>Neue Nachricht</h2>
+    <h2>Neue Nachrichten</h2>
+    <div class="user-chat">
     {{ messageText }}
-
+  </div>
     <!-- Iteriere über die Nachrichten im Chat und zeige den Text an -->
+    <p>Wird nur einmalig gerendert, hier sub zur subcollection chats.chat.answers &/messages </p>
     <div *ngFor="let message of messages">
+      <h3>{{ message.user.name }}</h3>
+      <img [src]="message.user.photoURL" alt="user avatar" />
       <p>{{ message.text }}</p>
     </div>
   </div>
-
+  
+<div class="conversation-with-user">
+  <div class="chat-bottom">
+    <img [src]="'assets/img/character_1.png'" alt="user avatar" />
+    <h1>Noah Braun</h1>
+  </div>
+  <p>Diese Unterhaltung findet nur zwischen dir und Noah Braun statt. </p>
   <div class="start-conversation-bottom">
     <div class="container-new-message">
       <textarea [(ngModel)]="messageText"></textarea>

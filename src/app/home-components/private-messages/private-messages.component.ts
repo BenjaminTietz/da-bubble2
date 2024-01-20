@@ -40,6 +40,7 @@ OnDestroy {
   messages: Message[] = []; // Hinzugefügt: Array zum Speichern von Nachrichten
   private chatDataSubscription: Subscription | undefined;
 
+  
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,

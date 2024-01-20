@@ -6,6 +6,7 @@ import { Channel } from '../../../models/channel.class';
 
 import { ChatService } from '../../services/chat.service';
 import { Chat } from '../../../models/chat.class';
+import { User } from '../../../models/user.class';
 
 @Component({
   selector: 'app-pm-list',
@@ -43,7 +44,10 @@ export class PmListComponent implements OnInit {
       users: obj.users || [],
       posts: obj.posts || [],
       participants: [],
-      messages: []
+      messages: [],
+      chatStartedBy: new User(), // Replace "" with an instance of the User class
+      date: "",
+      time: ""
     };
   }
 
