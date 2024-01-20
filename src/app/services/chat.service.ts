@@ -15,11 +15,11 @@ export class ChatService {
   private messages: Message[] = [];
   private messageAnswers: MessageAnswer[] = [];
 
-  chats: any[] = [];
+  chats: Chat[] = [];
   auth: Auth;
   firestore: Firestore;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, ) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
       authDomain: 'da-bubble-9f879.firebaseapp.com',
@@ -91,8 +91,26 @@ export class ChatService {
     }
   }
 
-  getChats(): Chat[] {
-    return this.chats;
+  async getChats(): Promise<Chat[]> {
+    const chatsQuery = collection(this.firestore, 'chats');
+
+    try {
+      const chatsSnapshot = await getDocs(chatsQuery);
+
+      this.chats = chatsSnapshot.docs.map((doc) => {
+        const chatData: DocumentData = doc.data();
+        return {
+          id: doc.id,
+          participants: chatData['participants'] || [],
+          messages: chatData['messages'] || [],
+        } as Chat;
+      });
+
+      return this.chats;
+    } catch (error) {
+      console.error('Fehler beim Laden der Chats:', error);
+      return [];
+    }
   }
 
   async getChatsByParticipant(authUID: string): Promise<Chat[]> {
@@ -142,19 +160,15 @@ export class ChatService {
 }
 
   
-  async loadChats() {
-    const userAuthUID = sessionStorage.getItem('userAuthUID');
-  
-    if (userAuthUID) {
-      try {
-        console.log('Fetching chats for user with ID:', userAuthUID);
-        this.chats = await this.getChatsByParticipant(userAuthUID);
-        console.log('Loaded Chats:', this.chats);
-      } catch (error) {
-        console.error('Error loading chats:', error);
-      }
-    } else {
-      console.error('AuthUID not found in Session Storage.');
-    }
+async loadChats() {
+  try {
+    console.log('Lade Chats...');
+    await this.getChats();
+    console.log('Chats erfolgreich geladen:', this.chats);
+  } catch (error) {
+    console.error('Fehler beim Laden der Chats:', error);
   }
+}
+
+
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   getFirestore,
   Firestore,
@@ -24,23 +24,27 @@ import { MatDialog } from '@angular/material/dialog';
 import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { ChatService } from '../../services/chat.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-private-messages',
   templateUrl: './private-messages.component.html',
   styleUrl: './private-messages.component.scss',
 })
-export class PrivateMessagesComponent implements OnInit {
+export class PrivateMessagesComponent implements OnInit, 
+OnDestroy {
   chatId: any;
   selectedUsers: User[] = [];
   chatData: any;
   messageText: string = '';
   messages: Message[] = []; // Hinzugefügt: Array zum Speichern von Nachrichten
+  private chatDataSubscription: Subscription | undefined;
 
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private router: Router  // Inject the Router service
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +55,14 @@ export class PrivateMessagesComponent implements OnInit {
     });
     console.log('Chat-ID:', this.chatId);
     console.log('Chat-Daten:', this.chatData);
-    console.log('Nachrichten:', this.messages);
+    console.log('Is routing active?', this.router.url);
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from the chatDataSubscription to avoid memory leaks
+    if (this.chatDataSubscription) {
+      this.chatDataSubscription.unsubscribe();
+    }
   }
 
   async loadChatData() {

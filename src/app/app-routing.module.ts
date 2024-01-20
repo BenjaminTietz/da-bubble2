@@ -32,8 +32,7 @@ export const routes: Routes = [
   { path: 'imprint', component: ImprintComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   // { path: '**', component: LoginComponent },                            //catch all other routes and redirect to login
-
-  //post-login components
+  { path: 'private-messages/:id', component: PrivateMessagesComponent },
 
   {
     path: 'home', component: HomeComponent,
@@ -44,7 +43,7 @@ export const routes: Routes = [
     ]
   },
   { path: 'home/:userId', component: HomeComponent },
-  { path: 'private-messages/:id', component: PrivateMessagesComponent },
+ 
 ];
 
 

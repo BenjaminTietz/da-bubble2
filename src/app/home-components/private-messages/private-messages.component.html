@@ -1,35 +1,41 @@
 <div class="start-conversation-wrapper">
-    <div class="start-conversation-top">
-      <h1>Neue Nachricht</h1>
-    </div>
-  
-    <div class="start-conversation-messages">
-      <!-- Iteriere über die Teilnehmer und zeige ihre Informationen an -->
-      <h2>Teilnehmer</h2>
-      <div *ngFor="let participant of selectedUsers">
-        {{ getParticipantInfo(participant) }}
-      </div>
-      <h2>Neue Nachricht</h2>
-      {{ messageText }}
-    </div>
+  <div class="start-conversation-top">
+    <h1>Neue Nachricht</h1>
+  </div>
 
-  
-    <div class="start-conversation-bottom">
-      <div class="container-new-message">
-        <textarea [(ngModel)]="messageText"></textarea>
-  
-        <div class="container-icons">
-          <div class="icons-left">
-            <mat-icon matTooltip="add file">add</mat-icon>
-            <div class="vertical-line"></div>
-            <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
-            <mat-icon>alternate_email</mat-icon>
-          </div>
-  
-          <div class="icons-right" (click)="onSendMessage()">
-            <mat-icon matTooltip="send">send</mat-icon>
-          </div>
+  <div class="start-conversation-messages">
+    <!-- Iteriere über die Teilnehmer und zeige ihre Informationen an -->
+    <h2>Chat ID</h2>
+    <p>{{ chatId }}</p>
+    <h2>Teilnehmer</h2>
+    <div *ngFor="let participant of selectedUsers">
+      {{ getParticipantInfo(participant) }}
+    </div>
+    <h2>Neue Nachricht</h2>
+    {{ messageText }}
+
+    <!-- Iteriere über die Nachrichten im Chat und zeige den Text an -->
+    <div *ngFor="let message of messages">
+      <p>{{ message.text }}</p>
+    </div>
+  </div>
+
+  <div class="start-conversation-bottom">
+    <div class="container-new-message">
+      <textarea [(ngModel)]="messageText"></textarea>
+
+      <div class="container-icons">
+        <div class="icons-left">
+          <mat-icon matTooltip="add file">add</mat-icon>
+          <div class="vertical-line"></div>
+          <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+          <mat-icon>alternate_email</mat-icon>
+        </div>
+
+        <div class="icons-right" (click)="onSendMessage()">
+          <mat-icon matTooltip="send">send</mat-icon>
         </div>
       </div>
     </div>
   </div>
+</div>

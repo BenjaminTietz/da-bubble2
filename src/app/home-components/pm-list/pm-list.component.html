@@ -1,4 +1,4 @@
-<div *ngFor="let chat of chatService.getChats()">
+<div *ngFor="let chat of chatService.chats" [routerLink]="['private-messages', chat.id]">
     <p>{{ chat.id }}</p>
     <!-- Display other information from the chat as needed -->
 </div>
