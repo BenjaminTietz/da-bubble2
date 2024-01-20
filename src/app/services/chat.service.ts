@@ -35,6 +35,8 @@ export class ChatService {
     this.firestore = getFirestore();
   }
 
+  
+
   async getCurrentUser(): Promise<User | undefined> {
     const userAuthUID = sessionStorage.getItem('userAuthUID');
   
@@ -114,12 +116,6 @@ export class ChatService {
             // Durchsuche die participants und filtere nach dem aktuellen Nutzer
             for (const participant of chatData['participants']) {
               participants.push(participant);
-            }
-  
-            // Überprüfe, ob der Benutzer bereits in der Liste ist, bevor er hinzugefügt wird
-            if (!participants.some((participant) => participant.authUID === currentUser.authUID)) {
-              // Add the current user to the participants list
-              participants.push(currentUser);
             }
   
             // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu

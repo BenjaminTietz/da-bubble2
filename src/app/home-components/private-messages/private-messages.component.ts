@@ -39,7 +39,8 @@ OnDestroy {
   messageText: string = '';
   messages: Message[] = []; // Hinzugefügt: Array zum Speichern von Nachrichten
   private chatDataSubscription: Subscription | undefined;
-
+  reciver: User[] = [];
+  sender: User[] = [];
   
   constructor(
     private route: ActivatedRoute,
