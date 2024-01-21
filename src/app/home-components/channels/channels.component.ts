@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterContentInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
 import { Channel } from '../../../models/channel.class';
@@ -37,6 +37,12 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   unsubAnswers!: () => void;
   listAnswers: any = [];
 
+  unsubUsersChannel!: () => void;
+  listUsersInChannel: any = [];
+
+  unsubUsers!: () => void;
+  listUsers: any = [];
+
 
   user: User = new User();
   storedUserAuthUID: any;
@@ -50,6 +56,33 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   };
+
+  //Code für Users
+
+  subUsersList() {
+    const q = query(this.getUsersRef());
+    return onSnapshot(q, (list) => {
+      this.listUsers = [];
+      list.forEach(element => {
+        this.listUsers.push(this.setUser(element.data(), element.id));
+      });
+      this.dataLoaded = true;
+    });
+  }
+
+
+  setUser(obj: any, id: string,): User {
+    return {
+      id: id || "",
+      authUID: obj.authUID || "",
+      name: obj.name || "",
+      status: obj.status || false,
+      avatarURL: obj.avatarURL || "",
+      photoURL: obj.photoURL || "",
+      channels: obj.channels || [],
+      email: obj.email || []
+    }
+  }
 
 
 
@@ -65,9 +98,26 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
-
+    this.unsubUsers = this.subUsersList();
+    this.unsubUsersChannel = this.subUsersChannelList(this.channelID);
   }
 
+
+  subUsersChannelList(chan_id: any) {
+    const q = query(this.getUsersChannelSubcollectionRef(chan_id), orderBy('authUID'));
+    return onSnapshot(q, (list) => {
+      this.listUsersInChannel = [];
+      list.forEach(element => {
+        let user = this.listUsers.find((user: any) => user.authUID === element.data()['authUID'])
+        this.listUsersInChannel.push(user);
+      });
+    });
+  }
+
+
+  getUsersChannelSubcollectionRef(chan_id: any) {
+    return collection(this.firestore, 'channels', chan_id, 'users')
+  }
 
 
   subPostsList(chan_id: any) {
@@ -109,8 +159,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.dataLoaded = true;
     });
   }
-
-
 
 
   //Code für Posts

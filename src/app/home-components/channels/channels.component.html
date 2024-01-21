@@ -14,18 +14,18 @@
 
 
                 <div class="img-member">
-                    <img *ngFor="let user of channel.users" [src]="user.photoURL ? user.photoURL : user.avatarURL "
+                    <img *ngFor="let user of listUsersInChannel" [src]="user.photoURL ? user.photoURL : user.avatarURL "
                         alt="user images">
                     <!-- Später wieder löschen, nur für css da: -->
-                    <img src="../../../assets/img/character_1.png" alt="">
+<!--                     <img src="../../../assets/img/character_1.png" alt="">
                     <img src="../../../assets/img/character_2.png" alt="">
                     <img src="../../../assets/img/character_3.png" alt="">
-
+ -->
                     <!--  Code bis hierher löschen         -->
 
 
                     <div class="amount-user">
-                        <span>{{ channel.users.length }}</span>
+                        <span>{{ listUsersInChannel.length }}</span>
                     </div>
                 </div>
 

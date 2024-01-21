@@ -10,12 +10,11 @@
     </div>
 
     <div class="container-input">
-        <input (input)="searchUser()" [(ngModel)]="searchInput" type="text">
-
+        <input [(ngModel)]="searchInput" type="text">
     </div>
 
     <div class="search-results">
-        <div (click)="selectUser(user)" *ngFor="let user of listUsers" class="container-user-search-result">
+        <div [mat-dialog-close]="" (click)="selectUser(user)" *ngFor="let user of listUsers" class="container-user-search-result">
             <img *ngIf="searchFunction(user)" [src]="user.avatarURL" alt="">
             <span *ngIf="searchFunction(user)">{{ user.name }}</span>
 

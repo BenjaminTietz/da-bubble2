@@ -58,11 +58,6 @@ export class AddUserToChannelComponent implements OnDestroy {
   }
 
 
-  searchUser() {
-    console.log('search for: ', this.searchInput);
-
-  }
-
 
   searchFunction(user: any) {
     if (user.name.toLowerCase().includes(this.searchInput.toLowerCase())
@@ -75,10 +70,28 @@ export class AddUserToChannelComponent implements OnDestroy {
 
 
   selectUser(user: any) {
-    console.log('select user ', user)
+    setDoc(this.getUserInChannelSubcollectionRef(this.channel.id, user), this.setUserForSubcollectionInChannel(user)).then(() => {
+
+    })
   }
 
 
+  setUserForSubcollectionInChannel(obj: any) {
+    return {
+      id: obj.id || "",
+      authUID: obj.authUID || "",
+    }
+  }
+
+
+
+
+
+
+
+  getUserInChannelSubcollectionRef(chan_id: any, user: any) {
+    return doc(this.firestore, 'channels', chan_id, 'users', user.id)
+  }
 
 
 
