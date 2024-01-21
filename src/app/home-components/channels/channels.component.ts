@@ -9,6 +9,7 @@ import { getDocs } from 'firebase/firestore';
 import { Answer } from '../../../models/answer.class';
 import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
 import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.component';
+import { DeletePostComponent } from '../dialogs/delete-post/delete-post.component';
 
 
 
@@ -160,6 +161,36 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Ende Code für Post als Subcollection
 
 
+  //Code für delete Post incl. subcollections
+
+  deletePost(post: any) {
+    const colRef = this.getAnswerSubcollectionRef(this.channel.id, post.id);
+
+    getDocs(colRef).then((snapshot) => {
+      const deletePromises: any = [];
+      snapshot.docs.forEach((doc) => {
+        deletePromises.push(deleteDoc(doc.ref));
+      });
+      return Promise.all(deletePromises);
+    }).then(() => {
+      console.log('Alle Dokumente in der Subcollection wurden gelöscht');
+    }).catch((error) => {
+      console.error('Fehler beim Löschen der Subcollection:', error);
+    });
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
   getCurrentTime() {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
@@ -301,6 +332,23 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     this.showAnswers = false;
     this.postDetail = 0; //prüfen auf welche nummer setzen
   }
+
+
+
+  //Post löschen
+
+  openDialogDeletePost(post: any) {
+    const dialog = this.dialog.open(DeletePostComponent);
+    dialog.componentInstance.post = new Post(post);
+    dialog.componentInstance.chan_id = this.channel.id;
+
+    dialog.afterClosed().subscribe(result => {
+      console.log(result)
+    })
+
+  }
+
+
 
 
   //Code für add user to channel

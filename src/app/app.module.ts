@@ -76,6 +76,7 @@ import { PmListComponent } from './home-components/pm-list/pm-list.component';
 import { PrivateMessagesComponent } from './home-components/private-messages/private-messages.component';
 import { StartConversationComponent } from './home-components/start-conversation/start-conversation.component';
 import { DeleteAnswerComponent } from './home-components/dialogs/delete-answer/delete-answer.component';
+import { DeletePostComponent } from './home-components/dialogs/delete-post/delete-post.component';
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import { DeleteAnswerComponent } from './home-components/dialogs/delete-answer/d
     PmListComponent,
     PrivateMessagesComponent,
     StartConversationComponent,
-    DeleteAnswerComponent
+    DeleteAnswerComponent,
+    DeletePostComponent
   ],
   imports: [
     BrowserModule,

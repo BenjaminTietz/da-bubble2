@@ -70,6 +70,12 @@
 
                     </div>
                 </div>
+
+                <!--Testcode für Post löschen-->
+                <div *ngIf="post.user.id == this.user.id" class="container-delete">
+                    <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
+                </div>
+
             </div>
         </div>
 
