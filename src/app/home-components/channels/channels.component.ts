@@ -161,34 +161,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Ende Code für Post als Subcollection
 
 
-  //Code für delete Post incl. subcollections
-
-  deletePost(post: any) {
-    const colRef = this.getAnswerSubcollectionRef(this.channel.id, post.id);
-
-    getDocs(colRef).then((snapshot) => {
-      const deletePromises: any = [];
-      snapshot.docs.forEach((doc) => {
-        deletePromises.push(deleteDoc(doc.ref));
-      });
-      return Promise.all(deletePromises);
-    }).then(() => {
-      console.log('Alle Dokumente in der Subcollection wurden gelöscht');
-    }).catch((error) => {
-      console.error('Fehler beim Löschen der Subcollection:', error);
-    });
-
-  }
-
-
-
-
-
-
-
-
-
-
 
 
   getCurrentTime() {
@@ -349,8 +321,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-
-
   //Code für add user to channel
 
   openDialogAddUserToChannel(channel: any) {
@@ -358,10 +328,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     dialog.componentInstance.channel = new Channel(this.channel);
 
   }
-
-
-
-
 
 
 

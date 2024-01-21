@@ -35,7 +35,8 @@ export class DeletePostComponent {
       });
       return Promise.all(deletePromises);
     }).then(() => {
-      console.log('Alle Dokumente in der Subcollection wurden gelöscht');
+      deleteDoc(this.getPostDocRef(this.chan_id, post.id))
+      //console.log('Alle Dokumente in der Subcollection wurden gelöscht');
     }).catch((error) => {
       console.error('Fehler beim Löschen der Subcollection:', error);
     });
@@ -46,6 +47,12 @@ export class DeletePostComponent {
   getAnswerSubcollectionRef(chan_id: any, post_id: any) {
     return collection(this.firestore, 'channels', chan_id, 'posts', post_id, 'answers')
   }
+
+
+  getPostDocRef(chan_id: any, post_id: any) {
+    return doc(this.firestore, "channels", chan_id, "posts", post_id);
+  }
+
 
 
 
