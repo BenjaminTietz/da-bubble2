@@ -93,13 +93,13 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.channelID = params['id'];
       this.loadChannelData(this.channelID);
       this.unsubPosts = this.subPostsList(this.channelID);
+      this.unsubUsers = this.subUsersList();
+      this.unsubUsersChannel = this.subUsersChannelList(this.channelID);
       this.showAnswers = false;
     });
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
-    this.unsubUsers = this.subUsersList();
-    this.unsubUsersChannel = this.subUsersChannelList(this.channelID);
   }
 
 
