@@ -1,4 +1,8 @@
-<div *ngFor="let chat of chatService.chats" [routerLink]="['private-messages', chat.id]">
-    <p>{{ chat.id }}</p>
+<div class="direct-message-wrapper" *ngFor="let chat of chatService.chats" [routerLink]="['private-messages', chat.id]">
+    <div class="direct-message"> 
+        <div class="online-status"></div>
+        <img [src]="chat.participants[0]['avatarURL']" alt="avatar">
+        <p>{{ chat.participants[0].name }}</p>
+    </div>
     <!-- Display other information from the chat as needed -->
 </div>

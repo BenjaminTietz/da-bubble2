@@ -11,6 +11,7 @@ import {
   addDoc,
   doc,
   DocumentReference,
+  onSnapshot,
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
@@ -44,6 +45,9 @@ export class StartConversationComponent implements OnInit {
   additionalUsersInChat: User[] = [];
   selectedChannel!: Channel;
   messageText: string = '';
+  storedUserAuthUID: any;
+  user: User = new User();
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -66,26 +70,61 @@ export class StartConversationComponent implements OnInit {
     this.route.params.subscribe((params) => {
       const chatId = params['id'];
       console.log('Received Chat ID:', chatId);
-      // Führe die erforderlichen Aktionen mit der Chat-ID durch
     });
-
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    this.getUser();
     this.loadUserResults();
     this.loadChannelResults();
-    //this.getCurrentUser();
+    
   }
 
-  // // Rufe getCurrentUser asynchron auf
-  // async getCurrentUser() {
-  //   const currentUser = await this.chatService.getCurrentUser();
+  getUser() {
+    let q;
+    if (this.storedUserAuthUID) {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
+    } else {
+      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
+    }
 
-  //   if (currentUser) {
-  //     // Hier kannst du mit dem aktuellen Benutzer arbeiten
-  //     console.log('Current User:', currentUser);
-  //   } else {
-  //     console.error('Fehler beim Abrufen des aktuellen Benutzers.');
-  //   }
-  // }
-  // Initialize the search results and load the user and channel results local arrays
+    return onSnapshot(q, (docSnap: any) => {
+      docSnap.forEach((doc: any) => {
+        this.user = new User(this.setUserObject(doc.data()))
+      })
+    })
+
+  }
+
+  getUsersRef() {
+    return collection(this.firestore, 'users');
+  }
+
+  setUserObject(obj: any) {
+    return {
+      id: obj.id || "",
+      authUID: obj.authUID || "",
+      name: obj.name || "",
+      status: obj.status || true,
+      avatarURL: obj.avatarURL || '', //code added by Ben
+      photoURL: obj.photoURL || '',
+      channels: obj.channels || [],
+      email: obj.email || ''
+    }
+  }
+
+    getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  getCurrentDate() {
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
+    const year = now.getFullYear();
+    return `${day}.${month}.${year}`;
+  }
 
   selectChannel(channel: any) {
     this.selectedChannel = channel;
@@ -246,7 +285,7 @@ export class StartConversationComponent implements OnInit {
 
   private buildPrivateChat(currentUser: User, additionalUsers: User[]): Chat {
     // Konvertiere die Benutzerobjekte in ein datenbankfreundliches Format
-    
+
     const additionalUsersForDB: User[] = additionalUsers.map((user) =>
       this.userToDatabaseFormat(user)
     );
@@ -257,7 +296,7 @@ export class StartConversationComponent implements OnInit {
       messages: [],
       date: '',
       time: '',
-      chatStartedBy: currentUser, // Add the chatStartedBy property
+      chatStartedBy: currentUser,
     };
   }
 
@@ -269,7 +308,6 @@ export class StartConversationComponent implements OnInit {
       authUID: user.authUID,
       avatarURL: user.avatarURL,
       photoURL: user.photoURL,
-      // ... andere Eigenschaften, die du speichern möchtest
     };
   }
 
@@ -293,100 +331,107 @@ export class StartConversationComponent implements OnInit {
       // Logic to post a post with the selected channel must be implemented before navigating to the channel
       this.router.navigate(['/home/channels', this.selectedChannel.id]);
       return;
-    }
-    const userAuthUID = sessionStorage.getItem('userAuthUID');
-  
-    if (!userAuthUID) {
-      console.error('AuthUID im Session Storage nicht gefunden.');
-      return;
-    }
-  
-    if (this.selectedUsers.length === 0) {
-      console.error('Mindestens ein Empfänger muss ausgewählt sein.');
-      return;
-    }
-  
-    if (!this.messageText.trim()) {
-      console.error('Nachrichtentext darf nicht leer sein.');
-      return;
-    }
-  
-    // 1. Finde den aktuellen Benutzer in der users-Sammlung
-    const userQuery = query(
-      collection(this.firestore, 'users'),
-      where('authUID', '==', userAuthUID)
-    );
-    const userSnapshot = await getDocs(userQuery);
-  
-    if (userSnapshot.empty) {
-      console.error('Aktueller Benutzer nicht in der users-Sammlung gefunden.');
-      return;
-    }
-  
-    const currentUserData = userSnapshot.docs[0].data();
-  
-    // 2. Erstelle ein Chat-Objekt mit den Informationen des aktuellen Benutzers
-    const chat: Chat = {
-      id: '', // Wird unten aktualisiert
-      participants: this.selectedUsers.map(user => this.userToDatabaseFormat(user)),
-      messages: [],
-      chatStartedBy: { // Direkt die Benutzerdaten in chatStartedBy einfügen
-        id: currentUserData['id'],
-        name: currentUserData['name'],
-        photoURL: currentUserData['photoURL'],
-        authUID: currentUserData['authUID'],
-        status: false,
-        avatarURL: '',
-        channels: [],
-        email: '',
-      },
-      date: '',
-      time: '',
-    };
-  
-    try {
-      // 3. Speichere das Chat-Objekt in der Datenbank
-      const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
-      console.log(
-        `Chat mit ${this.selectedUsers
-          .map((user) => user.name)
-          .join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${
-          docRef.id
-        }`
+    } else {
+      const userAuthUID = sessionStorage.getItem('userAuthUID');
+
+      if (!userAuthUID) {
+        console.error('AuthUID im Session Storage nicht gefunden.');
+        return;
+      }
+
+      if (this.selectedUsers.length === 0) {
+        console.error('Mindestens ein Empfänger muss ausgewählt sein.');
+        return;
+      }
+
+      if (!this.messageText.trim()) {
+        console.error('Nachrichtentext darf nicht leer sein.');
+        return;
+      }
+
+      // 1. Finde den aktuellen Benutzer in der users-Sammlung
+      const userQuery = query(
+        collection(this.firestore, 'users'),
+        where('authUID', '==', userAuthUID)
       );
-  
-      // Aktualisiere die ID im erstellten Chat-Objekt
-      chat.id = docRef.id;
-  
-      // 4. Aktualisiere den Chat in der Datenbank mit der neuen ID und der neuen Nachricht
-      const newMessage: Message = {
-        id: docRef.id, // Die ID der Nachricht wird auf die ID des Chats gesetzt
-        text: this.messageText,
-        chatId: docRef.id,
-        user: {
-          id: currentUserData['id'],
-          name: currentUserData['name'],
-          photoURL: currentUserData['photoURL'],
-          authUID: currentUserData['authUID'],
+      const userSnapshot = await getDocs(userQuery);
+
+      if (userSnapshot.empty) {
+        console.error(
+          'Aktueller Benutzer nicht in der users-Sammlung gefunden.'
+        );
+        return;
+      }
+
+      const currentUserData = userSnapshot.docs[0].data();
+
+      // 2. Erstelle ein Chat-Objekt mit den Informationen des aktuellen Benutzers
+      const chat: Chat = {
+        id: '', // Wird unten aktualisiert
+        participants: this.selectedUsers.map((user) =>
+          this.userToDatabaseFormat(user)
+        ),
+        messages: [],
+        chatStartedBy: {
+
+          id: this.user.id,
+          name: this.user.name,
+          photoURL: this.user.photoURL,
+          authUID: this.user.authUID,
           status: false,
-          avatarURL: '',
+          avatarURL: this.user.avatarURL,
           channels: [],
-          email: '',
+          email: this.user.email,
         },
-        messageAnwser: [],
-        reactions: [],
-        date: '',
-        time: '',
+        date: this.getCurrentDate(),
+        time: this.getCurrentTime(),
       };
-  
-      await updateDoc(doc(this.firestore, 'chats', docRef.id), {
-        id: docRef.id,
-        messages: [newMessage, ...chat.messages], // Füge die neue Nachricht zum Array hinzu
-      });
-  
-      this.router.navigate(['/home/private-messages', docRef.id]);
-    } catch (error) {
-      console.error('Fehler beim Speichern des Chats:', error);
+
+      try {
+        // 3. Speichere das Chat-Objekt in der Datenbank
+        const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
+        console.log(
+          `Chat mit ${this.selectedUsers
+            .map((user) => user.name)
+            .join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${
+            docRef.id
+          }`
+        );
+
+        // Aktualisiere die ID im erstellten Chat-Objekt
+        chat.id = docRef.id;
+
+        // 4. Aktualisiere den Chat in der Datenbank mit der neuen ID und der neuen Nachricht
+        const newMessage: Message = {
+          id: docRef.id, // Die ID der Nachricht wird auf die ID des Chats gesetzt
+          text: this.messageText,
+          chatId: docRef.id,
+          user: {
+            id: this.user.id,
+            name: this.user.name,
+            photoURL: this.user.photoURL,
+            authUID: this.user.authUID,
+            status: false,
+            avatarURL: 'this.user.avatarURL',
+            channels: [],
+            email: 'this.user.',
+          },
+          messageAnwser: [],
+          reactions: [],
+        date: this.getCurrentDate(),
+        time: this.getCurrentTime(),
+        };
+
+        await updateDoc(doc(this.firestore, 'chats', docRef.id), {
+          id: docRef.id,
+          messages: [newMessage, ...chat.messages], // Füge die neue Nachricht zum Array hinzu
+        });
+
+        this.router.navigate(['/home/private-messages', docRef.id]);
+      } catch (error) {
+        console.error('Fehler beim Speichern des Chats:', error);
+      }
     }
   }
+
 }

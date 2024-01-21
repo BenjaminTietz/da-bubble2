@@ -1,13 +1,17 @@
 <div class="start-conversation-wrapper">
-  <div class="start-conversation-top">
-    <div class=" chat-header">
-      <img [src]="'assets/img/character_1.png'" alt="user avatar" />
-      <h1>Noah Braun</h1>
-    </div>
-  </div>
+      <!-- Nachrichten Empfänger  -->
+      <div *ngFor="let chat of this.selectedUsers" class="start-conversation-top">
+        <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
+          <div class="chat-header">
+            <div class="online-status"></div>
+            <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
+            <h1>{{ this.selectedUsers[0].name }}</h1>
+          </div>
+        </ng-container>
+      </div>
 
   <div class="start-conversation-messages">
-    <!-- Iteriere über die Teilnehmer und zeige ihre Informationen an -->
+    <!-- Teilnehmer Nachrichten  -->
 
 
  <div class="chat-message" *ngFor="let message of listMessages">
@@ -30,13 +34,26 @@
 
 
 
-
-  <div class="conversation-with-user">
-    <div class="chat-bottom">
-      <img [src]="'assets/img/character_1.png'" alt="user avatar" />
-      <h1>Noah Braun</h1>
+<!-- Nur anzeigen wenn converstion noch leer ist -->
+  <div   class="conversation-with-user">
+    <div *ngFor="let participants of this.selectedUsers" class="chat-bottom">
+      <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
+      <div class="user-detail">
+        <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
+        <h1>{{ this.selectedUsers[0].name }}</h1>
+      </div>
+      <p>
+        Diese Unterhaltung findet nur zwischen dir und 
+        {{ this.selectedUsers[0].name }} statt.
+      </p>
+    </ng-container>
     </div>
-    <p>Diese Unterhaltung findet nur zwischen dir und Noah Braun statt. </p>
+  </div>
+  
+  
+  
+  
+
     <div class="start-conversation-bottom">
       <div class="container-new-message">
         <textarea [(ngModel)]="messageText"></textarea>

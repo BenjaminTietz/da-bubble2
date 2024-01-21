@@ -41,7 +41,8 @@ export class PrivateMessagesComponent implements OnInit,
   chatId: any;
   selectedUsers: User[] = [];
   messageText: string = '';
-
+  chatData: Chat | undefined;
+  messages: Message[] = [];
   //neu
   unsubMessages!: () => void;
   listMessages: any = [];
@@ -54,11 +55,11 @@ export class PrivateMessagesComponent implements OnInit,
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
-    private chatService: ChatService,
-    private router: Router  // Inject the Router service
+    public chatService: ChatService,
+    private router: Router  
   ) { }
 
-  
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
@@ -66,6 +67,7 @@ export class PrivateMessagesComponent implements OnInit,
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
+    this.loadChatData();
   }
 
   
@@ -127,8 +129,8 @@ export class PrivateMessagesComponent implements OnInit,
       text: obj.text || "",
       chatId: obj.chatId || "",
       user: obj.user || this.user,
-      date: obj.date || "",
-      time: obj.time || "",
+      date: obj.date || this.getCurrentDate(),
+      time: obj.time || this.getCurrentTime(),
       messageAnwser: obj.messageAnswer || "",
       reactions: obj.reactions || "",
     }
@@ -154,7 +156,8 @@ export class PrivateMessagesComponent implements OnInit,
       const docRef = await addDoc(
         this.getMessageSubcollectionRef(chat_id),
         this.setMessageObject(newMessage, '')
-      );
+        
+      );console.log('Message written with ID: ', docRef.id);
   
       // Retrieve the new document ID
       const newID = docRef.id;
@@ -211,5 +214,20 @@ export class PrivateMessagesComponent implements OnInit,
     return `${participant.name} (${participant.email})`;
   }
 
-  
-}
+    async loadChatData() {
+      try {
+        this.chatData = await this.chatService.getChatDataById(this.chatId) as Chat;
+    
+        if (this.chatData) {
+          this.selectedUsers = this.chatData.participants;
+          this.messages = this.chatData.messages;
+          console.log('Participants:', this.selectedUsers);
+        } else {
+          console.error('Chat-Daten nicht gefunden.');
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden der Chat-Daten:', error);
+      }
+    }
+
+  }
