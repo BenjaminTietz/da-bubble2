@@ -4,31 +4,31 @@
       <img [src]="'assets/img/character_1.png'" alt="user avatar" />
       <h1>Noah Braun</h1>
     </div>
-    <h1>Neuer Chat</h1>
   </div>
 
   <div class="start-conversation-messages">
     <!-- Iteriere über die Teilnehmer und zeige ihre Informationen an -->
-    <h2>Chat ID</h2>
-    <p>{{ chatId }}</p>
-    <h2>Chat Name</h2>
-    <h2>Teilnehmer</h2>
-    <div *ngFor="let participant of selectedUsers">
-      {{ getParticipantInfo(participant) }}
-    </div>
-    <h2>Neue Nachrichten</h2>
-    <div class="user-chat">
-      {{ messageText }}
-    </div>
-    <!-- Iteriere über die Nachrichten im Chat und zeige den Text an -->
-    <p>Wird nur einmalig gerendert, hier sub zur subcollection chats.chat.answers &/messages </p>
-    <div *ngFor="let message of listMessages">
-      <h3>{{ message.user.name }}</h3>
-      <img [src]="message.user.avatarURL" alt="user avatar" />
-      <p>{{ message.text }}</p>
-    </div>
 
+
+ <div class="chat-message" *ngFor="let message of listMessages">
+<div class="date-wrapper"><div class="purple-line"></div><p>{{ message.date }}</p><div class="purple-line"></div></div>
+    <div class="user-wrapper">
+      <img [src]="message.user.avatarURL" alt="user avatar" />
+      <div class="user-info">
+      <h3>{{ message.user.name }}</h3>  <!--isYou? ausgeblendet -->
+      <p>{{ message.time}} </p>
+    </div>
+      </div>
+    <div class="reversed-text-wrapper">    
+      <p>{{ message.text }}</p>
+      <div class="message-bottom"><span>2 Antworten</span><h4>Letzte Antwort 14:35</h4></div><!--isYou? ausgeblendet -->
+    </div>
   </div>
+
+
+  
+
+
 
 
   <div class="conversation-with-user">
