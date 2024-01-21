@@ -77,6 +77,7 @@ import { PrivateMessagesComponent } from './home-components/private-messages/pri
 import { StartConversationComponent } from './home-components/start-conversation/start-conversation.component';
 import { DeleteAnswerComponent } from './home-components/dialogs/delete-answer/delete-answer.component';
 import { DeletePostComponent } from './home-components/dialogs/delete-post/delete-post.component';
+import { UserListChannelComponent } from './home-components/user-list-channel/user-list-channel.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { DeletePostComponent } from './home-components/dialogs/delete-post/delet
     PrivateMessagesComponent,
     StartConversationComponent,
     DeleteAnswerComponent,
-    DeletePostComponent
+    DeletePostComponent,
+    UserListChannelComponent
   ],
   imports: [
     BrowserModule,

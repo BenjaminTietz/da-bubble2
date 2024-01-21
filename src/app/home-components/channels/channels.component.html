@@ -13,7 +13,7 @@
             <div class="header-member">
 
 
-                <div class="img-member">
+                <div (click)="openDialogShowUsers(channel)" class="img-member">
                     <img *ngFor="let user of listUsersInChannel" [src]="user.photoURL ? user.photoURL : user.avatarURL "
                         alt="user images">
 

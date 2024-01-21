@@ -10,6 +10,7 @@ import { Answer } from '../../../models/answer.class';
 import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
 import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.component';
 import { DeletePostComponent } from '../dialogs/delete-post/delete-post.component';
+import { UserListChannelComponent } from '../user-list-channel/user-list-channel.component';
 
 
 
@@ -377,6 +378,18 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   }
 
+
+  //code für show user list channel
+
+
+  openDialogShowUsers(channel: any) {
+    const dialog = this.dialog.open(UserListChannelComponent);
+    dialog.componentInstance.channel = new Channel(this.channel);
+    dialog.componentInstance.listUsersInChannel = this.listUsersInChannel;
+
+
+
+  }
 
 
 
