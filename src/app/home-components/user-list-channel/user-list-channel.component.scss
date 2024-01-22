@@ -1,0 +1,137 @@
+// global styles imports
+@import "../../../assets/styles/colors.scss";
+@import "../../../assets/styles/fonts.scss";
+
+
+.container-user-list-channel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 32px;
+    gap: 16px;
+
+
+
+    .header-and-close {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+
+        mat-icon {
+            cursor: pointer;
+            transition: transform 120ms;
+            padding: 4px;
+            border-radius: 100%;
+
+            &:hover {
+                transform: scale(1.1);
+                background-color: #ECEEFE;
+                color: #535AF1;
+            }
+
+
+        }
+
+
+        span {
+            @include Nunito(700, 24px, 32.74px, $black);
+        }
+    }
+
+
+    .container-list-user {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+        box-sizing: border-box;
+        max-height: 50vh;
+        overflow-y: scroll;
+        border-bottom: 0.5px dotted black;
+        border-top: 0.5px dotted black;
+
+
+        .container-single-user {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            animation-duration: 120ms;
+
+            &:hover {
+                animation-duration: 120ms;
+                background-color: #ECEEFE;
+            }
+
+            img {
+                width: 48px;
+                border-radius: 100%;
+            }
+
+            mat-icon {
+                color: red;
+
+                &:hover {
+                    scale: 1.15;
+                }
+            }
+        }
+    }
+
+
+    .add-user {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 16px;
+        border-radius: 30px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #ECEEFE;
+            color: #535AF1;
+
+            mat-icon {
+                scale: 1.1;
+            }
+
+            span {
+                color: #535AF1;
+            }
+
+        }
+
+        mat-icon {
+            background-color: #ECEEFE;
+            padding: 4px;
+            border-radius: 100%;
+
+        }
+
+
+        span {
+            @include Nunito(400, 16px, 32.74px, $black);
+
+
+
+
+        }
+
+
+    }
+
+
+
+
+}
