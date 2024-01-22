@@ -11,7 +11,7 @@ import {
   addDoc,
   doc,
   DocumentReference,
-  orderBy, 
+  orderBy,
   //onSnapshot
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
@@ -29,15 +29,12 @@ import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 
-
-
 @Component({
   selector: 'app-private-messages',
   templateUrl: './private-messages.component.html',
   styleUrl: './private-messages.component.scss',
 })
-export class PrivateMessagesComponent implements OnInit,
-  OnDestroy {
+export class PrivateMessagesComponent implements OnInit, OnDestroy {
   chatId: any;
   selectedUsers: User[] = [];
   messageText: string = '';
@@ -51,14 +48,16 @@ export class PrivateMessagesComponent implements OnInit,
   user: User = new User();
   firestore: Firestore = inject(Firestore);
 
+  //edit message
+  editMessageText: string = '';
+  editingMessageId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
     public chatService: ChatService,
-    private router: Router  
-  ) { }
-
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -70,7 +69,6 @@ export class PrivateMessagesComponent implements OnInit,
     this.loadChatData();
   }
 
-  
   ngOnDestroy(): void {
     this.unsubMessages();
   }
@@ -78,17 +76,22 @@ export class PrivateMessagesComponent implements OnInit,
   getUser() {
     let q;
     if (this.storedUserAuthUID) {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
+      q = query(
+        this.getUsersRef(),
+        where('authUID', '==', this.storedUserAuthUID)
+      );
     } else {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
+      q = query(
+        this.getUsersRef(),
+        where('authUID', '==', this.storedUserAuthUID)
+      ); // q = input für Gastzugang
     }
 
     return onSnapshot(q, (docSnap: any) => {
       docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()))
-      })
-    })
-
+        this.user = new User(this.setUserObject(doc.data()));
+      });
+    });
   }
 
   getUsersRef() {
@@ -97,48 +100,56 @@ export class PrivateMessagesComponent implements OnInit,
 
   setUserObject(obj: any) {
     return {
-      id: obj.id || "",
-      authUID: obj.authUID || "",
-      name: obj.name || "",
+      id: obj.id || '',
+      authUID: obj.authUID || '',
+      name: obj.name || '',
       status: obj.status || true,
       avatarURL: obj.avatarURL || '', //code added by Ben
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
-      email: obj.email || ''
-    }
+      email: obj.email || '',
+    };
   }
 
   //Sucbscribe to the messages subcollection with chatId
   subMessagesList(chat_id: any) {
-    const q = query(this.getMessageSubcollectionRef(chat_id), where('chatId', '==', chat_id), orderBy('date'), orderBy('time'));
+    const q = query(
+      this.getMessageSubcollectionRef(chat_id),
+      where('chatId', '==', chat_id),
+      orderBy('date'),
+      orderBy('time')
+    );
     return onSnapshot(q, (list) => {
       this.listMessages = [];
-      list.forEach(element => {
-        this.listMessages.push(this.setMessageObject(element.data(), element.id));
+      list.forEach((element) => {
+        this.listMessages.push(
+          this.setMessageObject(element.data(), element.id)
+        );
       });
     });
   }
 
   getMessageSubcollectionRef(chat_id: any) {
-    return collection(this.chatService.firestore, 'chats', chat_id, 'messages')
+    return collection(this.chatService.firestore, 'chats', chat_id, 'messages');
   }
 
-  setMessageObject(obj: any, id: string,): Message {
+  setMessageObject(obj: any, id: string): Message {
     return {
-      id: id || "",
-      text: obj.text || "",
-      chatId: obj.chatId || "",
+      id: id || '',
+      text: obj.text || '',
+      chatId: obj.chatId || '',
       user: obj.user || this.user,
       date: obj.date || this.getCurrentDate(),
       time: obj.time || this.getCurrentTime(),
-      messageAnwser: obj.messageAnswer || "",
-      reactions: obj.reactions || "",
-    }
+      messageSendBy: obj.messageSendBy || this.getUserObjectForFirestore(),
+      messageAnwser: obj.messageAnswer || '',
+      reactions: obj.reactions || '',
+    };
   }
 
   async addMessage(chat_id: any) {
     await this.getUser();
-  
+
     // Create a new message object
     const newMessage: Message = {
       id: '',
@@ -147,31 +158,33 @@ export class PrivateMessagesComponent implements OnInit,
       user: this.getUserObjectForFirestore(), // Convert User to a plain JavaScript object
       date: this.getCurrentDate(),
       time: this.getCurrentTime(),
+      messageSendBy: this.getUserObjectForFirestore(),
       messageAnwser: [],
       reactions: [],
     };
-  
+
     // Add the new message to the Firestore subcollection
     try {
       const docRef = await addDoc(
         this.getMessageSubcollectionRef(chat_id),
         this.setMessageObject(newMessage, '')
-        
-      );console.log('Message written with ID: ', docRef.id);
-  
+      );
+      console.log('Message written with ID: ', docRef.id);
+      console.log('Chat ', chat_id);
+
       // Retrieve the new document ID
       const newID = docRef.id;
-  
+
       // Update the message with its ID
       await this.updateMessageWithId(newID, chat_id);
-  
+
       // Clear the messageText input
       this.messageText = '';
     } catch (error) {
       console.error('Error adding message:', error);
     }
   }
-  
+
   getUserObjectForFirestore() {
     // Convert the User object to a plain JavaScript object
     return {
@@ -188,11 +201,11 @@ export class PrivateMessagesComponent implements OnInit,
 
   async updateMessageWithId(newId: any, chat_id: any) {
     const docRef = doc(this.getMessageSubcollectionRef(chat_id), newId);
-    await updateDoc(docRef, { id: newId }).catch(
-      (err) => { console.log(err); }
-    ).then(
-      () => { }
-    );
+    await updateDoc(docRef, { id: newId })
+      .catch((err) => {
+        console.log(err);
+      })
+      .then(() => {});
   }
 
   getCurrentTime() {
@@ -214,20 +227,86 @@ export class PrivateMessagesComponent implements OnInit,
     return `${participant.name} (${participant.email})`;
   }
 
-    async loadChatData() {
-      try {
-        this.chatData = await this.chatService.getChatDataById(this.chatId) as Chat;
-    
-        if (this.chatData) {
-          this.selectedUsers = this.chatData.participants;
-          this.messages = this.chatData.messages;
-          console.log('Participants:', this.selectedUsers);
-        } else {
-          console.error('Chat-Daten nicht gefunden.');
-        }
-      } catch (error) {
-        console.error('Fehler beim Laden der Chat-Daten:', error);
-      }
-    }
+  async loadChatData() {
+    try {
+      this.chatData = (await this.chatService.getChatDataById(
+        this.chatId
+      )) as Chat;
 
+      if (this.chatData) {
+        this.selectedUsers = this.chatData.participants;
+        this.messages = this.chatData.messages;
+        console.log('Participants:', this.selectedUsers);
+      } else {
+        console.error('Chat-Daten nicht gefunden.');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Chat-Daten:', error);
+    }
   }
+
+  logMessageData(messageId: string) {
+    // Hier Logik zum Öffnen des Dialogs wenn antworten vorhanden
+    console.log('Clicked on message with ID:', messageId);
+    console.log(
+      'Message:',
+      this.listMessages.find(
+        (message: { id: string }) => message.id === messageId
+      )
+    );
+  }
+
+  // edit message
+
+  editMessage(messageId: string) {
+    const messageToEdit = this.listMessages.find(
+      (message: { id: string }) => message.id === messageId
+    );
+  
+    if (messageToEdit) {
+      this.editMessageText = messageToEdit.text;
+      this.editingMessageId = messageId;
+  
+      console.log('Editing message:', messageId);
+      console.log('Original Message:', messageToEdit);
+    }
+  }
+
+  // Nach dem speichern werden die Nachrichten nichtmehr gerendert
+
+  async saveEditedMessage() {
+    if (!this.editingMessageId) {
+      console.error('No message being edited.');
+      return;
+    }
+  
+    const editedMessage: Message = {
+      id: this.editingMessageId,
+      text: this.editMessageText,
+      chatId: this.chatId,
+      user: this.getUserObjectForFirestore(), // Convert User to a plain JavaScript object
+      date: this.getCurrentDate(),
+      time: this.getCurrentTime(),
+      messageSendBy: this.getUserObjectForFirestore(),
+      messageAnwser: [],
+      reactions: []
+    };
+  
+    try {
+      // Update the message in the Firestore subcollection
+      await updateDoc(
+        doc(this.getMessageSubcollectionRef(this.chatId), this.editingMessageId),
+        editedMessage
+      );
+  
+      console.log('Message updated successfully:', editedMessage);
+      this.editingMessageId = null; // Reset editing state after saving
+    } catch (error) {
+      console.error('Error updating message:', error);
+    }
+  }
+
+  cancelEditingMessage() {
+    this.editingMessageId = null;
+  }
+}

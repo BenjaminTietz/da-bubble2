@@ -1,75 +1,92 @@
 <div class="start-conversation-wrapper">
-      <!-- Nachrichten Empfänger  -->
-      <div *ngFor="let chat of this.selectedUsers" class="start-conversation-top">
-        <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
-          <div class="chat-header">
-            <div class="online-status"></div>
-            <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
-            <h1>{{ this.selectedUsers[0].name }}</h1>
-          </div>
-        </ng-container>
+  <!-- Nachrichten Empfänger  -->
+  <div *ngFor="let chat of this.selectedUsers" class="start-conversation-top">
+    <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
+      <div class="chat-header">
+        <div class="online-status"></div>
+        <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
+        <h1>{{ this.selectedUsers[0].name }}</h1>
       </div>
+    </ng-container>
+  </div>
 
-  <div class="start-conversation-messages">
-    <!-- Teilnehmer Nachrichten  -->
+<div class="start-conversation-messages">
+<!-- Teilnehmer Nachrichten  -->
 
 
- <div class="chat-message" *ngFor="let message of listMessages">
-<div class="date-wrapper"><div class="purple-line"></div><p>{{ message.date }}</p><div class="purple-line"></div></div>
+<div (click)="logMessageData(message.id)" class="chat-message" *ngFor="let message of listMessages">
+  <!-- messages von mir  -->
+  <ng-container >
+    <div class="date-wrapper"><div class="purple-line"></div><p>{{ message.date }}</p><div class="purple-line"></div></div>
     <div class="user-wrapper">
       <img [src]="message.user.avatarURL" alt="user avatar" />
       <div class="user-info">
-      <h3>{{ message.user.name }}</h3>  <!--isYou? ausgeblendet -->
-      <p>{{ message.time}} </p>
-    </div>
+        <h3>{{ message.user.name }}</h3> 
+        <p>{{ message.time}} </p>
+        <div class="message-options">
+          <mat-icon [ngStyle]="{'color':'orange'}">add_reaction</mat-icon>
+          <mat-icon (click)="editMessage(message.id)">more_vert</mat-icon>
+        </div>
       </div>
+    </div>
     <div class="reversed-text-wrapper">    
       <p>{{ message.text }}</p>
-      <div class="message-bottom"><span>2 Antworten</span><h4>Letzte Antwort 14:35</h4></div><!--isYou? ausgeblendet -->
+      <div class="message-bottom"><span>2 Antworten</span><h4>Letzte Antwort 14:35</h4></div>
+      <div *ngIf="editingMessageId === message.id" class="edit-message" id="editMessage">
+        <textarea [(ngModel)]="editMessageText"></textarea>
+        <div class="edit-message-buttons">
+        <button class="cancel-btn" (click)="cancelEditingMessage()">Abbrechen</button>
+        <button class="save-btn" (click)="saveEditedMessage()">Speichern</button>
+        </div>
+      </div>
     </div>
-  </div>
-
-
+  </ng-container>
   
+</div>
+
+
+
+
+
 
 
 
 <!-- Nur anzeigen wenn converstion noch leer ist -->
-  <div   class="conversation-with-user">
-    <div *ngFor="let participants of this.selectedUsers" class="chat-bottom">
-      <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
-      <div class="user-detail">
-        <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
-        <h1>{{ this.selectedUsers[0].name }}</h1>
-      </div>
-      <p>
-        Diese Unterhaltung findet nur zwischen dir und 
-        {{ this.selectedUsers[0].name }} statt.
-      </p>
-    </ng-container>
-    </div>
+<div class="conversation-with-user">
+<div *ngFor="let participants of this.selectedUsers" class="chat-bottom">
+  <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
+  <div class="user-detail">
+    <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
+    <h1>{{ this.selectedUsers[0].name }}</h1>
   </div>
-  
-  
-  
-  
+  <p>
+    Diese Unterhaltung findet nur zwischen dir und 
+    {{ this.selectedUsers[0].name }} statt.
+  </p>
+</ng-container>
+</div>
+</div>
 
-    <div class="start-conversation-bottom">
-      <div class="container-new-message">
-        <textarea [(ngModel)]="messageText"></textarea>
 
-        <div class="container-icons">
-          <div class="icons-left">
-            <mat-icon matTooltip="add file">add</mat-icon>
-            <div class="vertical-line"></div>
-            <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
-            <mat-icon>alternate_email</mat-icon>
-          </div>
 
-          <div class="icons-right" (click)="addMessage(chatId)"> <!--(click)="onSendMessage()"-->
-            <mat-icon matTooltip="send">send</mat-icon>
-          </div>
-        </div>
+
+
+<div class="start-conversation-bottom">
+  <div class="container-new-message">
+    <textarea [(ngModel)]="messageText"></textarea>
+
+    <div class="container-icons">
+      <div class="icons-left">
+        <mat-icon matTooltip="add file">add</mat-icon>
+        <div class="vertical-line"></div>
+        <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+        <mat-icon>alternate_email</mat-icon>
+      </div>
+
+      <div class="icons-right" (click)="addMessage(chatId)"> <!--(click)="onSendMessage()"-->
+        <mat-icon matTooltip="send">send</mat-icon>
       </div>
     </div>
   </div>
+</div>
+</div>

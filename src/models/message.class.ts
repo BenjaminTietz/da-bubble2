@@ -13,6 +13,7 @@ export class Message {
     user!: User;
     date!: string;
     time!: string;
+    messageSendBy!: User;
     messageAnwser!: MessageAnswer[];
     reactions!: Reaction[];
 
@@ -20,11 +21,12 @@ export class Message {
 
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
-        this.text = obj ? obj.name : '';
-        this.chatId = obj ? obj.chat : '';
+        this.text = obj ? obj.text : '';
+        this.chatId = obj ? obj.chatId : '';
         this.user = obj ? obj.user : '';
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';
+        this.messageSendBy = obj ? obj.messageSendBy : '';
         this.messageAnwser = obj ? obj.messageAnwser : [];
         this.reactions = obj ? obj.reactions : [];
 

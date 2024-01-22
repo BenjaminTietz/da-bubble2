@@ -17,7 +17,7 @@ export class Chat {
     constructor(obj?: any) {
         this.id = obj ? obj.id : '';
         this.participants = obj ? obj.participants : [];
-        this.chatStartedBy = obj ? obj.chatStartedBy : '';
+        this.chatStartedBy = obj ? obj.chatStartedBy : new User();
         this.messages = obj ? obj.messages : [];
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';

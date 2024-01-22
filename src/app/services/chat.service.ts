@@ -20,6 +20,7 @@ export class ChatService {
   firestore: Firestore;
   date!: string;
   time!: string;
+  
 
   constructor(private router: Router, ) {
     const firebaseConfig = {
@@ -71,17 +72,17 @@ export class ChatService {
   }
 
   // ... restliche Methoden
-
+  
   async getChatDataById(chatId: string): Promise<Chat | null> {
     try {
       // Query erstellen, um den Chat mit der gegebenen ID zu finden
       const chatQuery = query(collection(this.firestore, 'chats'), where('id', '==', chatId));
       const chatSnapshot = await getDocs(chatQuery);
-
+  
       // Überprüfen, ob der Chat gefunden wurde
       if (!chatSnapshot.empty) {
         const chatData: DocumentData = chatSnapshot.docs[0].data();
-        return chatData as Chat;
+        return new Chat(chatData);  // Create an instance of Chat using the constructor
       } else {
         console.error('Chat nicht gefunden.');
         return null;
@@ -91,6 +92,7 @@ export class ChatService {
       return null;
     }
   }
+  
 
   async getChats(): Promise<Chat[]> {
     const chatsQuery = collection(this.firestore, 'chats');
@@ -109,16 +111,16 @@ export class ChatService {
         .map((doc) => {
           const chatData: DocumentData = doc.data();
   
-          // Überprüfen, ob 'participants' im Chat-Dokument ein Array ist
+
           if (Array.isArray(chatData['participants'])) {
             const participants: User[] = [];
   
-            // Durchsuche die participants und filtere nach dem aktuellen Nutzer
+
             for (const participant of chatData['participants']) {
               participants.push(participant);
             }
   
-            // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu
+
             return {
               id: doc.id,
               participants: participants,
@@ -134,13 +136,13 @@ export class ChatService {
                 photoURL: '',
                 channels: [],
                 email: ''
-              } // Assign an empty object instead of null
+              } 
             } as Chat;
           }
   
-          return undefined; // Rückgabewert für den Fall, dass die Bedingung nicht erfüllt ist
+          return undefined; 
         })
-        .filter((chat): chat is Chat => chat !== undefined); // Filtere undefined-Werte aus
+        .filter((chat): chat is Chat => chat !== undefined); 
   
       return this.chats;
     } catch (error) {
