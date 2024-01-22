@@ -1,14 +1,14 @@
 <div class="start-conversation-wrapper">
   <!-- Nachrichten Empfänger  -->
-  <div *ngFor="let chat of this.selectedUsers" class="start-conversation-top">
-    <ng-container *ngIf="this.selectedUsers && this.selectedUsers.length > 0">
-      <div class="chat-header">
-        <div class="online-status"></div>
-        <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
-        <h1>{{ this.selectedUsers[0].name }}</h1>
-      </div>
-    </ng-container>
-  </div>
+<div *ngFor="let participants of selectedUsers" class="start-conversation-top">
+  <ng-container>
+    <div class="chat-header">
+      <div class="online-status"></div>
+      <img [src]="participants.avatarURL" alt="avatar">
+      <h1>{{ participants.name }}</h1>
+    </div>
+  </ng-container>
+</div>
 
 <div class="start-conversation-messages">
 <!-- Teilnehmer Nachrichten  -->
@@ -24,8 +24,8 @@
         <h3>{{ message.user.name }}</h3> 
         <p>{{ message.time}} </p>
         <div class="message-options">
-          <mat-icon [ngStyle]="{'color':'orange'}">add_reaction</mat-icon>
-          <mat-icon (click)="editMessage(message.id)">more_vert</mat-icon>
+          <mat-icon matTooltip="Add Reaction" [ngStyle]="{'color':'orange'}">add_reaction</mat-icon>
+          <mat-icon matTooltip="Edit Message" (click)="editMessage(message.id)">more_vert</mat-icon>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@
         <mat-icon>alternate_email</mat-icon>
       </div>
 
-      <div class="icons-right" (click)="addMessage(chatId)"> <!--(click)="onSendMessage()"-->
+      <div class="icons-right" (click)="addMessage(chatId)"> 
         <mat-icon matTooltip="send">send</mat-icon>
       </div>
     </div>

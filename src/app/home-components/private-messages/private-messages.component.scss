@@ -106,7 +106,6 @@
   background-color: $white;
   padding: 10px 45px 10px 45px;
   gap: 30px;
-
 }
 
 .user-wrapper {
@@ -229,12 +228,13 @@
 .reversed-text-wrapper {
   position: absolute;
   left: 134px;
-  bottom: -35px;
+  bottom: -16px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
   width: fit-content;
+  min-width: 240px;
   height: fit-content;
   border-radius: 0px 30px 30px 30px;
   padding: 15px;
@@ -243,9 +243,11 @@
     @include Nunito(400, 18px, 24.55px, $black);
   }
   span {
+    white-space: nowrap;
     @include Nunito(400, 18px, 24.55px, $purple-3);
   }
   h4 {
+    white-space: nowrap;
     @include Nunito(400, 14px, 19.1px, $text-gray);
     margin-block-start: 0;
     margin-block-end: 0;
@@ -306,12 +308,14 @@
 }
 
 .message-bottom {
+  position: absolute;
+  top: 66px;
+  left: 0px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   width: 100%;
   gap: 16px;
-
 }
 .conversation-with-user {
     p {

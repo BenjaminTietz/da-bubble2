@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   getFirestore,
-  //Firestore,
   collection,
   query,
   where,
@@ -12,7 +11,7 @@ import {
   doc,
   DocumentReference,
   orderBy,
-  //onSnapshot
+  getDoc,
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
@@ -63,10 +62,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
       this.unsubMessages = this.subMessagesList(this.chatId); // Timo
+      this.getChatDataById(this.chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
-    this.loadChatData();
   }
 
   ngOnDestroy(): void {
@@ -227,26 +226,35 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     return `${participant.name} (${participant.email})`;
   }
 
-  async loadChatData() {
+  async getChatDataById(chatId: string) {
+    console.log('Loading chat data for ID:', chatId);
     try {
-      this.chatData = (await this.chatService.getChatDataById(
-        this.chatId
-      )) as Chat;
-
-      if (this.chatData) {
-        this.selectedUsers = this.chatData.participants;
-        this.messages = this.chatData.messages;
-        console.log('Participants:', this.selectedUsers);
+      // Use the doc reference directly in the query
+      const chatDocRef = doc(this.firestore, 'chats', chatId);
+      const chatSnapshot = await getDoc(chatDocRef);
+  
+      // Check if the chat was found
+      if (chatSnapshot.exists()) {
+        const chatData: DocumentData = chatSnapshot.data();
+        console.log('Chat data:', chatData);
+  
+        // Extract participants and assign them to selectedUsers
+        this.selectedUsers = chatData['participants'] as User[];
+  
+        return chatData as Chat;
       } else {
-        console.error('Chat-Daten nicht gefunden.');
+        console.error('Chat not found.');
+        return null;
       }
     } catch (error) {
-      console.error('Fehler beim Laden der Chat-Daten:', error);
+      console.error('Error loading chat data:', error);
+      return null;
     }
   }
+  
 
   logMessageData(messageId: string) {
-    // Hier Logik zum Öffnen des Dialogs wenn antworten vorhanden
+
     console.log('Clicked on message with ID:', messageId);
     console.log(
       'Message:',
@@ -259,6 +267,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   // edit message
 
   editMessage(messageId: string) {
+// logik zum öffnen nur für verfasser der message implementieren
+
     const messageToEdit = this.listMessages.find(
       (message: { id: string }) => message.id === messageId
     );
@@ -272,11 +282,20 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Nach dem speichern werden die Nachrichten nichtmehr gerendert
-
+  
   async saveEditedMessage() {
     if (!this.editingMessageId) {
       console.error('No message being edited.');
+      return;
+    }
+  
+    
+    const existingMessage = this.listMessages.find(
+      (message: { id: string }) => message.id === this.editingMessageId
+    );
+  
+    if (!existingMessage) {
+      console.error('Original message not found.');
       return;
     }
   
@@ -284,29 +303,32 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: this.editingMessageId,
       text: this.editMessageText,
       chatId: this.chatId,
-      user: this.getUserObjectForFirestore(), // Convert User to a plain JavaScript object
-      date: this.getCurrentDate(),
-      time: this.getCurrentTime(),
+      user: this.getUserObjectForFirestore(),
+      date: existingMessage.date, 
+      time: existingMessage.time, 
       messageSendBy: this.getUserObjectForFirestore(),
       messageAnwser: [],
       reactions: []
     };
   
     try {
-      // Update the message in the Firestore subcollection
+      
       await updateDoc(
         doc(this.getMessageSubcollectionRef(this.chatId), this.editingMessageId),
         editedMessage
       );
   
       console.log('Message updated successfully:', editedMessage);
-      this.editingMessageId = null; // Reset editing state after saving
+      this.editingMessageId = null; 
     } catch (error) {
       console.error('Error updating message:', error);
     }
   }
+  
 
   cancelEditingMessage() {
     this.editingMessageId = null;
   }
+
+   // edit message end
 }

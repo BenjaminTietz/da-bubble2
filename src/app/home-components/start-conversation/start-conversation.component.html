@@ -2,6 +2,14 @@
     <div class="start-conversation-top">
       <h1>Neue Nachricht</h1>
       <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText" (ngModelChange)="search()">
+      <div class="search-result-recipients">
+        <!--Hier kommen die Empfänger hin-->
+        <div *ngFor="let channel of channelResults" (click)="selectChannel(channel)">
+          {{ channel.chanName || channel.description || 'Unbekannter Kanal' }}
+        </div>
+        <div *ngFor="let user of userResults" (click)="selectedItem = user; addToRecipientList(user)">
+          {{ user.name || 'Unbekannter Benutzer' }}
+        </div>
     </div>
 
     <div class="start-conversation-messages">
@@ -23,7 +31,7 @@
               </ul>
           </div>
         <!-- Hier kommen die Nachrichten hin -->
-    </div>
+
     <div class="start-conversation-bottom">
         <div class="container-new-message">
           <textarea [(ngModel)]="messageText"></textarea>

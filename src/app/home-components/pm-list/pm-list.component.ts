@@ -22,7 +22,6 @@ export class PmListComponent implements OnInit {
 
   ngOnInit() {
     this.chatService.loadChats();
-    console.log('Chat-Liste:', this.chatService.chats);
   }
 
   subChatList() {
