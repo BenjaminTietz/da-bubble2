@@ -1,6 +1,6 @@
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Channel } from '../../../../models/channel.class';
-import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
+import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue, Unsubscribe } from '@angular/fire/firestore';
 import { User } from '../../../../models/user.class';
 
 
@@ -10,7 +10,7 @@ import { User } from '../../../../models/user.class';
   templateUrl: './add-user-to-channel.component.html',
   styleUrl: './add-user-to-channel.component.scss'
 })
-export class AddUserToChannelComponent implements OnDestroy {
+export class AddUserToChannelComponent implements OnDestroy, OnInit {
 
   firestore: Firestore = inject(Firestore);
   searchInput: string = '';
@@ -20,12 +20,47 @@ export class AddUserToChannelComponent implements OnDestroy {
   channel!: Channel;
   unsubUsers;
   listUsers: any = [];
+  unsubUserChannel!: Unsubscribe;
+  listUsersChannel: any = [];
+
 
 
 
   constructor() {
     this.unsubUsers = this.subUsersList();
+
+
+
   }
+
+
+  ngOnInit(): void {
+    this.unsubUserChannel = this.subUsersChannelList();
+
+  }
+
+
+
+  //Code für User im Channel
+
+  subUsersChannelList() {
+    const q = query(this.getUsersChannelRef(this.channel.id));
+    return onSnapshot(q, (list) => {
+      this.listUsersChannel = [];
+      list.forEach(element => {
+        this.listUsersChannel.push(this.setUser(element.data(), element.id));
+      });
+
+    });
+  }
+
+  getUsersChannelRef(chan_id: any) {
+    return collection(this.firestore, 'channels', chan_id, 'users');
+  }
+
+
+
+  //Code für alle User
 
   subUsersList() {
     const q = query(this.getUsersRef());
@@ -61,6 +96,7 @@ export class AddUserToChannelComponent implements OnDestroy {
 
   searchFunction(user: any) {
     if (user.name.toLowerCase().includes(this.searchInput.toLowerCase())
+      && !this.listUsersChannel.some((channelUser: any) => channelUser.id === user.id)
     ) {
       return true;
     } else {
@@ -99,6 +135,7 @@ export class AddUserToChannelComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubUsers();
+    //this.unsubUserChannel();
   }
 
 
