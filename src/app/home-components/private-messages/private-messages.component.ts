@@ -27,6 +27,7 @@ import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
+import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 
 @Component({
   selector: 'app-private-messages',
@@ -56,7 +57,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public chatService: ChatService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -204,7 +205,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       .catch((err) => {
         console.log(err);
       })
-      .then(() => {});
+      .then(() => { });
   }
 
   getCurrentTime() {
@@ -232,15 +233,15 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       // Use the doc reference directly in the query
       const chatDocRef = doc(this.firestore, 'chats', chatId);
       const chatSnapshot = await getDoc(chatDocRef);
-  
+
       // Check if the chat was found
       if (chatSnapshot.exists()) {
         const chatData: DocumentData = chatSnapshot.data();
         console.log('Chat data:', chatData);
-  
+
         // Extract participants and assign them to selectedUsers
         this.selectedUsers = chatData['participants'] as User[];
-  
+
         return chatData as Chat;
       } else {
         console.error('Chat not found.');
@@ -251,7 +252,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       return null;
     }
   }
-  
+
 
   logMessageData(messageId: string) {
 
@@ -267,68 +268,96 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   // edit message
 
   editMessage(messageId: string) {
-// logik zum öffnen nur für verfasser der message implementieren
+    // logik zum öffnen nur für verfasser der message implementieren
 
     const messageToEdit = this.listMessages.find(
       (message: { id: string }) => message.id === messageId
     );
-  
+
     if (messageToEdit) {
       this.editMessageText = messageToEdit.text;
       this.editingMessageId = messageId;
-  
+
       console.log('Editing message:', messageId);
       console.log('Original Message:', messageToEdit);
     }
   }
 
-  
+
   async saveEditedMessage() {
     if (!this.editingMessageId) {
       console.error('No message being edited.');
       return;
     }
-  
-    
+
+
     const existingMessage = this.listMessages.find(
       (message: { id: string }) => message.id === this.editingMessageId
     );
-  
+
     if (!existingMessage) {
       console.error('Original message not found.');
       return;
     }
-  
+
     const editedMessage: Message = {
       id: this.editingMessageId,
       text: this.editMessageText,
       chatId: this.chatId,
       user: this.getUserObjectForFirestore(),
-      date: existingMessage.date, 
-      time: existingMessage.time, 
+      date: existingMessage.date,
+      time: existingMessage.time,
       messageSendBy: this.getUserObjectForFirestore(),
       messageAnwser: [],
       reactions: []
     };
-  
+
     try {
-      
+
       await updateDoc(
         doc(this.getMessageSubcollectionRef(this.chatId), this.editingMessageId),
         editedMessage
       );
-  
+
       console.log('Message updated successfully:', editedMessage);
-      this.editingMessageId = null; 
+      this.editingMessageId = null;
     } catch (error) {
       console.error('Error updating message:', error);
     }
   }
-  
+
 
   cancelEditingMessage() {
     this.editingMessageId = null;
   }
 
-   // edit message end
+  // edit message end
+
+
+
+
+  //Code Timo
+
+  openDialogProfile(user: any): void {
+    const dialog = this.dialog.open(UserDetailComponent, {
+      position: {
+        top: '32px',
+        right: '32px'
+      },
+      maxWidth: '100%',
+      panelClass: 'dialog-profile-detail'
+
+    });
+    dialog.componentInstance.user = new User(user);
+  }
+
+
+
+
+
 }
+
+
+
+
+

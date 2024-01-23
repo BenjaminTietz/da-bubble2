@@ -59,7 +59,7 @@
     <img [src]="this.selectedUsers[0].avatarURL" alt="avatar">
     <h1>{{ this.selectedUsers[0].name }}</h1>
   </div>
-  <p>
+  <p (click)="openDialogProfile(participants)">
     Diese Unterhaltung findet nur zwischen dir und 
     {{ this.selectedUsers[0].name }} statt.
   </p>
