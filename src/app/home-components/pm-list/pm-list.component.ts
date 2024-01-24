@@ -1,36 +1,91 @@
 import { Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
-import { query, orderBy, limit, where, Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc } from '@angular/fire/firestore';
-import { Channel } from '../../../models/channel.class';
-
-
-
-import { ChatService } from '../../services/chat.service';
-import { Chat } from '../../../models/chat.class';
+import { Firestore, collection, query, onSnapshot, where, getDocs } from '@angular/fire/firestore';
 import { User } from '../../../models/user.class';
+import { Chat } from '../../../models/chat.class';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
   selector: 'app-pm-list',
   templateUrl: './pm-list.component.html',
   styleUrls: ['./pm-list.component.scss'],
 })
-export class PmListComponent implements OnInit {
+export class PmListComponent implements OnInit, OnDestroy {
 
+  firestore: Firestore = inject(Firestore);
+  storedUserAuthUID: any;
+  user: User = new User();
+
+  // Aktive Chats filtern & sortieren
+  unsubChats!: () => void;
   listChats: any = [];
-  chat = new Chat();
+  activeChats: any = [];
+
+  // Aktive User filtern & sortieren
+  unsubUsers!: () => void;
+  listUsers: any = [];
+  activeUsers: any = [];
 
   constructor(public chatService: ChatService) {}
 
   ngOnInit() {
-    this.chatService.loadChats();
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    this.subChatList();
+    this.getUser();
+    this.filterActiveUsers(); // Fügen Sie dies hier hinzu, um die aktiven Benutzer zu initialisieren
+  }
+
+  ngOnDestroy(): void {
+    this.unsubChats();
+    this.unsubUsers();
+  }
+
+  getUser() {
+    let q;
+    if (this.storedUserAuthUID) {
+      q = query(
+        this.getUsersRef(),
+        where('authUID', '==', this.storedUserAuthUID)
+      );
+    } else {
+      q = query(
+        this.getUsersRef(),
+        where('authUID', '==', this.storedUserAuthUID)
+      ); // q = input für Gastzugang
+    }
+
+    return onSnapshot(q, (docSnap: any) => {
+      docSnap.forEach((doc: any) => {
+        this.user = new User(this.setUserObject(doc.data()));
+        this.filterActiveChats();
+      });
+    });
+  }
+
+  setUserObject(obj: any) {
+    return {
+      id: obj.id || '',
+      authUID: obj.authUID || '',
+      name: obj.name || '',
+      status: obj.status || true,
+      avatarURL: obj.avatarURL || '',
+      photoURL: obj.photoURL || '',
+      channels: obj.channels || [],
+      email: obj.email || '',
+    };
+  }
+
+  getUsersRef() {
+    return collection(this.firestore, 'users');
   }
 
   subChatList() {
-    const q = query(this.getChannelsRef());
-    return onSnapshot(q, (list) => {
+    const q = query(this.getChatsRef());
+    this.unsubChats = onSnapshot(q, (list) => {
       this.listChats = [];
       list.forEach(element => {
         this.listChats.push(this.setChat(element.data(), element.id));
       });
+      this.filterActiveChats();
     });
   }
 
@@ -42,17 +97,53 @@ export class PmListComponent implements OnInit {
       creator: obj.creator || "",
       users: obj.users || [],
       posts: obj.posts || [],
-      participants: [],
-      messages: [],
-      chatStartedBy: new User(), // Replace "" with an instance of the User class
-      date: "",
-      time: ""
+      participants: obj.participants || [],
+      messages: obj.messages || [],
+      chatStartedBy: new User(obj.chatStartedBy || {}),
+      date: obj.date || "",
+      time: obj.time || ""
     };
   }
 
-  getChannelsRef(): import("@firebase/firestore-types").Query<unknown, import("@firebase/firestore").DocumentData> {
-    throw new Error('Method not implemented.');
+  getChatsRef(): import("@firebase/firestore-types").Query<unknown, import("@firebase/firestore").DocumentData> {
+    return query(collection(this.firestore, 'chats')) as unknown as import("@firebase/firestore-types").Query<unknown, import("@firebase/firestore").DocumentData>;
   }
 
+
+  filterActiveChats() {
+    this.activeChats = this.listChats.filter((chat: any) => {
+      
+      // Überprüfen, ob der aktuelle Benutzer der Ersteller des Chats ist
+      if (chat.chatStartedBy.authUID === this.user.authUID) {
+        return true;
+      }
   
+      // Überprüfen, ob der aktuelle Benutzer unter den Teilnehmern ist
+      const participantFound = chat.participants.some((participant: any) => participant.authUID === this.user.authUID);
+      return participantFound;
+    });
+  }
+
+// Hier müssen die aktiven Benutzer aus den bereits gestarteten Chats gefiltert werden
+async filterActiveUsers() {
+  const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+  this.listUsers = usersSnapshot.docs.map(doc => this.setUserObject(doc.data()));
+
+  // Filter die Benutzer, die bereits in den aktiven Chats sind
+  this.activeUsers = this.listUsers.filter((user: any) => {
+    // Überprüfen, ob der Benutzer im activeChats Array vorhanden ist
+    const userInActiveChats = this.activeChats.some((chat: any) => {
+      return chat.chatStartedBy.authUID === user.authUID ||
+             chat.participants.some((participant: any) => participant.authUID === user.authUID);
+    });
+
+    // Hinzufügen des Benutzers zu activeUsers, wenn er nicht in activeChats ist
+    return user.status === true && !userInActiveChats;
+  });
+}
+
+createNewChat(user: any) {
+console.log('Create new chat with user:', user);
+}
+
 }

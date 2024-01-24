@@ -354,6 +354,10 @@
     flex-direction: column;
     width: 100%;
 
+    p {
+      display: flex;
+        @include Nunito(400, 18px, 24.55px, $text-gray);
+    }
 
     h1 {
         margin-left: 8px;
@@ -369,6 +373,22 @@
   }
 }
 
+.participant-wrapper {
+  display: flex;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  p {
+    @include Nunito(400, 20px, 27.28px, $text-gray);
+  }
+  h4 {
+    @include Nunito(400, 20px, 27.28px, $purple-3);
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-left: 4px;
+    margin-right: 4px;
+    cursor: pointer;
+  }
+}
 
 
 .start-conversation-top {

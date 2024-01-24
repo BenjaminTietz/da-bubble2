@@ -51,6 +51,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   //edit message
   editMessageText: string = '';
   editingMessageId: string | null = null;
+this: any;
 
   constructor(
     private route: ActivatedRoute,

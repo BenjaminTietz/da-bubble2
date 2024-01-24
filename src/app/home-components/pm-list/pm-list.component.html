@@ -1,8 +1,25 @@
-<div class="direct-message-wrapper" *ngFor="let chat of chatService.chats" [routerLink]="['private-messages', chat.id]">
-    <div class="direct-message"> 
-        <div class="online-status"></div>
-        <img [src]="chat.participants[0]['avatarURL']" alt="avatar">
-        <p>{{ chat.participants[0].name }}</p>
-    </div>
-    <!-- Display other information from the chat as needed -->
+<!-- Für Chats -->
+<div class="direct-message-wrapper" *ngFor="let chat of activeChats" [routerLink]="['private-messages', chat.id]">
+  <div class="direct-message">
+    <ng-container *ngFor="let participant of chat.participants">
+      <div [ngClass]="{'online-status': participant.status, 'offline-status': !participant.status}"></div>
+        <img [src]="participant.avatarURL" alt="participant-avatar" />
+        <p>{{ participant.name }}</p>
+    </ng-container>
+  </div>
+  <!-- Weitere Informationen aus dem Chat anzeigen, falls erforderlich -->
 </div>
+
+  <!--online status funktioniert nicht-->
+  <!-- Für aktive Benutzer -->
+  <div class="direct-message-wrapper" *ngFor="let user of activeUsers" (click)="createNewChat(user)">
+    <div class="direct-message">
+      <ng-container>
+        <div [ngClass]="{'online-status': user.status, 'offline-status': !user.status}"></div>
+        <img [src]="user.avatarURL" alt="avatar" />
+        <p>{{ user.name }}</p>
+      </ng-container>
+    </div>
+    <!-- Display other information from the user as needed -->
+  </div>
+  
