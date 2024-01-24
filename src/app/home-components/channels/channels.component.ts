@@ -67,7 +67,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       list.forEach(element => {
         this.listUsers.push(this.setUser(element.data(), element.id));
       });
-      this.dataLoaded = true;
+      //this.dataLoaded = true;
     });
   }
 
