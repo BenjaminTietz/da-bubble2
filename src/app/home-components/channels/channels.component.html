@@ -109,7 +109,7 @@
         </div>
 
 
-        <div class="original-post">
+        <div [ngClass]="listPosts[postDetail].user.authUID == this.storedUserAuthUID ? 'original-post-own-post' : 'original-post'" >
 
             <div class="container-user-img">
                 <img [src]="listPosts[postDetail].user.avatarURL ? '../../../'+listPosts[postDetail].user.avatarURL : listPosts[listPosts].user.photoURL"
