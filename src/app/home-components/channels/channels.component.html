@@ -3,7 +3,7 @@
     <div class="container-channel" *ngIf="dataLoaded">
 
         <div class="container-channel-header">
-            <div class="name-header">
+            <div (click)="openDialogChannelDetail(channel)" class="name-header">
                 <span># {{ channel.chanName }}</span>
                 <mat-icon>expand_more</mat-icon>
             </div>

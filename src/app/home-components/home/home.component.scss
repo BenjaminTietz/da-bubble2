@@ -6,6 +6,7 @@
 .container-home {
     background-color: #ECEEFE;
     height: 100vh;
+    position: relative;
 }
 
 
@@ -21,7 +22,7 @@
     //position: fixed;
     border-radius: 30px;
     padding: 16px;
-    
+
 }
 
 
@@ -56,6 +57,7 @@
     margin-bottom: 0;
 
     @include Nunito(700, 20px, 27.28px, $black);
+
     mat-icon {
         height: 16px;
         width: 16px;
@@ -86,8 +88,9 @@
     margin-bottom: 32px;
     margin-top: 16px;
     gap: 4px;
+
     h1 {
-        margin: unset!important;
+        margin: unset !important;
         white-space: nowrap;
         @include Nunito(700, 24px, 32.74px, $black);
     }
@@ -103,6 +106,7 @@
     height: 40px;
     width: 40px;
     border-radius: 100%;
+
     &:hover {
         transition: all 0.225s ease-in-out;
         background-color: rgba(0, 0, 255, 0.139);
@@ -111,3 +115,42 @@
 }
 
 
+
+.wrapper-workspace-menu {
+    position: fixed;
+    left: 0;
+    top: 80%;
+    z-index: 99;
+
+
+    .menu-icon {
+        position: relative;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        padding: 4px 16px;
+        background-color: white;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 4px 4px 7px 0px #00000033;
+        @include Nunito(400, 16px, 27.28px, $black);
+
+        &:hover {
+
+            span,
+            mat-icon {
+
+                color: rgb(0, 0, 255);
+            }
+        }
+
+        mat-icon {
+            color: black;
+        }
+
+    }
+}

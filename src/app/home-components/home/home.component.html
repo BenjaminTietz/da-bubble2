@@ -3,7 +3,8 @@
     <app-header></app-header>
 
     <mat-drawer-container class="mat-drawer-container" autosize>
-        <mat-drawer #drawer class="sidenav" [mode]="drawerMode" [opened]="drawerOpened">
+        <mat-drawer #drawer class="sidenav" [mode]="drawerMode" [opened]="drawerOpened"
+            (openedChange)="changeDrawerStatus($event)">
 
             <div class="logo-container">
                 <img class="img-logo" src="../../assets/img/workspace_logo.png" alt="logo">
@@ -61,8 +62,7 @@
 
         <div class="container-sidenav-content">
 
-            <!--             <mat-icon class="menu-icon" mat-button (click)="drawer.toggle()">menu</mat-icon>
- -->
+
             <div class="container-router">
                 <router-outlet></router-outlet>
             </div>
@@ -71,7 +71,19 @@
     </mat-drawer-container>
 
 
+    
+    <div class="wrapper-workspace-menu">
+        <div (click)="drawer.toggle()" class="menu-icon">
 
+            <span>Workspace-Menü
+                <span *ngIf="isOpen">schließen</span>
+                <span *ngIf="!isOpen">öffnen</span>
+            </span>
+            <mat-icon *ngIf="isOpen" mat-button>expand_less</mat-icon>
+            <mat-icon *ngIf="!isOpen" mat-button>expand_more</mat-icon>
 
+        </div>
+
+    </div>
 
 </div>

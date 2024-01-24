@@ -11,6 +11,7 @@ import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-us
 import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.component';
 import { DeletePostComponent } from '../dialogs/delete-post/delete-post.component';
 import { UserListChannelComponent } from '../user-list-channel/user-list-channel.component';
+import { ChannelDetailComponent } from '../dialogs/channel-detail/channel-detail.component';
 
 
 
@@ -390,6 +391,19 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   }
+
+
+
+  //code für channel-detail
+
+
+  openDialogChannelDetail(channel: any) {
+    const dialog = this.dialog.open(ChannelDetailComponent);
+    dialog.componentInstance.channel = new Channel(channel);
+
+
+  }
+
 
 
 
