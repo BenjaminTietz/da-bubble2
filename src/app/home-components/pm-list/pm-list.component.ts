@@ -111,37 +111,38 @@ export class PmListComponent implements OnInit, OnDestroy {
 
 
   filterActiveChats() {
+  
     this.activeChats = this.listChats.filter((chat: any) => {
-      
+ 
       // Überprüfen, ob der aktuelle Benutzer der Ersteller des Chats ist
       if (chat.chatStartedBy.authUID === this.user.authUID) {
         return true;
       }
   
       // Überprüfen, ob der aktuelle Benutzer unter den Teilnehmern ist
-      const participantFound = chat.participants.some((participant: any) => participant.authUID === this.user.authUID);
+      const participantFound = Array.isArray(chat.participants) && chat.participants.some((participant: any) => participant.authUID === this.user.authUID);
       return participantFound;
     });
   }
-
-// Hier müssen die aktiven Benutzer aus den bereits gestarteten Chats gefiltert werden
-async filterActiveUsers() {
-  const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
-  this.listUsers = usersSnapshot.docs.map(doc => this.setUserObject(doc.data()));
-
-  // Filter die Benutzer, die bereits in den aktiven Chats sind
-  this.activeUsers = this.listUsers.filter((user: any) => {
-    // Überprüfen, ob der Benutzer im activeChats Array vorhanden ist
-    const userInActiveChats = this.activeChats.some((chat: any) => {
-      return chat.chatStartedBy.authUID === user.authUID ||
-             chat.participants.some((participant: any) => participant.authUID === user.authUID);
+  
+  // Hier müssen die aktiven Benutzer aus den bereits gestarteten Chats gefiltert werden
+  async filterActiveUsers() {
+    const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
+    this.listUsers = usersSnapshot.docs.map(doc => this.setUserObject(doc.data()));
+  
+    // Filtern Sie die Benutzer, die bereits in den aktiven Chats sind
+    this.activeUsers = this.listUsers.filter((user: any) => {
+      // Überprüfen, ob der Benutzer im activeChats Array vorhanden ist
+      const userInActiveChats = this.activeChats.some((chat: any) => {
+        return chat.chatStartedBy.authUID === user.authUID ||
+               (Array.isArray(chat.participants) && chat.participants.some((participant: any) => participant.authUID === user.authUID));
+      });
+  
+      // Hinzufügen des Benutzers zu activeUsers, wenn er nicht in activeChats ist
+      return user.status === true && !userInActiveChats;
     });
-
-    // Hinzufügen des Benutzers zu activeUsers, wenn er nicht in activeChats ist
-    return user.status === true && !userInActiveChats;
-  });
-}
-
+  }
+  
 createNewChat(user: any) {
 console.log('Create new chat with user:', user);
 }

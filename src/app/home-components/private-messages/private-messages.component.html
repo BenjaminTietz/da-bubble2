@@ -6,7 +6,7 @@
   >
     <ng-container>
       <div class="chat-header">
-        <div class="online-status"></div>
+        <div [ngClass]="{'online-status': participants.status, 'offline-status': !participants.status}"></div>
         <img [src]="participants.avatarURL" alt="avatar" />
         <h1>{{ participants.name }}</h1>
       </div>

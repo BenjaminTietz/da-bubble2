@@ -29,11 +29,19 @@
   background-color: $online-green;
   border-radius: 50%;
   z-index: 5;
-  }
-  
-  .offline-status {
-      background-color: $online-red;
-  }
+}
+
+.offline-status {
+  left: 80px;
+  top: 64px;
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid $white;
+  background-color: $online-red;
+  border-radius: 50%;
+  z-index: 5;
+}
 
 .chat-message {
   position: relative;
@@ -45,7 +53,7 @@
   height: fit-content;
   margin-bottom: 32px;
 
-  .message-icons{
+  .message-icons {
     position: absolute;
     right: 60px;
     top: 45px;
@@ -82,7 +90,7 @@
   p {
     @include Nunito(400, 18px, 24.55px, $text-gray);
   }
-  
+
   h3 {
     @include Nunito(700, 24px, 32.74px, $black);
   }
@@ -93,7 +101,6 @@
     object-fit: cover;
     gap: 10px;
   }
-
 }
 
 .reverse-chat-wrapper {
@@ -123,7 +130,7 @@
   p {
     @include Nunito(400, 18px, 24.55px, $text-gray);
   }
-  
+
   h3 {
     @include Nunito(700, 24px, 32.74px, $black);
   }
@@ -150,9 +157,9 @@
     border: solid 1px $light-purple-lines;
     margin-bottom: 8px;
     background-color: $white;
-   }
+  }
 
-   &:hover {
+  &:hover {
     transition: all 0.225s ease-in-out;
     .message-options {
       display: flex;
@@ -169,7 +176,7 @@
         scale: 1.05;
       }
     }
-   }
+  }
 }
 
 .date-wrapper {
@@ -222,7 +229,6 @@
   p {
     @include Nunito(400, 18px, 24.55px, $text-gray);
   }
-
 }
 
 .reversed-text-wrapper {
@@ -318,27 +324,27 @@
   gap: 16px;
 }
 .conversation-with-user {
-    p {
-        @include Nunito(400, 20px, 27.28px, $text-gray);
-    }
+  p {
+    @include Nunito(400, 20px, 27.28px, $text-gray);
+  }
 }
 
 .chat-header {
   position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    width: 100%;
-    margin-bottom: 20px;
-    padding: 32px 45px 32px 45px;
-    box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08); 
-    
-    @include Nunito(700, 24px, 32.74px, $black);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 32px 45px 32px 45px;
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
 
-    h1 {
-        margin-left: 8px;
-    }
+  @include Nunito(700, 24px, 32.74px, $black);
+
+  h1 {
+    margin-left: 8px;
+  }
   img {
     width: 50px;
     height: 50px;
@@ -348,22 +354,21 @@
 }
 
 .chat-bottom {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
+
+  p {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
-    width: 100%;
+    @include Nunito(400, 18px, 24.55px, $text-gray);
+  }
 
-    p {
-      display: flex;
-        @include Nunito(400, 18px, 24.55px, $text-gray);
-    }
-
-    h1 {
-        margin-left: 8px;
-        @include Nunito(700, 24px, 32.74px, $black);
-    }
-  
+  h1 {
+    margin-left: 8px;
+    @include Nunito(700, 24px, 32.74px, $black);
+  }
 
   img {
     width: 100px;
@@ -389,7 +394,6 @@
     cursor: pointer;
   }
 }
-
 
 .start-conversation-top {
   width: 100%;
