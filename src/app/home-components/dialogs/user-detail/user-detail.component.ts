@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '../../../../models/user.class';
 import { MatDialog } from '@angular/material/dialog';
 import { UserEditComponent } from '../user-edit/user-edit.component';
@@ -8,14 +8,25 @@ import { UserEditComponent } from '../user-edit/user-edit.component';
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.scss'
 })
-export class UserDetailComponent {
+export class UserDetailComponent implements OnInit {
 
   user!: User;
+
+  storedUserAuthUID: any;
 
 
   constructor(public dialog: MatDialog) {
 
   }
+
+
+
+  ngOnInit(): void {
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    console.log(this.storedUserAuthUID)
+
+  }
+
 
 
 

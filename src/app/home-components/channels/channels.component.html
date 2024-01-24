@@ -34,7 +34,10 @@
 
 
         <div class="container-posts">
-            <div class="container-single-post" *ngFor="let post of listPosts; let i = index">
+            <!--             <div class="container-single-post" *ngFor="let post of listPosts; let i = index">
+ -->
+            <div [ngClass]="post.user.authUID == this.storedUserAuthUID ? 'container-single-post-own-post' : 'container-single-post'"
+                *ngFor="let post of listPosts; let i = index">
                 <div class="container-user-img">
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">

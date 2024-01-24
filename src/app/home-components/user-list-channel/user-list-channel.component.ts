@@ -4,6 +4,7 @@ import { User } from '../../../models/user.class';
 import { MatDialog } from '@angular/material/dialog';
 import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
 import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
+import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 
 
 
@@ -35,8 +36,20 @@ export class UserListChannelComponent implements OnInit {
   }
 
 
+  openDialogUserDetail(user: any) {
+    {
+      const dialog = this.dialog.open(UserDetailComponent, {
+        position: {
+          top: '32px',
+          right: '32px'
+        },
+        maxWidth: '100%',
+        panelClass: 'dialog-profile-detail'
 
-
+      });
+      dialog.componentInstance.user = new User(user);
+    }
+  }
 
 
   getUser() {
@@ -80,7 +93,8 @@ export class UserListChannelComponent implements OnInit {
   }
 
 
-  deleteUserFromList(user: any) {
+  deleteUserFromList(user: any, event: MouseEvent) {
+    event.stopPropagation();
     deleteDoc(doc(this.getUsersSubcollectionChannelsRef(), user.id));
 
   }

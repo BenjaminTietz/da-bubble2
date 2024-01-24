@@ -9,14 +9,14 @@
 
     <div class="name-and-edit">
         <span class="name">{{ user.name }}</span>
-        <span (click)="openDialogEditUser(user)" class="btn-edit">Bearbeiten</span>
+        <span *ngIf="this.user.authUID == this.storedUserAuthUID" (click)="openDialogEditUser(user)" class="btn-edit">Bearbeiten</span>
     </div>
 
     <div class="status">
         <mat-icon *ngIf="user.status" class="online">circle</mat-icon>
         <mat-icon *ngIf="!user.status" class="offline">motion_photos_off</mat-icon>
         <span *ngIf="user.status" class="online">Online</span>
-        <span *ngIf="!user.status" class="online">Offline</span>
+        <span *ngIf="!user.status" class="offline">Offline</span>
     </div>
 
 

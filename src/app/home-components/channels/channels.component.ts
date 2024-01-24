@@ -374,7 +374,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   openDialogAddUserToChannel(channel: any) {
     const dialog = this.dialog.open(AddUserToChannelComponent);
-    dialog.componentInstance.channel = new Channel(this.channel);
+    dialog.componentInstance.channel = new Channel(channel);
 
   }
 
@@ -384,7 +384,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   openDialogShowUsers(channel: any) {
     const dialog = this.dialog.open(UserListChannelComponent);
-    dialog.componentInstance.channel = new Channel(this.channel);
+    dialog.componentInstance.channel = new Channel(channel);
     dialog.componentInstance.listUsersInChannel = this.listUsersInChannel;
 
 
