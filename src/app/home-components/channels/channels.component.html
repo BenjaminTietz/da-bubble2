@@ -135,8 +135,6 @@
         </div>
 
 
-        <!--Test mit Answers als Subcollection-->
-
         <div class="line-answers">
             <div class="amount-answers">
                 {{ listAnswers.length }} Antwort<span
@@ -147,7 +145,9 @@
         </div>
 
 
-        <div *ngFor="let answer of listAnswers" class="single-answers">
+        <div *ngFor="let answer of listAnswers"
+            [ngClass]="answer.user.authUID == this.storedUserAuthUID ? 'single-answers-own-answer' : 'single-answers'">
+            <!-- </div> class="single-answers"> -->
 
             <div class="container-user-img">
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
