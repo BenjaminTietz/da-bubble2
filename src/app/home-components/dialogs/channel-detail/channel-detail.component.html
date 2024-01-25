@@ -1,5 +1,68 @@
-{{ channel.chanName }}
-{{ channel.description }}
+<div class="container-channel-detail">
+
+    <div class="header-close">
+        <span># {{ channel.chanName }}</span>
+        <mat-icon [mat-dialog-close]="">close</mat-icon>
+
+    </div>
 
 
 
+    <div class="container-name">
+        <div class="name-and-edit">
+            <span>Channel-Name</span>
+            <span *ngIf="!editName" (click)="startEditName()" class="text-edit">Bearbeiten</span>
+            <span *ngIf="editName" (click)="saveChannel()" class="text-edit">Speichern</span>
+        </div>
+
+        <div class="name">
+            <span *ngIf="!editName"># {{ channel.chanName }}</span>
+            <input *ngIf="editName" [(ngModel)]="newName" type="text">
+        </div>
+
+    </div>
+
+
+
+
+    <div class="container-description">
+        <div class="desc-and-edit">
+            <span>Beschreibung</span>
+            <span *ngIf="!editDesc" (click)="startEditDesc()" class="text-edit">Bearbeiten</span>
+            <span *ngIf="editDesc" (click)="saveChannel()" class="text-edit">Speichern</span>
+        </div>
+
+        <div class="desc">
+            <span *ngIf="!editDesc">{{ channel.description }}</span>
+            <input class="input-field" *ngIf="editDesc" [(ngModel)]="newDesc" type="text">
+        </div>
+
+        <div class="divider"></div>
+
+
+        <div class="created-by">
+            <span>Erstellt von</span>
+        </div>
+
+        <div class="creator">
+            <span (click)="openDialogUserDetail(channel.creator)" class="creator-detail" *ngIf="channel.creator.name">{{
+                channel.creator.name }}</span>
+            <span *ngIf="!channel.creator.name">Unbekannt</span>
+        </div>
+
+    </div>
+
+
+    <div class="container-btn">
+        <button (click)="leaveChannel()">Channel verlassen</button>
+
+    </div>
+
+
+
+
+
+
+
+
+</div>
