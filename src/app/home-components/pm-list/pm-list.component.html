@@ -1,25 +1,38 @@
+<h2>Aktive Chats:</h2>
 <!-- Für Chats -->
 <div class="direct-message-wrapper" *ngFor="let chat of activeChats" [routerLink]="['private-messages', chat.id]">
   <div class="direct-message">
-    <ng-container *ngFor="let participant of chat.participants">
-      <div [ngClass]="{'online-status': participant.status, 'offline-status': !participant.status}"></div>
+    <!-- Check if the current user is a participant in the chat -->
+    <ng-container *ngIf="isUserParticipant(chat); else chatStartedBySection">
+      <div [ngClass]="{'online-status': chat.chatStartedBy.status, 'offline-status': !chat.chatStartedBy.status}"></div>
+      <img [src]="chat.chatStartedBy.avatarURL" alt="creator-avatar" />
+      <p>{{ chat.chatStartedBy.name }}</p>
+    </ng-container>
+
+    <!-- If the current user is not a participant, display the participant -->
+    <ng-template #chatStartedBySection>
+      <ng-container *ngFor="let participant of chat.participants">
+        <div [ngClass]="{'online-status': participant.status, 'offline-status': !participant.status}"></div>
         <img [src]="participant.avatarURL" alt="participant-avatar" />
         <p>{{ participant.name }}</p>
-    </ng-container>
+      </ng-container>
+    </ng-template>
   </div>
   <!-- Weitere Informationen aus dem Chat anzeigen, falls erforderlich -->
 </div>
 
-  <!--online status funktioniert nicht-->
-  <!-- Für aktive Benutzer -->
-  <div class="direct-message-wrapper" *ngFor="let user of activeUsers" (click)="createNewChat(user)">
-    <div class="direct-message">
-      <ng-container>
-        <div [ngClass]="{'online-status': user.status, 'offline-status': !user.status}"></div>
-        <img [src]="user.avatarURL" alt="avatar" />
-        <p>{{ user.name }}</p>
-      </ng-container>
-    </div>
-    <!-- Display other information from the user as needed -->
+
+
+<h2>Starte Chat mit:</h2>
+<!-- Für aktive Benutzer -->
+<div class="direct-message-wrapper" *ngFor="let user of activeUsers" (click)="createNewChat(user)">
+  <div class="direct-message">
+    <ng-container>
+      <div [ngClass]="{'online-status': user.status, 'offline-status': !user.status}"></div>
+      <img [src]="user.avatarURL" alt="avatar" />
+      <p>{{ user.name }}</p>
+    </ng-container>
   </div>
+  <!-- Display other information from the user as needed -->
+</div>
   

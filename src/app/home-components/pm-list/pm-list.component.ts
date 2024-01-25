@@ -29,16 +29,12 @@ export class PmListComponent implements OnInit, OnDestroy {
   storedUserAuthUID: any;
   user: User = new User();
 
-  // Aktive Chats filtern & sortieren
-  unsubChats!: () => void;
-  listChats: any = [];
+  userData: User = new User();
+  chatsData: any = [];
   activeChats: any = [];
-
-  // Aktive User filtern & sortieren
-  unsubUsers!: () => void;
-  listUsers: any = [];
   activeUsers: any = [];
-
+  unsubChats!: () => void;
+  listUsers: any = [];
 
   constructor(
     private router: Router,
@@ -50,12 +46,10 @@ export class PmListComponent implements OnInit, OnDestroy {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.subChatList();
     this.getUser();
-    this.filterActiveUsers(); // Fügen Sie dies hier hinzu, um die aktiven Benutzer zu initialisieren
+    this.filterActiveUsers();
   }
 
   ngOnDestroy(): void {
-    this.unsubChats();
-    this.unsubUsers();
   }
 
   getUser() {
@@ -69,12 +63,12 @@ export class PmListComponent implements OnInit, OnDestroy {
       q = query(
         this.getUsersRef(),
         where('authUID', '==', this.storedUserAuthUID)
-      ); // q = input für Gastzugang
+      );
     }
 
     return onSnapshot(q, (docSnap: any) => {
       docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()));
+        this.userData = new User(this.setUserObject(doc.data()));
         this.filterActiveChats();
       });
     });
@@ -95,17 +89,6 @@ export class PmListComponent implements OnInit, OnDestroy {
 
   getUsersRef() {
     return collection(this.firestore, 'users');
-  }
-
-  subChatList() {
-    const q = query(this.getChatsRef());
-    this.unsubChats = onSnapshot(q, (list) => {
-      this.listChats = [];
-      list.forEach((element) => {
-        this.listChats.push(this.setChat(element.data(), element.id));
-      });
-      this.filterActiveChats();
-    });
   }
 
   setChat(obj: any, id: string): Chat {
@@ -136,21 +119,28 @@ export class PmListComponent implements OnInit, OnDestroy {
     >;
   }
 
-  filterActiveChats() {
-    this.activeChats = this.listChats.filter((chat: any) => {
-      // Überprüfen, ob der aktuelle Benutzer der Ersteller des Chats ist
-      if (chat.chatStartedBy.authUID === this.user.authUID) {
-        return true;
-      }
-
-      // Überprüfen, ob der aktuelle Benutzer unter den Teilnehmern ist
-      const participantFound =
-        Array.isArray(chat.participants) &&
-        chat.participants.some(
-          (participant: any) => participant.authUID === this.user.authUID
-        );
-      return participantFound;
+  subChatList() {
+    const q = query(this.getChatsRef());
+    this.unsubChats = onSnapshot(q, (list) => {
+      this.chatsData = [];
+      list.forEach((element) => {
+        this.chatsData.push(this.setChat(element.data(), element.id));
+      });
+      this.filterActiveChats();
     });
+  }
+
+  //hier fehlt eine Logik zum filtern, dass man entweder den Chat begonnen hat und den Teilnehmer angezeigt bekommt oder dass man Teilnehmer ist und denjenigen angezeigt bekommt der den Chat gestartet hat
+  filterActiveChats() {
+    this.activeChats = this.chatsData.filter((chat: any) => {
+      const isChatStartedByCurrentUser = chat.chatStartedBy.authUID === this.userData.authUID;
+      const isCurrentUserParticipant = Array.isArray(chat.participants) &&
+        chat.participants.some((participant: any) => participant.authUID === this.userData.authUID);
+  
+      return isChatStartedByCurrentUser || isCurrentUserParticipant;
+    });
+
+    this.filterActiveUsers();
   }
 
   // Hier müssen die aktiven Benutzer aus den bereits gestarteten Chats gefiltert werden
@@ -159,10 +149,10 @@ export class PmListComponent implements OnInit, OnDestroy {
     this.listUsers = usersSnapshot.docs.map((doc) =>
       this.setUserObject(doc.data())
     );
-
-    // Filtern Sie die Benutzer, die bereits in den aktiven Chats sind
+  
+    // Filter users who are either participants or have started a chat
     this.activeUsers = this.listUsers.filter((user: any) => {
-      // Überprüfen, ob der Benutzer im activeChats Array vorhanden ist
+      // Check if the user is a participant or has started a chat in activeChats
       const userInActiveChats = this.activeChats.some((chat: any) => {
         return (
           chat.chatStartedBy.authUID === user.authUID ||
@@ -172,40 +162,47 @@ export class PmListComponent implements OnInit, OnDestroy {
             ))
         );
       });
-
-      // Hinzufügen des Benutzers zu activeUsers, wenn er nicht in activeChats ist
-      return user.status === true && !userInActiveChats;
+  
+      // Include the user in activeUsers if they are not in activeChats and not the current user
+      return user.status === true && !userInActiveChats && user.authUID !== this.userData.authUID;
     });
   }
+  
+  
 
-  async createNewChat(participant: any) {
-    console.log('Create new chat with user:', participant);
-  
-    try {
-      // Create a new chat document
-      const chatDocRef = await addDoc(collection(this.firestore, 'chats'), {
-        chatStartedBy: {
-          id: this.user.id,
-          name: this.user.name,
-          photoURL: this.user.photoURL,
-          authUID: this.user.authUID,
-          status: this.user.status,
-          avatarURL: this.user.avatarURL,
-          channels: [], 
-          email: this.user.email,
-        },
-        participants: [participant], 
-        messages: [], 
-        date: this.getCurrentDate(),
-        time: this.getCurrentTime(),
-      });
-  
-      console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
-      this.router.navigate(['/home/private-messages', chatDocRef.id]);
-    } catch (error) {
-      console.error('Error creating and storing the chat:', error);
-    }
+  isUserParticipant(chat: any): boolean {
+    return chat.participants.some((participant: any) => participant.authUID === this.storedUserAuthUID);
   }
+  
+
+async createNewChat(participant: any) {
+  console.log('Create new chat with user:', participant);
+
+  try {
+    // Create a new chat document
+    const chatDocRef = await addDoc(collection(this.firestore, 'chats'), {
+      chatStartedBy: {
+        id: this.userData.id,
+        name: this.userData.name,
+        photoURL: this.userData.photoURL,
+        authUID: this.userData.authUID,
+        status: this.userData.status,
+        avatarURL: this.userData.avatarURL,
+        channels: [],
+        email: this.userData.email,
+      },
+      participants: [participant],
+      messages: [],
+      date: this.getCurrentDate(),
+      time: this.getCurrentTime(),
+    });
+
+    console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
+    this.router.navigate(['/home/private-messages', chatDocRef.id]);
+  } catch (error) {
+    console.error('Error creating and storing the chat:', error);
+  }
+}
 
   getCurrentTime() {
     const now = new Date();
