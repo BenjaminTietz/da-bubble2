@@ -1,8 +1,42 @@
+<button (click)="toggleGodmode()" *ngIf="user.name == 'Timo Kempf' || user.name == 'Benjamin Tietz'">Godmode Ben &
+    Timo</button>
+
+
+
 <ul>
+    <ng-container *ngFor="let channel of listChannels">
+        <!--Code für normale User-->
+        <li *ngIf="!godMode && listUserChannels.includes(channel.id)" (click)="isScreenSmall" routerLinkActive="active"
+            [routerLink]="['/home/channels/' + channel.id]">
+            <mat-icon>tag</mat-icon> {{ channel.chanName }}
+        </li>
+
+
+
+        <!--Code für Godmode-->
+
+        <li *ngIf="godMode" (click)="isScreenSmall" routerLinkActive="active"
+            [routerLink]="['/home/channels/' + channel.id]">
+            <mat-icon>tag</mat-icon> {{ channel.chanName }}
+        </li>
+    </ng-container>
+</ul>
+
+
+
+
+
+
+
+
+
+<!--Code Backup-->
+
+<!-- <ul>
     <li *ngFor="let channel of listChannels" (click)="isScreenSmall" routerLinkActive="active" [routerLink]="['/home/channels/' + channel.id]">
         <mat-icon>tag</mat-icon> {{ channel.chanName }}
     </li>
 
     
 
-</ul>
+</ul> -->

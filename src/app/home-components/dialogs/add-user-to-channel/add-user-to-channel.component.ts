@@ -107,9 +107,19 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
 
   selectUser(user: any) {
     setDoc(this.getUserInChannelSubcollectionRef(this.channel.id, user), this.setUserForSubcollectionInChannel(user)).then(() => {
-
+      updateDoc(this.getUserDocRef(user), { channels: arrayUnion(this.channel.id) })
     })
   }
+
+
+
+
+  getUserDocRef(user: any) {
+    return doc(this.firestore, 'users', user.id)
+  }
+
+
+
 
 
   setUserForSubcollectionInChannel(obj: any) {
