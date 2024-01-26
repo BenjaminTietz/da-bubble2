@@ -21,7 +21,7 @@
 
     </div>
 
-    <div [mat-dialog-close]="" (click)="openDialogAddUserToChannel(channel)" class="add-user">
+    <div *ngIf="this.channel.creator.authUID == this.currentUser.authUID" [mat-dialog-close]="" (click)="openDialogAddUserToChannel(channel)" class="add-user">
         <mat-icon>person_add</mat-icon>
         <span>Mitglieder hinzufügen</span>
     </div>
