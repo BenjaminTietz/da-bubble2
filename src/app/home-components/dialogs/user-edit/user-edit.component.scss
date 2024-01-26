@@ -141,6 +141,20 @@
             color: white;
             border: none;
             @include Nunito(700, 18px, 24.55px, $white);
+
+
+            &:disabled {
+                background-color: grey;
+
+                &:hover {
+                    scale: unset !important;
+                    cursor: not-allowed !important;
+
+                }
+
+
+            }
+
         }
     }
 

@@ -1,4 +1,4 @@
-<div class="container-profile">
+<form class="container-profile">
 
     <div class="header-and-close">
         <span>Dein Profil bearbeiten</span>
@@ -15,7 +15,7 @@
         </div>
 
         <div class="container-input-name">
-            <input [(ngModel)]="newName" type="text" name="" id="">
+            <input (keyup)="checkValidation()" [(ngModel)]="newName" type="text" required name="name" id="">
         </div>
     </div>
 
@@ -28,7 +28,7 @@
         </div>
 
         <div class="container-input-email">
-            <input [(ngModel)]="newEmail" type="email" name="" id="">
+            <input (keyup)="checkValidation()" [(ngModel)]="newEmail" type="email" required name="email" id="">
         </div>
     </div>
 
@@ -36,7 +36,8 @@
 
     <div class="container-buttons">
         <button class="btn-cancel" [mat-dialog-close]="">Abbrechen</button>
-        <button class="btn-save" [mat-dialog-close]="" (click)="saveUserEdit()">Speichern</button>
+        <button class="btn-save" type="submit" [disabled]="!formValid" [mat-dialog-close]=""
+            (click)="saveUserEdit()">Speichern</button>
 
     </div>
 
@@ -44,4 +45,4 @@
 
 
 
-</div>
+</form>

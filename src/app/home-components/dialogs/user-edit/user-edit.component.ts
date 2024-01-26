@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, inject } from '@angular/core';
 import { User } from '../../../../models/user.class';
 import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { transformMenu } from '@angular/material/menu';
 
 
 
@@ -20,6 +21,8 @@ export class UserEditComponent implements OnInit {
   newName!: string;
   newEmail!: string;
 
+  formValid!: boolean;
+
 
   constructor(
     public dialog: MatDialogRef<UserEditComponent>,
@@ -29,6 +32,7 @@ export class UserEditComponent implements OnInit {
   ngOnInit(): void {
     this.newName = this.user.name;
     this.newEmail = this.user.email;
+    this.checkValidation();
 
   }
 
@@ -54,7 +58,15 @@ export class UserEditComponent implements OnInit {
   }
 
 
+  checkValidation() {
+    if (this.newEmail && this.newName && this.newEmail.includes("@") && this.newEmail.includes(".") && !this.newEmail.includes(" ") ) {
+      this.formValid = true;
+    } else {
+      this.formValid = false;
+    }
 
+
+  }
 
 
 
