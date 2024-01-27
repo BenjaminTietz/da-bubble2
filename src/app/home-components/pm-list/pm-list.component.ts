@@ -13,6 +13,8 @@ import {
   where,
   getDocs,
   addDoc,
+  doc,
+  getDoc,
 } from '@angular/fire/firestore';
 import { User } from '../../../models/user.class';
 import { Chat } from '../../../models/chat.class';
@@ -137,9 +139,23 @@ export class PmListComponent implements OnInit, OnDestroy {
       const isCurrentUserParticipant = Array.isArray(chat.participants) &&
         chat.participants.some((participant: any) => participant.authUID === this.userData.authUID);
   
+      // Setze den Status für den Initiator des Chats (chatStartedBy)
+      if (isChatStartedByCurrentUser) {
+        chat.chatStartedBy.status = this.userData.status;
+      }
+  
+      // Setze den Status für jeden Teilnehmer des Chats
+      if (Array.isArray(chat.participants)) {
+        chat.participants.forEach((participant: any) => {
+          if (participant.authUID === this.userData.authUID) {
+            participant.status = this.userData.status;
+          }
+        });
+      }
+  
       return isChatStartedByCurrentUser || isCurrentUserParticipant;
     });
-
+  
     this.filterActiveUsers();
   }
 
@@ -166,8 +182,21 @@ export class PmListComponent implements OnInit, OnDestroy {
       // Include the user in activeUsers if they are not in activeChats and not the current user
       return user.status === true && !userInActiveChats && user.authUID !== this.userData.authUID;
     });
+  
+    // Fetch online status for each user
+    await this.fetchOnlineStatusForUsers();
   }
   
+  async fetchOnlineStatusForUsers() {
+    for (const user of this.activeUsers) {
+      const userDocRef = doc(collection(this.firestore, 'users'), user.id);
+      const userDocSnap = await getDoc(userDocRef);
+  
+      if (userDocSnap.exists()) {
+        user.status = userDocSnap.data()['status'];
+      }
+    }
+  }
   
 
   isUserParticipant(chat: any): boolean {

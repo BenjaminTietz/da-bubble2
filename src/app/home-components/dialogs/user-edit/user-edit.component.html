@@ -1,48 +1,72 @@
-<form class="container-profile">
+<form [formGroup]="editUserForm" class="container-profile">
+  <div class="header-and-close">
+    <span>Dein Profil bearbeiten</span>
+    <mat-icon [mat-dialog-close]="">close</mat-icon>
+  </div>
 
-    <div class="header-and-close">
-        <span>Dein Profil bearbeiten</span>
-        <mat-icon [mat-dialog-close]="">close</mat-icon>
+  <img [src]="user.avatarURL" alt="" />
+
+  <div class="container-name">
+    <div class="header-name">
+      <mat-icon>account_circle</mat-icon>
+      <span>Vollständiger Name</span>
+    </div>
+    <div class="container-input-name">
+        <input
+        class="input-field"
+        type="text"
+        formControlName="name"
+        placeholder="Max Mustermann"
+      />
+
+      <span
+        *ngIf="
+          editUserForm.get('name')?.invalid &&
+          (editUserForm.get('name')?.dirty || editUserForm.get('name')?.touched)
+        "
+        class="error-style"
+      >
+        *Bitte geben Sie Ihren vollständigen Namen ein.
+      </span>
+    </div>
+  </div>
+
+  <div class="container-email">
+    <div class="header-email">
+      <mat-icon>mail</mat-icon>
+      <span>E-Mail-Adresse</span>
     </div>
 
-    <img [src]="user.avatarURL" alt="">
-
-
-    <div class="container-name">
-        <div class="header-name">
-            <mat-icon>account_circle</mat-icon>
-            <span>Vollständiger Name</span>
-        </div>
-
-        <div class="container-input-name">
-            <input (keyup)="checkValidation()" [(ngModel)]="newName" type="text" required name="name" id="">
-        </div>
+    <div class="container-input-email">
+        <input
+        class="input-field"
+        type="email"
+        formControlName="email"
+        placeholder="beispielname@email.com"
+      />
+      <span
+        *ngIf="
+          editUserForm.get('email')?.invalid &&
+          (editUserForm.get('email')?.dirty ||
+            editUserForm.get('email')?.touched)
+        "
+        class="error-email-style"
+      >
+        *Diese E-Mail-Adresse ist leider ungültig.
+      </span>
     </div>
+  </div>
 
-
-
-    <div class="container-email">
-        <div class="header-email">
-            <mat-icon>mail</mat-icon>
-            <span>E-Mail-Adresse</span>
-        </div>
-
-        <div class="container-input-email">
-            <input (keyup)="checkValidation()" [(ngModel)]="newEmail" type="email" required name="email" id="">
-        </div>
-    </div>
-
-
-
-    <div class="container-buttons">
-        <button class="btn-cancel" [mat-dialog-close]="">Abbrechen</button>
-        <button class="btn-save" type="submit" [disabled]="!formValid" [mat-dialog-close]=""
-            (click)="saveUserEdit()">Speichern</button>
-
-    </div>
-
-
-
-
-
+  <div class="container-buttons">
+    <button class="btn-cancel" [mat-dialog-close]="">Abbrechen</button>
+    <button
+    class="btn-save"
+    type="submit"
+    [disabled]="editUserForm.invalid"
+    [mat-dialog-close]=""
+    (click)="saveUserEdit()"
+  >
+    Speichern
+  </button>
+  </div>
 </form>
