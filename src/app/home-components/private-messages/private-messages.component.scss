@@ -43,7 +43,7 @@
   z-index: 5;
 }
 
-.chat-message {
+.other-user-chat-message {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -71,6 +71,167 @@
       &:hover {
         color: #444df27b;
         scale: 1.05;
+      }
+    }
+  }
+  .user-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 100%;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 0 45px 0 45px;
+    box-sizing: border-box;
+  
+    p {
+      @include Nunito(400, 18px, 24.55px, $text-gray);
+    }
+  
+    h3 {
+      @include Nunito(700, 24px, 32.74px, $black);
+    }
+    img {
+      width: 70px;
+      height: 70px;
+      border-radius: 35px;
+      object-fit: cover;
+      gap: 10px;
+    }
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+  
+    .message-options {
+      display: none;
+      border-radius: 30px 30px 30px 0px;
+      border: solid 1px $light-purple-lines;
+      margin-bottom: 8px;
+      background-color: $white;
+    }
+  
+    &:hover {
+      transition: all 0.225s ease-in-out;
+      .message-options {
+        display: flex;
+      }
+  
+      mat-icon {
+        color: $black;
+        cursor: pointer;
+  
+        &:hover {
+          transition: all 0.225s ease-in-out;
+          background-color: $bg-color;
+          border-radius: 100%;
+          scale: 1.05;
+        }
+      }
+    }
+  }
+}
+
+.user-chat-message {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 32px;
+
+  .message-icons {
+    position: absolute;
+    right: 60px;
+    top: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    width: 100%;
+    margin-top: 16px;
+
+    mat-icon {
+      color: #444df2;
+      cursor: pointer;
+
+      &:hover {
+        color: #444df27b;
+        scale: 1.05;
+      }
+    }
+  }
+  .user-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: row;
+    width: 100%;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 0 45px 0 45px;
+    box-sizing: border-box;
+    transform: scaleX(-1);
+    p {
+      @include Nunito(400, 18px, 24.55px, $text-gray);
+      transform: scaleX(-1);
+    }
+  
+    h3 {
+      @include Nunito(700, 24px, 32.74px, $black);
+      transform: scaleX(-1);
+    }
+    img {
+      width: 70px;
+      height: 70px;
+      border-radius: 35px;
+      object-fit: cover;
+      gap: 10px;
+    }
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+  
+    .message-options {
+      display: none;
+      border-radius: 30px 30px 30px 0px;
+      border: solid 1px $light-purple-lines;
+      margin-bottom: 8px;
+      background-color: $white;
+    }
+  
+    &:hover {
+      transition: all 0.225s ease-in-out;
+      .message-options {
+        display: flex;
+      }
+  
+      mat-icon {
+        color: $black;
+        cursor: pointer;
+  
+        &:hover {
+          transition: all 0.225s ease-in-out;
+          background-color: $bg-color;
+          border-radius: 100%;
+          scale: 1.05;
+        }
       }
     }
   }
@@ -115,69 +276,6 @@
   gap: 30px;
 }
 
-.user-wrapper {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-direction: row;
-  width: 100%;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding: 0 45px 0 45px;
-  box-sizing: border-box;
-
-  p {
-    @include Nunito(400, 18px, 24.55px, $text-gray);
-  }
-
-  h3 {
-    @include Nunito(700, 24px, 32.74px, $black);
-  }
-  img {
-    width: 70px;
-    height: 70px;
-    border-radius: 35px;
-    object-fit: cover;
-    gap: 10px;
-  }
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  gap: 8px;
-  width: 100%;
-
-  .message-options {
-    display: none;
-    border-radius: 30px 30px 30px 0px;
-    border: solid 1px $light-purple-lines;
-    margin-bottom: 8px;
-    background-color: $white;
-  }
-
-  &:hover {
-    transition: all 0.225s ease-in-out;
-    .message-options {
-      display: flex;
-    }
-
-    mat-icon {
-      color: $black;
-      cursor: pointer;
-
-      &:hover {
-        transition: all 0.225s ease-in-out;
-        background-color: $bg-color;
-        border-radius: 100%;
-        scale: 1.05;
-      }
-    }
-  }
-}
 
 .date-wrapper {
   width: 100%;
@@ -243,6 +341,35 @@
   min-width: 240px;
   height: fit-content;
   border-radius: 0px 30px 30px 30px;
+  padding: 15px;
+  background-color: $bg-color;
+  p {
+    @include Nunito(400, 18px, 24.55px, $black);
+  }
+  span {
+    white-space: nowrap;
+    @include Nunito(400, 18px, 24.55px, $purple-3);
+  }
+  h4 {
+    white-space: nowrap;
+    @include Nunito(400, 14px, 19.1px, $text-gray);
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+}
+
+.user-reversed-text-wrapper {
+  position: absolute;
+  right: 134px;
+  bottom: -16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  width: fit-content;
+  min-width: 240px;
+  height: fit-content;
+  border-radius: 30px 0px 30px 30px;
   padding: 15px;
   background-color: $bg-color;
   p {
