@@ -28,6 +28,7 @@ import { ChatService } from '../../services/chat.service';
 import { Subscription } from 'rxjs';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
+import { Answer } from '../../../models/answer.class';
 
 @Component({
   selector: 'app-private-messages',
@@ -35,6 +36,7 @@ import { UserDetailComponent } from '../dialogs/user-detail/user-detail.componen
   styleUrl: './private-messages.component.scss',
 })
 export class PrivateMessagesComponent implements OnInit, OnDestroy {
+[x: string]: any;
   chatId: any;
   selectedUsers: User[] = [];
   messageText: string = '';
@@ -51,8 +53,18 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   //edit message
   editMessageText: string = '';
   editingMessageId: string | null = null;
-this: any;
-
+ 
+  //answers
+  showAnswers: boolean = false;
+  messageDetail: number = 0;
+  unsubAnswers!: () => void;
+  listAnswers: any = [];
+  dataLoaded: boolean = false;
+  newAnswer: Answer = new Answer();
+  unsubPosts!: () => void;
+  listPosts: any = [];
+  postDetail: number = 0; //prüfen auf welche Nummer initial setzen
+  
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
@@ -242,7 +254,7 @@ this: any;
 
         // Extract participants and assign them to selectedUsers
         this.selectedUsers = chatData['participants'] as User[];
-
+        this.dataLoaded = true;
         return chatData as Chat;
       } else {
         console.error('Chat not found.');
@@ -353,9 +365,89 @@ this: any;
   }
 
 
+  openAnswers(chat_id: any, message: any, i: any) {
+    console.log(message);
+    this.showAnswers = true;
+    this.messageDetail = i;
+    this.unsubAnswers = this.subAnswersList(chat_id, message.id);
+    console.log(this.listAnswers);
+    console.log(this.messageDetail);
+    console.log(this.showAnswers);
+  }
 
+  subAnswersList(chat_id: any, message_id: any) {
+    const q = query(this.getAnswerSubcollectionRef(chat_id, message_id), where('postId', '==', message_id), orderBy('date'), orderBy('time'));
+    return onSnapshot(q, (list) => {
+      this.listAnswers = [];
+      list.forEach(element => {
+        this.listAnswers.push(this.setAnswerObject(element.data()));
+      });
+    });
+  }
+  getAnswerSubcollectionRef(chat_id: any, message_id: any) {
+    return collection(this.firestore, 'chats', chat_id, 'posts', message_id, 'answers')
+  }
 
+  setAnswerObject(obj: any) {
+    return {
+      id: obj.id || "",
+      content: obj.content || "",
+      user: this.setUserObject(obj.user),
+      postId: obj.postId || "",
+      date: obj.date || "",
+      time: obj.time || "",
+      reactions: obj.reactions || "", // noch set reactions?
+    }
 
+  }
+
+    //Code für Answers
+
+    createAnswer(chat_id: any, message: any) {
+      if (this.newAnswer.content) {
+        this.newAnswer.user = this.user;
+        this.newAnswer.date = this.getCurrentDate();
+        this.newAnswer.time = this.getCurrentTime();
+        this.newAnswer.postId = message.id;
+  
+        addDoc(this.getAnswerSubcollectionRef(chat_id, message.id), this.setAnswerObject(this.newAnswer)).then((docRef) => {
+          this.newAnswer.content = '';
+          const newID = docRef?.id;
+          this.updatePostAmountAnswers(message.id, this.listAnswers.length, chat_id)
+          this.updateAnswerWithId(message.id, newID, chat_id)
+        })
+      }
+    }
+  
+  
+    async updateAnswerWithId(messages_id: any, newId: any, chat_id: any) {
+      const docRef = doc(this.getAnswerSubcollectionRef(chat_id, messages_id), newId);
+      await updateDoc(docRef, { id: newId }).catch(
+        (err) => { console.log(err); }
+      ).then(
+        () => { }
+      );
+    }
+
+    async updatePostAmountAnswers(messages_id: any, amount: any, chat_id: any) {
+      const docRef = doc(this.getPostSubcollectionRef(chat_id), messages_id);
+      await updateDoc(docRef, { answers: amount }).catch(
+        (err) => { console.log(err); }
+      ).then(
+        () => { }
+      );
+    }
+
+    getPostSubcollectionRef(chan_id: any) {
+      return collection(this.firestore, 'chats', chan_id, 'messages')
+    }
+  
+    hideAnswers() {
+      this.showAnswers = false;
+      this.unsubAnswers();
+    }
+  
+    //Ende Code für Post als Subcollection
 }
 
 
