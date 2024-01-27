@@ -48,7 +48,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import {MatDividerModule} from '@angular/material/divider';
 
 
-
+// Emoji Picker
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 
 
@@ -130,7 +131,7 @@ import { ChannelDetailComponent } from './home-components/dialogs/channel-detail
     MatDialogModule,
     MatMenuModule,
     MatDividerModule,
-
+    PickerComponent,
 
   ],
   exports: [RouterModule],

@@ -14,7 +14,7 @@ export class Message {
     date!: string;
     time!: string;
     messageSendBy!: User;
-    messageAnwser!: MessageAnswer[];
+    messageAnswer!: MessageAnswer[];
     reactions!: Reaction[];
 
 
@@ -27,7 +27,7 @@ export class Message {
         this.date = obj ? obj.date : '';
         this.time = obj ? obj.time : '';
         this.messageSendBy = obj ? obj.messageSendBy : '';
-        this.messageAnwser = obj ? obj.messageAnwser : [];
+        this.messageAnswer = obj ? obj.messageAnswer : [];
         this.reactions = obj ? obj.reactions : [];
 
     }

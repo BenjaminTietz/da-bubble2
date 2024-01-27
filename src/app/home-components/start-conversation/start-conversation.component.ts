@@ -414,7 +414,7 @@ export class StartConversationComponent implements OnInit {
             channels: [],
             email: this.user.email,
           },
-          messageAnwser: [],
+          messageAnswer: [],
           reactions: [],
           date: this.getCurrentDate(),
           time: this.getCurrentTime(),

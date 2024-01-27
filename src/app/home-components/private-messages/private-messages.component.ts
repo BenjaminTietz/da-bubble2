@@ -29,6 +29,8 @@ import { Subscription } from 'rxjs';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 import { Answer } from '../../../models/answer.class';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
 
 @Component({
@@ -59,13 +61,18 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   showAnswers: boolean = false;
   messageDetail: number = 0;
   unsubAnswers!: () => void;
-  listAnswers: any = [];
+  listAnswers: any[] = [];
   dataLoaded: boolean = false;
   newAnswer: MessageAnswer = new MessageAnswer();
   unsubPosts!: () => void;
   listPosts: any = [];
   postDetail: number = 0; //prüfen auf welche Nummer initial setzen
   
+
+  // emoji
+  showEmojiPicker = false;
+
+
   constructor(
     private route: ActivatedRoute,
     public dialog: MatDialog,
@@ -76,7 +83,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
-      this.unsubMessages = this.subMessagesList(this.chatId); // Timo
+      this.unsubMessages = this.subMessagesList(this.chatId); 
+      //  this.unsubAnswers = this.subAnswersList(this.chatId,this['messageId']);    Funktioniert nicht
       this.getChatDataById(this.chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
@@ -85,6 +93,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubMessages();
+    this.unsubAnswers();
   }
 
   getUser() {
@@ -144,7 +153,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   getMessageSubcollectionRef(chat_id: any) {
-    return collection(this.chatService.firestore, 'chats', chat_id, 'messages');
+    return collection(this.firestore, 'chats', chat_id, 'messages');
   }
 
   setMessageObject(obj: any, id: string): Message {
@@ -156,8 +165,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       date: obj.date || this.getCurrentDate(),
       time: obj.time || this.getCurrentTime(),
       messageSendBy: obj.messageSendBy || this.getUserObjectForFirestore(),
-      messageAnwser: obj.messageAnswer || '',
-      reactions: obj.reactions || '',
+      messageAnswer: obj.messageAnswer || [], 
+      reactions: obj.reactions || [],
     };
   }
 
@@ -169,12 +178,12 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: '',
       text: this.messageText,
       chatId: this.chatId,
-      user: this.getUserObjectForFirestore(), // Convert User to a plain JavaScript object
+      user: this.getUserObjectForFirestore(), 
       date: this.getCurrentDate(),
       time: this.getCurrentTime(),
       messageSendBy: this.getUserObjectForFirestore(),
-      messageAnwser: [],
       reactions: [],
+      messageAnswer: []
     };
 
     // Add the new message to the Firestore subcollection
@@ -322,8 +331,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       date: existingMessage.date,
       time: existingMessage.time,
       messageSendBy: this.getUserObjectForFirestore(),
-      messageAnwser: [],
-      reactions: []
+      reactions: [],
+      messageAnswer: []
     };
 
     try {
@@ -366,7 +375,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
 
-  openAnswers(chat_id: any, message: any, i: any) {
+  async openAnswers(chat_id: any, message: any, i: any) {
     console.log(message);
     this.showAnswers = true;
     this.messageDetail = i;
@@ -382,68 +391,75 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       orderBy('date'),
       orderBy('time')
     );
+  
     return onSnapshot(q, (list) => {
       this.listAnswers = [];
       list.forEach((element) => {
-        this.listAnswers.push(this.setAnswerObject(element.data()));
+        const answerData = element.data();
+        // Überprüfen, ob das Antwortobjekt die erwartete Struktur hat
+        if ('content' in answerData && 'user' in answerData && 'date' in answerData && 'time' in answerData) {
+          // Fügen Sie das Antwortobjekt zur Liste der Antworten hinzu
+          this.listAnswers.push(this.setAnswerObject(answerData));
+        }
       });
+      console.log('listAnswers:', this.listAnswers); // Debugging-Ausgabe
     });
   }
+
   getAnswerSubcollectionRef(chat_id: any, message_id: any) {
-    return collection(this.firestore, 'chats', chat_id, 'messages', message_id, 'messageAnswer')
+    return collection(this.firestore,'chats', chat_id, 'messages', message_id)
+  }
+
+  getMessageAnswerSubcollectionRef(chat_id: string, message_id: string) {
+    return collection(
+      this.firestore,
+      'chats',
+      chat_id,
+      'messages',
+      message_id,
+      'messageAnswer'
+    );
   }
 
   setAnswerObject(obj: any) {
     return {
-      id: obj.id || "",
-      content: obj.content || "",
-      user: this.setUserObject(obj.user),
-      postId: obj.postId || "",
-      date: obj.date || "",
-      time: obj.time || "",
-      reactions: obj.reactions || "", // noch set reactions?
-    }
-
+      id: obj.id || '',
+      content: obj.content || '',
+      user: obj.user || this.user,
+      postId: obj.postId || '',
+      date: obj.date || '',
+      time: obj.time || '',
+      reactions: obj.reactions || [],
+    };
   }
 
     //Code für Answers
 
 
-  ['createAnswer'](chat_id: any, message: any) {
-    if (this.newAnswer['content']) {
-      console.log('Creating answer...');
-      console.log('Message ID:', message.id);
-      console.log('New answer content:', this.newAnswer['content']);
-      this.newAnswer.user = this.user;
-      this.newAnswer.date = this.getCurrentDate();
-      this.newAnswer.time = this.getCurrentTime();
-      this.newAnswer['postId'] = message.id; 
-  
-      // Die Antwort in die Subcollection messageAnwser speichern
-      addDoc(
-        this.getMessageAnswerSubcollectionRef(chat_id, message.id), // chat_id und message.id verwenden
-        this.setAnswerObject(this.newAnswer)
-      ).then((docRef) => {
-        this.newAnswer['content'] = '';
-        const newID = docRef?.id;
-        // Aktualisieren Sie die Anzahl der Antworten der Nachricht
-        this.updatePostAmountAnswers(message.id, this.listAnswers.length, chat_id);
-        // Aktualisieren Sie die Antwort mit ihrer ID
-        this.updateAnswerWithId(message.id, newID, chat_id);
-      });
+    createAnswer(chat_id: any, message: any) {
+      if (this.newAnswer['content']) {
+        console.log('Creating answer...');
+        console.log('Message ID:', message.id);
+        console.log('New answer content:', this.newAnswer['content']);
+        this.newAnswer.user = this.user;
+        this.newAnswer.date = this.getCurrentDate();
+        this.newAnswer.time = this.getCurrentTime();
+        this.newAnswer['id'] = message.id; 
+    
+        // Die Antwort in die Subcollection messageAnwser speichern
+        addDoc(
+          this.getMessageAnswerSubcollectionRef(chat_id, message.id), // chat_id und message.id verwenden
+          this.setAnswerObject(this.newAnswer)
+        ).then((docRef) => {
+          this.newAnswer['content'] = '';
+          const newID = docRef?.id;
+          // Aktualisieren Sie die Anzahl der Antworten der Nachricht
+          this.updatePostAmountAnswers(message.id, this.listAnswers.length, chat_id);
+          // Aktualisieren Sie die Antwort mit ihrer ID
+          this.updateAnswerWithId(message.id, newID, chat_id);
+        });
+      }
     }
-  }
-
-  getMessageAnswerSubcollectionRef(chat_id: string, message_id: string) {
-    return collection(
-        this.firestore,
-        "chats",
-        chat_id,
-        "messages",
-        message_id,
-        "messageAnswer"
-    );
-}
 
 
 getAnswersForMessage(chat_id: string, message_id: string) {
@@ -488,7 +504,48 @@ async updatePostAmountAnswers(messages_id: any, amount: any, chat_id: any) {
       this.unsubAnswers();
     }
   
+    
     //Ende Code für Post als Subcollection
+
+
+    // emoji
+    addEmoji(event: any, chatId: string, messageId: string) {
+      // Extrahieren Sie den ausgewählten Emoji aus dem Event
+      const selectedEmoji = event.emoji;
+    
+      // Erstellen Sie ein neues Reaktionsobjekt
+      const newReaction = {
+        emoji: selectedEmoji,
+        userId: this.user.id, // Annahme: Der aktuelle Benutzer führt die Reaktion durch
+        date: this.getCurrentDate(),
+        time: this.getCurrentTime()
+      };
+    
+      // Fügen Sie das Reaktionsobjekt als neues Dokument in die Unter-Subcollection "reactions" ein
+      addDoc(
+        this.getReactionsSubcollectionRef(chatId, messageId),
+        newReaction
+      )
+      .then((docRef) => {
+        console.log('Reaction added successfully:', docRef.id);
+      })
+      .catch((error) => {
+        console.error('Error adding reaction:', error);
+      });
+    }
+
+    
+getReactionsSubcollectionRef(chatId: string, messageId: string) {
+  return collection(
+    this.firestore,
+    'chats',
+    chatId,
+    'messages',
+    messageId,
+    'reactions'
+  );
+}
+    
 }
 
 
