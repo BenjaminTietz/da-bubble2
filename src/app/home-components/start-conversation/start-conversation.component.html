@@ -36,11 +36,22 @@
         <div class="container-new-message">
           <textarea [(ngModel)]="messageText"></textarea>
       
+
+                          <!-- Emoji Picker -->
+                          <div class="inputfield-emoji-picker">
+                            <emoji-mart
+                              (emojiClick)="selectEmoji($event)"
+                              *ngIf="emojiPickerAnswerVisible"
+                              title="Pick your emoji…"
+                              emoji="point_up"
+                            ></emoji-mart>
+                          </div>
+
           <div class="container-icons">
             <div class="icons-left">
               <mat-icon matTooltip="add file">add</mat-icon>
               <div class="vertical-line"></div>
-              <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+              <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji">add_reaction</mat-icon>
               <mat-icon>alternate_email</mat-icon>
             </div>
       

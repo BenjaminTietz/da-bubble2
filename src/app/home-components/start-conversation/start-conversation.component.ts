@@ -26,7 +26,8 @@ import { Channel } from '../../../models/channel.class';
 import { FormsModule } from '@angular/forms';
 import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
-
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 @Component({
   selector: 'app-start-conversation',
   templateUrl: './start-conversation.component.html',
@@ -47,6 +48,11 @@ export class StartConversationComponent implements OnInit {
   messageText: string = '';
   storedUserAuthUID: any;
   user: User = new User();
+
+
+  // emoji
+  emojiPickerAnswerVisible: boolean = false;
+
 
   constructor(
     private router: Router,
@@ -444,4 +450,13 @@ export class StartConversationComponent implements OnInit {
     }
   }
   
+
+  // emoji
+  selectEmoji($event: { emoji: { native: string; }; }) {
+    this.messageText += $event.emoji.native;
+  }
+
+  toggleSetEmojiPicker() {
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+  }
 }

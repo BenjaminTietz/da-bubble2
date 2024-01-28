@@ -50,6 +50,7 @@ background-color: $white
 
 
 .container-new-message {
+    position: relative;
     border: 1px solid #ADB0D9;
     border-radius: 20px;
     padding: 16px;
@@ -125,3 +126,10 @@ background-color: $white
     }
 
 }
+
+//emoji picker
+.inputfield-emoji-picker {
+    position:absolute;
+    top: -432px;
+    left: 0px;
+  }

@@ -507,7 +507,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   //Ende Code für Post als Subcollection
 
   // emoji
-  addEmoji(event: any, chatId: string, messageId: string) {
+  addReaction(event: any, chatId: string) {
     const selectedEmoji = event.emoji;
     const newReaction = {
       emoji: selectedEmoji,
@@ -516,7 +516,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       time: this.getCurrentTime(),
     };
   
-    addDoc(this.getReactionsSubcollectionRef(chatId, messageId), newReaction)
+    addDoc(this.getReactionsSubcollectionRef(chatId, this.messageId), newReaction)
       .then((docRef) => {
         console.log('Reaction added successfully:', docRef.id);
       })

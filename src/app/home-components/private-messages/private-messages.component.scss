@@ -454,6 +454,7 @@
   justify-content: flex-end;
   width: 100%;
   gap: 16px;
+  cursor: pointer;
 }
 .conversation-with-user {
   p {
@@ -796,9 +797,15 @@
 }
 
 //emoji picker
-.emoji-picker {
+.inputfield-emoji-picker {
   position:absolute;
   top: -432px;
   left: 0px;
+}
+
+.reactions-emoji-picker  {
+  position:absolute;
+  top: 564px;
+  left: 100px;
 }
 

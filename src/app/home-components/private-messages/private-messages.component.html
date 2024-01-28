@@ -45,7 +45,7 @@
               <p>{{ message.time }}</p>
               <div class="message-options">
                 <mat-icon
-                (click)="toggleEmojiPicker()"
+                  (click)="toggleEmojiPicker()"
                   matTooltip="Add Reaction"
                   [ngStyle]="{ color: 'orange' }"
                   >add_reaction</mat-icon
@@ -91,15 +91,16 @@
           </div>
         </ng-container>
       </div>
-<!-- Emoji Picker -->
-<div class="emoji-picker">
-  <emoji-mart 
-  (emojiClick)="selectEmoji($event)"
-    *ngIf="emojiPickerVisible"
-    title="Pick your emoji…" 
-    emoji="point_up"
-  ></emoji-mart>
-</div>
+
+      <!-- Emoji Picker -->
+      <div class="reactions-emoji-picker">
+        <emoji-mart
+          (emojiClick)="addReaction($event, chatId)"
+          *ngIf="emojiPickerVisible"
+          title="Pick your emoji…"
+          emoji="point_up"
+        ></emoji-mart>
+      </div>
 
       <!-- Nur anzeigen wenn converstion noch leer ist -->
       <div class="conversation-with-user">
@@ -131,24 +132,24 @@
         <div class="container-new-message">
           <textarea [(ngModel)]="messageText"></textarea>
 
-
-<!-- Emoji Picker -->
-<div class="emoji-picker">
-  <emoji-mart 
-  (emojiClick)="selectEmoji($event)"
-    *ngIf="emojiPickerAnswerVisible"
-    title="Pick your emoji…" 
-    emoji="point_up"
-  ></emoji-mart>
-</div>
-
+          <!-- Emoji Picker -->
+          <div class="inputfield-emoji-picker">
+            <emoji-mart
+              (emojiClick)="selectEmoji($event)"
+              *ngIf="emojiPickerAnswerVisible"
+              title="Pick your emoji…"
+              emoji="point_up"
+            ></emoji-mart>
+          </div>
 
           <div class="container-icons">
             <div class="icons-left">
               <mat-icon matTooltip="add file">add</mat-icon>
               <div class="vertical-line"></div>
-              <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji">add_reaction</mat-icon>
-              <mat-icon>alternate_email</mat-icon>
+              <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji"
+                >add_reaction</mat-icon
+              >
+              <mat-icon matTooltip="tag user">alternate_email</mat-icon>
             </div>
 
             <div class="icons-right" (click)="addMessage(chatId)">
@@ -161,19 +162,38 @@
   </div>
 
   <!-- Answers -->
-  <div *ngIf="showAnswers && dataLoaded && listMessages[postDetail]" class="container-answers">
+  <div
+    *ngIf="showAnswers && dataLoaded && listMessages[postDetail]"
+    class="container-answers"
+  >
     <div class="answers-header">
       <div class="answers-header-left-side">
         <span>Thread</span>
-        <span>{{ chatData?.chatStartedBy?.name }} X & Y {{ chatData?.['participant'].name }}</span>
+        <span
+          >{{ chatData?.chatStartedBy?.name }} X & Y
+          {{ chatData?.['participant'].name }}</span
+        >
       </div>
       <mat-icon (click)="hideAnswers()">close</mat-icon>
     </div>
 
     <!-- Original Post -->
-    <div [ngClass]="listMessages[postDetail].user.authUID == storedUserAuthUID ? 'original-post-own-post' : 'original-post'">
+    <div
+      [ngClass]="
+        listMessages[postDetail].user.authUID == storedUserAuthUID
+          ? 'original-post-own-post'
+          : 'original-post'
+      "
+    >
       <div class="container-user-img">
-        <img [src]="listMessages[postDetail].user.avatarURL ? '../../../' + listMessages[postDetail].user.avatarURL : listMessages[postDetail].user.photoURL" alt="img user" />
+        <img
+          [src]="
+            listMessages[postDetail].user.avatarURL
+              ? '../../../' + listMessages[postDetail].user.avatarURL
+              : listMessages[postDetail].user.photoURL
+          "
+          alt="img user"
+        />
       </div>
       <div class="container-post">
         <div class="name-and-time">
@@ -190,44 +210,68 @@
     <!-- Line and Answer Count -->
     <div class="line-answers">
       <div class="amount-answers">
-        {{ listAnswers.length }} Antwort<span *ngIf="listAnswers.length !== 1">en</span>
+        {{ listAnswers.length }} Antwort<span *ngIf="listAnswers.length !== 1"
+          >en</span
+        >
       </div>
       <div class="line"></div>
     </div>
-  <!-- Antworten -->
-  <div *ngFor="let answer of listAnswers" class="single-answer">
-    <div class="container-user-img">
-      <img [src]="answer.user.avatarURL ? '../../../' + answer.user.avatarURL : answer.user.photoURL" alt="img user" />
-    </div>
-    <div class="container-post">
-      <div class="name-and-time">
-        <b>{{ answer.user.name }}</b>
-        <span>{{ answer.time }} Uhr</span>
+    <!-- Antworten -->
+    <div *ngFor="let answer of listAnswers" class="single-answer">
+      <div class="container-user-img">
+        <img
+          [src]="
+            answer.user.avatarURL
+              ? '../../../' + answer.user.avatarURL
+              : answer.user.photoURL
+          "
+          alt="img user"
+        />
       </div>
-      <div class="post-content">
-        {{ answer.content }}
+      <div class="container-post">
+        <div class="name-and-time">
+          <b>{{ answer.user.name }}</b>
+          <span>{{ answer.time }} Uhr</span>
+        </div>
+        <div class="post-content">
+          {{ answer.content }}
+        </div>
+        <div class="reactions"></div>
       </div>
-      <div class="reactions"></div>
+      <div *ngIf="answer.user.id == user.id" class="container-delete">
+        <mat-icon>delete</mat-icon>
+      </div>
     </div>
-    <div *ngIf="answer.user.id == user.id" class="container-delete">
-      <mat-icon>delete</mat-icon>
-    </div>
-  </div>
 
-  <!-- Neues Antwort-Eingabefeld -->
-  <div class="container-new-message">
-    <textarea maxlength="160" [(ngModel)]="newAnswer['content']" name="" id="" cols="30" rows="auto" [placeholder]="'Antworten...'"></textarea>
-    <div class="container-icons">
-      <div class="icons-left">
-        <mat-icon matTooltip="add file">add</mat-icon>
-        <div class="vertical-line"></div>
-        <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
-        <mat-icon>alternate_email</mat-icon>
-      </div>
-      <div class="icons-right">
-        <mat-icon (click)="createAnswer(chatId, listMessages[postDetail])" [matTooltip]="newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'" [ngClass]="newAnswer['content'] ? '' : 'cursor-no'">send</mat-icon>
+    <!-- Neues Antwort-Eingabefeld -->
+    <div class="container-new-message">
+      <textarea
+        maxlength="160"
+        [(ngModel)]="newAnswer['content']"
+        name=""
+        id=""
+        cols="30"
+        rows="auto"
+        [placeholder]="'Antworten...'"
+      ></textarea>
+      <div class="container-icons">
+        <div class="icons-left">
+          <mat-icon matTooltip="add file">add</mat-icon>
+          <div class="vertical-line"></div>
+          <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+          <mat-icon>alternate_email</mat-icon>
+        </div>
+        <div class="icons-right">
+          <mat-icon
+            (click)="createAnswer(chatId, listMessages[postDetail])"
+            [matTooltip]="
+              newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'
+            "
+            [ngClass]="newAnswer['content'] ? '' : 'cursor-no'"
+            >send</mat-icon
+          >
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
