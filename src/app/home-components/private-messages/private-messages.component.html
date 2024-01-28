@@ -45,6 +45,7 @@
               <p>{{ message.time }}</p>
               <div class="message-options">
                 <mat-icon
+                (click)="toggleEmojiPicker()"
                   matTooltip="Add Reaction"
                   [ngStyle]="{ color: 'orange' }"
                   >add_reaction</mat-icon
@@ -90,10 +91,16 @@
           </div>
         </ng-container>
       </div>
-       <!-- Emoji Picker -->
-      <div class="emoji-picker">
-        <emoji-mart  title="Pick your emoji…" emoji="point_up"></emoji-mart>
-        </div>
+<!-- Emoji Picker -->
+<div class="emoji-picker">
+  <emoji-mart 
+  (emojiClick)="selectEmoji($event)"
+    *ngIf="emojiPickerVisible"
+    title="Pick your emoji…" 
+    emoji="point_up"
+  ></emoji-mart>
+</div>
+
       <!-- Nur anzeigen wenn converstion noch leer ist -->
       <div class="conversation-with-user">
         <div
@@ -124,11 +131,23 @@
         <div class="container-new-message">
           <textarea [(ngModel)]="messageText"></textarea>
 
+
+<!-- Emoji Picker -->
+<div class="emoji-picker">
+  <emoji-mart 
+  (emojiClick)="selectEmoji($event)"
+    *ngIf="emojiPickerAnswerVisible"
+    title="Pick your emoji…" 
+    emoji="point_up"
+  ></emoji-mart>
+</div>
+
+
           <div class="container-icons">
             <div class="icons-left">
               <mat-icon matTooltip="add file">add</mat-icon>
               <div class="vertical-line"></div>
-              <mat-icon matTooltip="add emoji">add_reaction</mat-icon>
+              <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji">add_reaction</mat-icon>
               <mat-icon>alternate_email</mat-icon>
             </div>
 
@@ -208,10 +227,6 @@
       <div class="icons-right">
         <mat-icon (click)="createAnswer(chatId, listMessages[postDetail])" [matTooltip]="newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'" [ngClass]="newAnswer['content'] ? '' : 'cursor-no'">send</mat-icon>
       </div>
-      <emoji-mart title="Pick your emoji…" emoji="point_up"></emoji-mart>
-
-
-
     </div>
   </div>
 </div>

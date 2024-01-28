@@ -32,15 +32,15 @@ import { Answer } from '../../../models/answer.class';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 
-
 @Component({
   selector: 'app-private-messages',
   templateUrl: './private-messages.component.html',
   styleUrl: './private-messages.component.scss',
 })
 export class PrivateMessagesComponent implements OnInit, OnDestroy {
-[x: string]: any;
+  [x: string]: any;
   chatId: any;
+  messageId: any;
   selectedUsers: User[] = [];
   messageText: string = '';
   chatData: Chat | undefined;
@@ -56,7 +56,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   //edit message
   editMessageText: string = '';
   editingMessageId: string | null = null;
- 
+
   //answers
   showAnswers: boolean = false;
   messageDetail: number = 0;
@@ -67,10 +67,11 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   unsubPosts!: () => void;
   listPosts: any = [];
   postDetail: number = 0; //prüfen auf welche Nummer initial setzen
-  
 
   // emoji
-  showEmojiPicker = false;
+  emojiPickerVisible: boolean = false;
+  emojiPickerAnswerVisible: boolean = false;
+  selectedEmoji: string = '';
 
 
   constructor(
@@ -78,12 +79,12 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public chatService: ChatService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
-      this.unsubMessages = this.subMessagesList(this.chatId); 
+      this.unsubMessages = this.subMessagesList(this.chatId);
       //  this.unsubAnswers = this.subAnswersList(this.chatId,this['messageId']);    Funktioniert nicht
       this.getChatDataById(this.chatId);
     });
@@ -165,7 +166,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       date: obj.date || this.getCurrentDate(),
       time: obj.time || this.getCurrentTime(),
       messageSendBy: obj.messageSendBy || this.getUserObjectForFirestore(),
-      messageAnswer: obj.messageAnswer || [], 
+      messageAnswer: obj.messageAnswer || [],
       reactions: obj.reactions || [],
     };
   }
@@ -178,12 +179,12 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: '',
       text: this.messageText,
       chatId: this.chatId,
-      user: this.getUserObjectForFirestore(), 
+      user: this.getUserObjectForFirestore(),
       date: this.getCurrentDate(),
       time: this.getCurrentTime(),
       messageSendBy: this.getUserObjectForFirestore(),
       reactions: [],
-      messageAnswer: []
+      messageAnswer: [],
     };
 
     // Add the new message to the Firestore subcollection
@@ -228,7 +229,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       .catch((err) => {
         console.log(err);
       })
-      .then(() => { });
+      .then(() => {});
   }
 
   getCurrentTime() {
@@ -276,10 +277,9 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-
   logMessageData(messageId: string) {
-
     console.log('Clicked on message with ID:', messageId);
+    this.messageId = messageId;
     console.log(
       'Message:',
       this.listMessages.find(
@@ -306,13 +306,11 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-
   async saveEditedMessage() {
     if (!this.editingMessageId) {
       console.error('No message being edited.');
       return;
     }
-
 
     const existingMessage = this.listMessages.find(
       (message: { id: string }) => message.id === this.editingMessageId
@@ -332,13 +330,15 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       time: existingMessage.time,
       messageSendBy: this.getUserObjectForFirestore(),
       reactions: [],
-      messageAnswer: []
+      messageAnswer: [],
     };
 
     try {
-
       await updateDoc(
-        doc(this.getMessageSubcollectionRef(this.chatId), this.editingMessageId),
+        doc(
+          this.getMessageSubcollectionRef(this.chatId),
+          this.editingMessageId
+        ),
         editedMessage
       );
 
@@ -349,15 +349,11 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-
   cancelEditingMessage() {
     this.editingMessageId = null;
   }
 
   // edit message end
-
-
-
 
   //Code Timo
 
@@ -365,15 +361,13 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     const dialog = this.dialog.open(UserDetailComponent, {
       position: {
         top: '32px',
-        right: '32px'
+        right: '32px',
       },
       maxWidth: '100%',
-      panelClass: 'dialog-profile-detail'
-
+      panelClass: 'dialog-profile-detail',
     });
     dialog.componentInstance.user = new User(user);
   }
-
 
   async openAnswers(chat_id: any, message: any, i: any) {
     console.log(message);
@@ -391,13 +385,18 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       orderBy('date'),
       orderBy('time')
     );
-  
+
     return onSnapshot(q, (list) => {
       this.listAnswers = [];
       list.forEach((element) => {
         const answerData = element.data();
         // Überprüfen, ob das Antwortobjekt die erwartete Struktur hat
-        if ('content' in answerData && 'user' in answerData && 'date' in answerData && 'time' in answerData) {
+        if (
+          'content' in answerData &&
+          'user' in answerData &&
+          'date' in answerData &&
+          'time' in answerData
+        ) {
           // Fügen Sie das Antwortobjekt zur Liste der Antworten hinzu
           this.listAnswers.push(this.setAnswerObject(answerData));
         }
@@ -407,7 +406,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   getAnswerSubcollectionRef(chat_id: any, message_id: any) {
-    return collection(this.firestore,'chats', chat_id, 'messages', message_id)
+    return collection(this.firestore, 'chats', chat_id, 'messages', message_id);
   }
 
   getMessageAnswerSubcollectionRef(chat_id: string, message_id: string) {
@@ -433,122 +432,120 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     };
   }
 
-    //Code für Answers
+  //Code für Answers
 
+  createAnswer(chat_id: any, message: any) {
+    if (this.newAnswer['content']) {
+      console.log('Creating answer...');
+      console.log('Message ID:', message.id);
+      console.log('New answer content:', this.newAnswer['content']);
+      this.newAnswer.user = this.user;
+      this.newAnswer.date = this.getCurrentDate();
+      this.newAnswer.time = this.getCurrentTime();
+      this.newAnswer['id'] = message.id;
 
-    createAnswer(chat_id: any, message: any) {
-      if (this.newAnswer['content']) {
-        console.log('Creating answer...');
-        console.log('Message ID:', message.id);
-        console.log('New answer content:', this.newAnswer['content']);
-        this.newAnswer.user = this.user;
-        this.newAnswer.date = this.getCurrentDate();
-        this.newAnswer.time = this.getCurrentTime();
-        this.newAnswer['id'] = message.id; 
-    
-        // Die Antwort in die Subcollection messageAnwser speichern
-        addDoc(
-          this.getMessageAnswerSubcollectionRef(chat_id, message.id), // chat_id und message.id verwenden
-          this.setAnswerObject(this.newAnswer)
-        ).then((docRef) => {
-          this.newAnswer['content'] = '';
-          const newID = docRef?.id;
-          // Aktualisieren Sie die Anzahl der Antworten der Nachricht
-          this.updatePostAmountAnswers(message.id, this.listAnswers.length, chat_id);
-          // Aktualisieren Sie die Antwort mit ihrer ID
-          this.updateAnswerWithId(message.id, newID, chat_id);
-        });
-      }
-    }
-
-
-getAnswersForMessage(chat_id: string, message_id: string) {
-  const q = query(
-      this.getMessageAnswerSubcollectionRef(chat_id, message_id)
-  );
-  return onSnapshot(q, (querySnapshot) => {
-      const answers: { id: string; }[] = [];
-      querySnapshot.forEach((doc) => {
-          answers.push({ id: doc.id, ...doc.data() });
-      });
-      console.log("Answers for message: ", answers);
-
-  });
-}
-
-  
-async updateAnswerWithId(messages_id: any, newId: any, chat_id: any) {
-  const docRef = doc(this.getAnswerSubcollectionRef(chat_id, messages_id), newId);
-  await updateDoc(docRef, { id: newId }).catch(
-    (err) => { console.log(err); }
-  ).then(
-    () => { }
-  );
-}
-
-async updatePostAmountAnswers(messages_id: any, amount: any, chat_id: any) {
-  const docRef = doc(this.getPostSubcollectionRef(chat_id), messages_id);
-  await updateDoc(docRef, { answers: amount }).catch(
-    (err) => { console.log(err); }
-  ).then(
-    () => { }
-  );
-}
-
-    getPostSubcollectionRef(chat_id: any) {
-      return collection(this.firestore, 'chats', chat_id, 'messages')
-    }
-  
-    hideAnswers() {
-      this.showAnswers = false;
-      this.unsubAnswers();
-    }
-  
-    
-    //Ende Code für Post als Subcollection
-
-
-    // emoji
-    addEmoji(event: any, chatId: string, messageId: string) {
-      // Extrahieren Sie den ausgewählten Emoji aus dem Event
-      const selectedEmoji = event.emoji;
-    
-      // Erstellen Sie ein neues Reaktionsobjekt
-      const newReaction = {
-        emoji: selectedEmoji,
-        userId: this.user.id, // Annahme: Der aktuelle Benutzer führt die Reaktion durch
-        date: this.getCurrentDate(),
-        time: this.getCurrentTime()
-      };
-    
-      // Fügen Sie das Reaktionsobjekt als neues Dokument in die Unter-Subcollection "reactions" ein
+      // Die Antwort in die Subcollection messageAnwser speichern
       addDoc(
-        this.getReactionsSubcollectionRef(chatId, messageId),
-        newReaction
-      )
+        this.getMessageAnswerSubcollectionRef(chat_id, message.id), // chat_id und message.id verwenden
+        this.setAnswerObject(this.newAnswer)
+      ).then((docRef) => {
+        this.newAnswer['content'] = '';
+        const newID = docRef?.id;
+        // Aktualisieren Sie die Anzahl der Antworten der Nachricht
+        this.updatePostAmountAnswers(
+          message.id,
+          this.listAnswers.length,
+          chat_id
+        );
+        // Aktualisieren Sie die Antwort mit ihrer ID
+        this.updateAnswerWithId(message.id, newID, chat_id);
+      });
+    }
+  }
+
+  getAnswersForMessage(chat_id: string, message_id: string) {
+    const q = query(this.getMessageAnswerSubcollectionRef(chat_id, message_id));
+    return onSnapshot(q, (querySnapshot) => {
+      const answers: { id: string }[] = [];
+      querySnapshot.forEach((doc) => {
+        answers.push({ id: doc.id, ...doc.data() });
+      });
+      console.log('Answers for message: ', answers);
+    });
+  }
+
+  async updateAnswerWithId(messages_id: any, newId: any, chat_id: any) {
+    const docRef = doc(
+      this.getAnswerSubcollectionRef(chat_id, messages_id),
+      newId
+    );
+    await updateDoc(docRef, { id: newId })
+      .catch((err) => {
+        console.log(err);
+      })
+      .then(() => {});
+  }
+
+  async updatePostAmountAnswers(messages_id: any, amount: any, chat_id: any) {
+    const docRef = doc(this.getPostSubcollectionRef(chat_id), messages_id);
+    await updateDoc(docRef, { answers: amount })
+      .catch((err) => {
+        console.log(err);
+      })
+      .then(() => {});
+  }
+
+  getPostSubcollectionRef(chat_id: any) {
+    return collection(this.firestore, 'chats', chat_id, 'messages');
+  }
+
+  hideAnswers() {
+    this.showAnswers = false;
+    this.unsubAnswers();
+  }
+
+  //Ende Code für Post als Subcollection
+
+  // emoji
+  addEmoji(event: any, chatId: string, messageId: string) {
+    const selectedEmoji = event.emoji;
+    const newReaction = {
+      emoji: selectedEmoji,
+      userId: this.user.id,
+      date: this.getCurrentDate(),
+      time: this.getCurrentTime(),
+    };
+  
+    addDoc(this.getReactionsSubcollectionRef(chatId, messageId), newReaction)
       .then((docRef) => {
         console.log('Reaction added successfully:', docRef.id);
       })
       .catch((error) => {
         console.error('Error adding reaction:', error);
       });
-    }
+  }
 
-    
-getReactionsSubcollectionRef(chatId: string, messageId: string) {
-  return collection(
-    this.firestore,
-    'chats',
-    chatId,
-    'messages',
-    messageId,
-    'reactions'
-  );
+  getReactionsSubcollectionRef(chatId: string, messageId: string) {
+    return collection(
+      this.firestore,
+      'chats',
+      chatId,
+      'messages',
+      messageId,
+      'reactions'
+    );
+  }
+
+  toggleEmojiPicker() {
+    this.emojiPickerVisible = !this.emojiPickerVisible;
+  }
+
+  selectEmoji(event: any) {
+    const selectedEmoji = event.emoji.native; 
+    this.messageText += selectedEmoji;
+  }
+
+  toggleSetEmojiPicker() {
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+  }
 }
-    
-}
-
-
-
-
-
