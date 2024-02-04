@@ -35,6 +35,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 })
 export class StartConversationComponent implements OnInit {
   searchText: string = '';
+  searchActive: boolean = false;
   channelResults: any[] = [];
   userResults: any[] = [];
   auth: Auth;
@@ -48,7 +49,6 @@ export class StartConversationComponent implements OnInit {
   messageText: string = '';
   storedUserAuthUID: any;
   user: User = new User();
-
 
   // emoji
   emojiPickerAnswerVisible: boolean = false;
@@ -79,8 +79,6 @@ export class StartConversationComponent implements OnInit {
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
-    this.loadUserResults();
-    this.loadChannelResults();
   }
 
   getUser() {
@@ -114,7 +112,7 @@ export class StartConversationComponent implements OnInit {
       authUID: obj.authUID || '',
       name: obj.name || '',
       status: obj.status || true,
-      avatarURL: obj.avatarURL || '', //code added by Ben
+      avatarURL: obj.avatarURL || '', 
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
       email: obj.email || '',
@@ -152,32 +150,50 @@ export class StartConversationComponent implements OnInit {
     }
   }
 
-  async loadUserResults() {
-    const usersQuery = query(collection(this.firestore, 'users'));
+  
+  clearUserResults() {
+    this.userResults = [];
+  }
+  
+  clearChannelResults() {
+    this.channelResults = [];
+  }
+
+  async search() {
+    if (!this.searchText) {
+        this.searchActive = false;
+        this.clearSearchResults();
+        this.selectedUsers = [];
+        return;
+    }
+    
+    this.searchActive = true;
+    
+    if (this.searchText.startsWith('#')) {
+        const channelName = this.searchText.slice(1);
+        await this.loadChannelResults(channelName);
+    } else if (this.searchText.startsWith('@')) {
+        const username = this.searchText.slice(1);
+        await this.loadUserResults(username);
+    }
+}
+
+async loadUserResults(username: string) {
+    const usersQuery = query(collection(this.firestore, 'users'), where('name', '>=', username));
     const usersSnapshot = await getDocs(usersQuery);
     this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
-    console.log(this.userResults);
-  }
+}
 
-  async loadChannelResults() {
-    const channelsQuery = query(collection(this.firestore, 'channels'));
+async loadChannelResults(channelName: string) {
+    const channelsQuery = query(collection(this.firestore, 'channels'), where('description', '>=', channelName));
     const channelsSnapshot = await getDocs(channelsQuery);
-    this.channelResults = channelsSnapshot.docs.map((doc) =>
-      doc.data()
-    ) as any[];
-  }
+    this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
+}
 
-  // Search for users and channels via @ and # respectively
-
-  search() {
-    if (this.searchText.startsWith('#')) {
-      const channelName = this.searchText.slice(1);
-      this.filterChannelResults(channelName);
-    } else if (this.searchText.startsWith('@')) {
-      const username = this.searchText.slice(1);
-      this.filterUserResults(username);
-    }
-  }
+clearSearchResults() {
+    this.channelResults = [];
+    this.userResults = [];
+}
 
   filterChannelResults(channelName: string) {
     this.channelResults = this.channelResults.filter((channel) =>
@@ -459,4 +475,5 @@ export class StartConversationComponent implements OnInit {
   toggleSetEmojiPicker() {
     this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
   }
+
 }

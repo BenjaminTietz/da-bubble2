@@ -23,7 +23,6 @@
       <!-- Teilnehmer Nachrichten  -->
 
       <div
-        (click)="logMessageData(message.id)"
         [ngClass]="
           message.user.authUID == this.storedUserAuthUID
             ? 'user-chat-message'
@@ -67,7 +66,7 @@
           >
             <p>{{ message.text }}</p>
             <div
-              (click)="openAnswers(message.id, message, i)"
+              (click)="openAnswers(chatId, message.id, i)"
               class="message-bottom"
             >
               <span>2 Antworten</span>
@@ -163,15 +162,14 @@
 
   <!-- Answers -->
   <div
-    *ngIf="showAnswers && dataLoaded && listMessages[postDetail]"
+    *ngIf="showAnswers && dataLoaded && listAnswers[answerDetail]"
     class="container-answers"
   >
     <div class="answers-header">
       <div class="answers-header-left-side">
         <span>Thread</span>
         <span
-          >{{ chatData?.chatStartedBy?.name }} X & Y
-          {{ chatData?.['participant'].name }}</span
+          >{{listAnswers[answerDetail].message}}</span
         >
       </div>
       <mat-icon (click)="hideAnswers()">close</mat-icon>
@@ -180,7 +178,7 @@
     <!-- Original Post -->
     <div
       [ngClass]="
-        listMessages[postDetail].user.authUID == storedUserAuthUID
+        listMessages[answerDetail].user?.authUID == storedUserAuthUID
           ? 'original-post-own-post'
           : 'original-post'
       "
@@ -188,20 +186,20 @@
       <div class="container-user-img">
         <img
           [src]="
-            listMessages[postDetail].user.avatarURL
-              ? '../../../' + listMessages[postDetail].user.avatarURL
-              : listMessages[postDetail].user.photoURL
+            listMessages[answerDetail].user.avatarURL
+              ? '../../../' + listMessages[answerDetail].user.avatarURL
+              : listMessages[answerDetail].user.photoURL
           "
           alt="img user"
         />
       </div>
       <div class="container-post">
         <div class="name-and-time">
-          <b>{{ listMessages[postDetail].user.name }}</b>
-          <span>{{ listMessages[postDetail].time }} Uhr</span>
+          <b>{{ listAnswers[answerDetail].user.name }}</b>
+          <span>{{ listAnswers[answerDetail].time }} Uhr</span>
         </div>
         <div class="post-content">
-          {{ listMessages[postDetail].content }}
+          {{ listAnswers[answerDetail].content }}
         </div>
         <div class="reactions"></div>
       </div>
@@ -263,7 +261,7 @@
         </div>
         <div class="icons-right">
           <mat-icon
-            (click)="createAnswer(chatId, listMessages[postDetail])"
+          (click)="createAnswer(chatId, messageId)"
             [matTooltip]="
               newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'
             "
