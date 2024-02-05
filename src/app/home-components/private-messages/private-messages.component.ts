@@ -46,6 +46,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   chatData: Chat | undefined;
   messages: Message[] = [];
 
+
   //neu
   unsubMessages!: () => void;
   listMessages: any = [];
@@ -402,7 +403,9 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   //Code für Answers
 
-  createAnswer(chatId: string, messageId: string) {
+  createAnswer(chatId: string) {
+
+    console.log('Chat ID:', chatId);
     const newAnswer = {
       content: this.newAnswer['content'],
       userId: this.user.id, // Nur die Benutzer-ID speichern
@@ -410,13 +413,12 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       time: this.getCurrentTime()
     };
   
-    const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
-  
+    const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, this.messageId);
+    
     if (messageAnswerRef) {
       addDoc(messageAnswerRef, newAnswer)
         .then((docRef) => {
           console.log('Answer added successfully:', docRef.id);
-
           this.newAnswer['content'] = '';
         })
         .catch((error) => {
@@ -428,7 +430,9 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
   
   
+  
 
+  
 
 
   hideAnswers() {

@@ -162,14 +162,14 @@
 
   <!-- Answers -->
   <div
-    *ngIf="showAnswers && dataLoaded && listAnswers[answerDetail]"
+    *ngIf="showAnswers && dataLoaded"
     class="container-answers"
   >
     <div class="answers-header">
       <div class="answers-header-left-side">
         <span>Thread</span>
         <span
-          >{{listAnswers[answerDetail].message}}</span
+          ></span
         >
       </div>
       <mat-icon (click)="hideAnswers()">close</mat-icon>
@@ -177,69 +177,131 @@
 
     <!-- Original Post -->
     <div
+    [ngClass]="
+      message.user.authUID == this.storedUserAuthUID
+        ? 'user-chat-message'
+        : 'other-user-chat-message'
+    "
+    *ngFor="let message of listMessages; let i = index"
+  >
+    <!-- messages von mir  -->
+    <ng-container *ngIf=" i === answerDetail">
+      <div class="date-wrapper">
+        <div class="purple-line"></div>
+        <p>{{ message.date }}</p>
+        <div class="purple-line"></div>
+      </div>
+      <div class="user-wrapper">
+        <img [src]="message.user.avatarURL" alt="user avatar" />
+        <div class="user-info">
+          <h3>{{ message.user.name }}</h3>
+          <p>{{ message.time }}</p>
+          <div class="message-options">
+            <mat-icon
+              (click)="toggleEmojiPicker()"
+              matTooltip="Add Reaction"
+              [ngStyle]="{ color: 'orange' }"
+              >add_reaction</mat-icon
+            >
+            <mat-icon
+              matTooltip="Edit Message"
+              (click)="editMessage(message.id)"
+              >more_vert</mat-icon
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        [ngClass]="
+          message.user.authUID == this.storedUserAuthUID
+            ? 'user-reversed-text-wrapper'
+            : 'reversed-text-wrapper'
+        "
+      >
+        <p>{{ message.text }}</p>
+  
+        <div
+          *ngIf="editingMessageId === message.id"
+          class="edit-message"
+          id="editMessage"
+        >
+          <textarea [(ngModel)]="editMessageText"></textarea>
+          <div class="edit-message-buttons">
+            <button class="cancel-btn" (click)="cancelEditingMessage()">
+              Abbrechen
+            </button>
+            <button class="save-btn" (click)="saveEditedMessage()">
+              Speichern
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  
+  <!-- neue Antworten -->
+  <div
+  [ngClass]="
+    answer.user.authUID == this.storedUserAuthUID
+      ? 'user-chat-message'
+      : 'other-user-chat-message'
+  "
+  *ngFor="let answer of listAnswers; let i = index"
+>
+  <!-- messages von mir  -->
+  <ng-container *ngIf=" i === answerDetail">
+    <div class="date-wrapper">
+      <div class="purple-line"></div>
+      <p>{{ answer.date }}</p>
+      <div class="purple-line"></div>
+    </div>
+    <div class="user-wrapper">
+      <img [src]="answer.user.avatarURL" alt="user avatar" />
+      <div class="user-info">
+        <h3>{{ answer.user.name }}</h3>
+        <p>{{ answer.time }}</p>
+        <div class="message-options">
+          <mat-icon
+            (click)="toggleEmojiPicker()"
+            matTooltip="Add Reaction"
+            [ngStyle]="{ color: 'orange' }"
+            >add_reaction</mat-icon
+          >
+          <mat-icon
+            matTooltip="Edit Message"
+            (click)="editMessage(answer.id)"
+            >more_vert</mat-icon
+          >
+        </div>
+      </div>
+    </div>
+    <div
       [ngClass]="
-        listMessages[answerDetail].user?.authUID == storedUserAuthUID
-          ? 'original-post-own-post'
-          : 'original-post'
+        answer.user.authUID == this.storedUserAuthUID
+          ? 'user-reversed-text-wrapper'
+          : 'reversed-text-wrapper'
       "
     >
-      <div class="container-user-img">
-        <img
-          [src]="
-            listMessages[answerDetail].user.avatarURL
-              ? '../../../' + listMessages[answerDetail].user.avatarURL
-              : listMessages[answerDetail].user.photoURL
-          "
-          alt="img user"
-        />
-      </div>
-      <div class="container-post">
-        <div class="name-and-time">
-          <b>{{ listAnswers[answerDetail].user.name }}</b>
-          <span>{{ listAnswers[answerDetail].time }} Uhr</span>
-        </div>
-        <div class="post-content">
-          {{ listAnswers[answerDetail].content }}
-        </div>
-        <div class="reactions"></div>
-      </div>
-    </div>
+      <p>{{ answer.text }}</p>
 
-    <!-- Line and Answer Count -->
-    <div class="line-answers">
-      <div class="amount-answers">
-        {{ listAnswers.length }} Antwort<span *ngIf="listAnswers.length !== 1"
-          >en</span
-        >
-      </div>
-      <div class="line"></div>
-    </div>
-    <!-- Antworten -->
-    <div *ngFor="let answer of listAnswers" class="single-answer">
-      <div class="container-user-img">
-        <img
-          [src]="
-            answer.user.avatarURL
-              ? '../../../' + answer.user.avatarURL
-              : answer.user.photoURL
-          "
-          alt="img user"
-        />
-      </div>
-      <div class="container-post">
-        <div class="name-and-time">
-          <b>{{ answer.user.name }}</b>
-          <span>{{ answer.time }} Uhr</span>
+      <div
+        *ngIf="editingMessageId === answer.id"
+        class="edit-message"
+        id="editMessage"
+      >
+        <textarea [(ngModel)]="editMessageText"></textarea>
+        <div class="edit-message-buttons">
+          <button class="cancel-btn" (click)="cancelEditingMessage()">
+            Abbrechen
+          </button>
+          <button class="save-btn" (click)="saveEditedMessage()">
+            Speichern
+          </button>
         </div>
-        <div class="post-content">
-          {{ answer.content }}
-        </div>
-        <div class="reactions"></div>
-      </div>
-      <div *ngIf="answer.user.id == user.id" class="container-delete">
-        <mat-icon>delete</mat-icon>
       </div>
     </div>
+  </ng-container>
+</div>
 
     <!-- Neues Antwort-Eingabefeld -->
     <div class="container-new-message">
@@ -261,7 +323,7 @@
         </div>
         <div class="icons-right">
           <mat-icon
-          (click)="createAnswer(chatId, messageId)"
+          (click)="createAnswer(chatId)"
             [matTooltip]="
               newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'
             "
