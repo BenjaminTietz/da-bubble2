@@ -65,7 +65,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   unsubAnswers!: () => void;
   listAnswers: any[] = [];
-  newAnswer: MessageAnswer = new MessageAnswer();
+  newAnswer: string = '';
 
   dataLoaded: boolean = false;
   answerDetail: number = 0; //prüfen auf welche Nummer initial setzen
@@ -367,6 +367,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     console.log('Message_ID',message_id);
     console.log('Index',i);
 
+    this.messageId = message_id;
     this.showAnswers = true;
     this.answerDetail = i;
     this.unsubAnswers = this.subMessageAnswersList(chat_id, message_id);
@@ -375,6 +376,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   //Subscribe to the messageAnswer subcollection with chatId & messageId
   
   subMessageAnswersList(chat_id: any, message_id: any) {
+    console.log('subAnswersChat_ID',chat_id);
+    console.log('subAnswersMessage_ID',message_id);
     const q = query(this.getMessageAnswerSubcollectionRef(chat_id, message_id), orderBy('date'), orderBy('time'));
     return onSnapshot(q, (list) => {
       this.listAnswers = [];
@@ -391,35 +394,45 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   setAnswerObject(obj: any) {
     return new MessageAnswer({
-        id: obj.id || "",
-        text: obj.content || "",
-        messageId: obj.postId || "",
-        user: this.setUserObject(obj.user),
-        date: obj.date || "",
-        time: obj.time || "",
-        reactions: obj.reactions || [],
+      id: obj.id || "",
+      text: obj.text || "",
+      messageId: obj.messageId || "",
+      user: obj.user ? this.setUserObject(obj.user) : {}, 
+      date: obj.date || "",
+      time: obj.time || "",
+      reactions: obj.reactions || [],
     });
-}
+  }
 
   //Code für Answers
 
-  createAnswer(chatId: string) {
-
+  createAnswer(chatId: string, messageId: string) {
+    console.log('Message ID:', messageId);
     console.log('Chat ID:', chatId);
-    const newAnswer = {
-      content: this.newAnswer['content'],
-      userId: this.user.id, // Nur die Benutzer-ID speichern
+    console.log('New answer is', this.newAnswer);
+
+
+    const newAnswer: MessageAnswer = {
+      id: '',
+      text: this.newAnswer,
+      messageId: messageId,
+      user: this.user,
       date: this.getCurrentDate(),
-      time: this.getCurrentTime()
+      time: this.getCurrentTime(),
+      reactions: []
     };
+
+    const newAnswerJson = JSON.parse(JSON.stringify(newAnswer));
   
-    const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, this.messageId);
+    const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
     
     if (messageAnswerRef) {
-      addDoc(messageAnswerRef, newAnswer)
+      addDoc(messageAnswerRef, newAnswerJson)
         .then((docRef) => {
           console.log('Answer added successfully:', docRef.id);
-          this.newAnswer['content'] = '';
+          newAnswer.id = docRef.id;
+          this.listAnswers.push(newAnswer);
+          this.newAnswer = ''; 
         })
         .catch((error) => {
           console.error('Error adding answer:', error);
@@ -429,25 +442,20 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
   
-  
-  
-
-  
-
+ 
 
   hideAnswers() {
     this.showAnswers = false;
     this.unsubAnswers();
   }
 
-  //Ende Code für Post als Subcollection
 
   // emoji
   addReaction(event: any, chatId: string) {
     const selectedEmoji = event.emoji;
     const newReaction = {
       emoji: selectedEmoji,
-      userId: this.user.id,
+      userId: this.user.id, 
       date: this.getCurrentDate(),
       time: this.getCurrentTime(),
     };

@@ -4,7 +4,7 @@ import { Reaction } from "./reaction.class";
 
 export class MessageAnswer {
     [x: string]: any;
-    id!: number;
+    id!: string;
     text!: string;
     messageId!: string;
     user!: User;
@@ -14,13 +14,13 @@ export class MessageAnswer {
 
 
     constructor(obj?: any) {
-        this.id = obj && obj.id !== undefined ? obj.id : null;
-        this.text = obj && obj.text !== undefined ? obj.text : '';
-        this.messageId = obj && obj.messageId !== undefined ? obj.messageId : '';
-        this.user = obj && obj.user !== undefined ? obj.user : null;
-        this.date = obj && obj.date !== undefined ? obj.date : '';
-        this.time = obj && obj.time !== undefined ? obj.time : '';
-        this.reactions = obj && obj.reactions !== undefined ? obj.reactions : [];
+        this.id = obj ? obj.id : '';
+        this.text = obj ? obj.text : '';
+        this.messageId = obj ? obj.messageId : '';
+        this.user = obj ? obj.user : '';
+        this.date = obj ? obj.date : '';
+        this.time = obj ? obj.time : '';
+        this.reactions = obj ? obj.reactions : [];
     }
 
 }

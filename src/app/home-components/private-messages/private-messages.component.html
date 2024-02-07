@@ -240,76 +240,73 @@
   </div>
   
   <!-- neue Antworten -->
-  <div
-  [ngClass]="
-    answer.user.authUID == this.storedUserAuthUID
-      ? 'user-chat-message'
-      : 'other-user-chat-message'
-  "
-  *ngFor="let answer of listAnswers; let i = index"
+ <!-- Original Post -->
+<div
+[ngClass]="
+  answer.user.authUID == storedUserAuthUID
+    ? 'user-chat-message'
+    : 'other-user-chat-message'
+"
+*ngFor="let answer of listAnswers; let i = index"
 >
-  <!-- messages von mir  -->
-  <ng-container *ngIf=" i === answerDetail">
-    <div class="date-wrapper">
-      <div class="purple-line"></div>
-      <p>{{ answer.date }}</p>
-      <div class="purple-line"></div>
-    </div>
-    <div class="user-wrapper">
-      <img [src]="answer.user.avatarURL" alt="user avatar" />
-      <div class="user-info">
-        <h3>{{ answer.user.name }}</h3>
-        <p>{{ answer.time }}</p>
-        <div class="message-options">
-          <mat-icon
-            (click)="toggleEmojiPicker()"
-            matTooltip="Add Reaction"
-            [ngStyle]="{ color: 'orange' }"
-            >add_reaction</mat-icon
-          >
-          <mat-icon
-            matTooltip="Edit Message"
-            (click)="editMessage(answer.id)"
-            >more_vert</mat-icon
-          >
-        </div>
-      </div>
-    </div>
-    <div
-      [ngClass]="
-        answer.user.authUID == this.storedUserAuthUID
-          ? 'user-reversed-text-wrapper'
-          : 'reversed-text-wrapper'
-      "
-    >
-      <p>{{ answer.text }}</p>
-
-      <div
-        *ngIf="editingMessageId === answer.id"
-        class="edit-message"
-        id="editMessage"
-      >
-        <textarea [(ngModel)]="editMessageText"></textarea>
-        <div class="edit-message-buttons">
-          <button class="cancel-btn" (click)="cancelEditingMessage()">
-            Abbrechen
-          </button>
-          <button class="save-btn" (click)="saveEditedMessage()">
-            Speichern
-          </button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
+<div class="date-wrapper">
+  <div class="purple-line"></div>
+  <p>{{ answer.date }}</p>
+  <div class="purple-line"></div>
 </div>
+<div class="user-wrapper">
+  <img [src]="answer.user.avatarURL" alt="user avatar" />
+  <div class="user-info">
+    <h3>{{ answer.user.name }}</h3>
+    <p>{{ answer.time }}</p>
+    <div class="message-options">
+      <mat-icon
+        (click)="toggleEmojiPicker()"
+        matTooltip="Add Reaction"
+        [ngStyle]="{ color: 'orange' }"
+        >add_reaction</mat-icon
+      >
+      <mat-icon
+        matTooltip="Edit Message"
+        (click)="editMessage(answer.id)"
+        >more_vert</mat-icon
+      >
+    </div>
+  </div>
+</div>
+<div
+  [ngClass]="
+    answer.user.authUID == storedUserAuthUID
+      ? 'user-reversed-text-wrapper'
+      : 'reversed-text-wrapper'
+  "
+>
+  <p>{{ answer.text }}</p>
+
+  <div
+    *ngIf="editingMessageId === answer.id"
+    class="edit-message"
+    id="editMessage"
+  >
+    <textarea [(ngModel)]="editMessageText"></textarea>
+    <div class="edit-message-buttons">
+      <button class="cancel-btn" (click)="cancelEditingMessage()">
+        Abbrechen
+      </button>
+      <button class="save-btn" (click)="saveEditedMessage()">
+        Speichern
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
 
     <!-- Neues Antwort-Eingabefeld -->
     <div class="container-new-message">
       <textarea
         maxlength="160"
-        [(ngModel)]="newAnswer['content']"
-        name=""
-        id=""
+        [(ngModel)]="newAnswer"
         cols="30"
         rows="auto"
         [placeholder]="'Antworten...'"
@@ -323,11 +320,11 @@
         </div>
         <div class="icons-right">
           <mat-icon
-          (click)="createAnswer(chatId)"
+          (click)="createAnswer(chatId, messageId)"
             [matTooltip]="
-              newAnswer['content'] ? 'send' : 'Zuerst Antwort eintippen'
+              newAnswer ? 'send' : 'Zuerst Antwort eintippen'
             "
-            [ngClass]="newAnswer['content'] ? '' : 'cursor-no'"
+            [ngClass]="newAnswer ? '' : 'cursor-no'"
             >send</mat-icon
           >
         </div>
