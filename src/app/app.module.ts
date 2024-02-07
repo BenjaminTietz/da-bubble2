@@ -80,6 +80,7 @@ import { DeleteAnswerComponent } from './home-components/dialogs/delete-answer/d
 import { DeletePostComponent } from './home-components/dialogs/delete-post/delete-post.component';
 import { UserListChannelComponent } from './home-components/user-list-channel/user-list-channel.component';
 import { ChannelDetailComponent } from './home-components/dialogs/channel-detail/channel-detail.component';
+import { UserChangeAvatarComponent } from './home-components/dialogs/user-change-avatar/user-change-avatar.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { ChannelDetailComponent } from './home-components/dialogs/channel-detail
     DeleteAnswerComponent,
     DeletePostComponent,
     UserListChannelComponent,
-    ChannelDetailComponent
+    ChannelDetailComponent,
+    UserChangeAvatarComponent
   ],
   imports: [
     BrowserModule,

@@ -11,9 +11,44 @@
     gap: 32px;
     width: 360px;
 
-    img {
-        border-radius: 100%;
+
+    .container-edit-avatar {
+        position: relative;
+        display: block;
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            border-radius: 100%;
+            cursor: pointer;
+
+            &:hover {
+                font-size: 64px;
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+
+        }
+
+
+        img {
+            border-radius: 100%;
+        }
+
     }
+
+
+
+
 
     .header-and-close {
         width: 100%;
@@ -68,7 +103,7 @@
                 outline: none;
                 border: none;
                 @include Nunito(500, 18px, 21.6px, $text-gray)
-            }            
+            }
         }
     }
 
@@ -105,7 +140,7 @@
                 outline: none;
                 border: none;
                 @include Nunito(500, 18px, 21.6px, $text-gray)
-            }            
+            }
         }
     }
 
@@ -165,12 +200,12 @@
         left: 0;
         top: 50px;
         @include Nunito(700, 12px, 16.36px, red);
-      }
+    }
 
-      .error-email-style {
+    .error-email-style {
         position: absolute;
         left: 0;
         top: 88px;
         @include Nunito(700, 12px, 16.36px, red);
-      }
+    }
 }

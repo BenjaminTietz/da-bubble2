@@ -19,10 +19,11 @@ import {
   arrayUnion,
   FieldValue,
 } from '@angular/fire/firestore';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { transformMenu } from '@angular/material/menu';
 //Benötigt für die Validierung des Formulars
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UserChangeAvatarComponent } from '../user-change-avatar/user-change-avatar.component';
 
 @Component({
   selector: 'app-user-edit',
@@ -43,9 +44,9 @@ export class UserEditComponent implements OnInit {
   storedUserAuthUID: any;
 
   constructor(
-    public dialog: MatDialogRef<UserEditComponent>,
+    public dialog: MatDialogRef<UserEditComponent>, public dialogNew: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
@@ -88,7 +89,7 @@ export class UserEditComponent implements OnInit {
     });
   }
 
-  
+
   getUsersRef() {
     return collection(this.firestore, 'users');
   }
@@ -99,7 +100,7 @@ export class UserEditComponent implements OnInit {
       authUID: obj.authUID || '',
       name: obj.name || '',
       status: obj.status || true,
-      avatarURL: obj.avatarURL || '', 
+      avatarURL: obj.avatarURL || '',
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
       email: obj.email || '',
@@ -118,18 +119,18 @@ export class UserEditComponent implements OnInit {
         console.log('Dokument erfolgreich aktualisiert');
         this.newName = updatedName;
         this.newEmail = updatedEmail;
-        this.updateUserInDetailComponent(); 
+        this.updateUserInDetailComponent();
         this.returnUserToProfile();
       })
       .catch((error) => {
         console.error('Fehler beim Aktualisieren des Dokuments:', error);
       });
   }
-  
+
   updateUserInDetailComponent() {
     this.getUser();
   }
-  
+
 
   returnUserToProfile() {
     this.user.name = this.newName;
@@ -140,5 +141,29 @@ export class UserEditComponent implements OnInit {
   getDocRef() {
     return doc(this.firestore, 'users', this.user.id);
   }
-  
+
+
+
+
+
+  openDialogChangeAvatar(user: any) {
+    const dialog = this.dialogNew.open(UserChangeAvatarComponent);
+    dialog.componentInstance.user = new User(user);
+
+
+    dialog.afterClosed().subscribe(result => {
+      console.log(result)
+      //user.avatarURL = neuer Avatar
+    })
+
+  }
+
+
+
+
+
+
+
+
+
 }

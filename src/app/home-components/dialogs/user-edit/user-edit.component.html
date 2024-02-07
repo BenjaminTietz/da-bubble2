@@ -4,7 +4,16 @@
     <mat-icon [mat-dialog-close]="">close</mat-icon>
   </div>
 
-  <img [src]="user.avatarURL" alt="" />
+
+  <!--   <img class="img-user-edit" [src]="user.avatarURL" alt="" />
+ -->
+
+  <div class="container-edit-avatar">
+
+    <img class="img-user-edit" [src]="user.avatarURL" alt="" />
+    <div (click)="openDialogChangeAvatar(user)" class="overlay">EDIT</div>
+
+  </div>
 
   <div class="container-name">
     <div class="header-name">
@@ -12,20 +21,12 @@
       <span>Vollständiger Name</span>
     </div>
     <div class="container-input-name">
-        <input
-        class="input-field"
-        type="text"
-        formControlName="name"
-        placeholder="Max Mustermann"
-      />
+      <input class="input-field" type="text" formControlName="name" placeholder="Max Mustermann" />
 
-      <span
-        *ngIf="
+      <span *ngIf="
           editUserForm.get('name')?.invalid &&
           (editUserForm.get('name')?.dirty || editUserForm.get('name')?.touched)
-        "
-        class="error-style"
-      >
+        " class="error-style">
         *Bitte geben Sie Ihren vollständigen Namen ein.
       </span>
     </div>
@@ -38,20 +39,12 @@
     </div>
 
     <div class="container-input-email">
-        <input
-        class="input-field"
-        type="email"
-        formControlName="email"
-        placeholder="beispielname@email.com"
-      />
-      <span
-        *ngIf="
+      <input class="input-field" type="email" formControlName="email" placeholder="beispielname@email.com" />
+      <span *ngIf="
           editUserForm.get('email')?.invalid &&
           (editUserForm.get('email')?.dirty ||
             editUserForm.get('email')?.touched)
-        "
-        class="error-email-style"
-      >
+        " class="error-email-style">
         *Diese E-Mail-Adresse ist leider ungültig.
       </span>
     </div>
@@ -59,14 +52,9 @@
 
   <div class="container-buttons">
     <button class="btn-cancel" [mat-dialog-close]="">Abbrechen</button>
-    <button
-    class="btn-save"
-    type="submit"
-    [disabled]="editUserForm.invalid"
-    [mat-dialog-close]=""
-    (click)="saveUserEdit()"
-  >
-    Speichern
-  </button>
+    <button class="btn-save" type="submit" [disabled]="editUserForm.invalid" [mat-dialog-close]=""
+      (click)="saveUserEdit()">
+      Speichern
+    </button>
   </div>
 </form>
