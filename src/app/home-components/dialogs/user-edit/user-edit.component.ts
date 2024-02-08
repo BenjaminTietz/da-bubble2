@@ -110,10 +110,12 @@ export class UserEditComponent implements OnInit {
   saveUserEdit() {
     const updatedName = this.editUserForm.get('name')?.value;
     const updatedEmail = this.editUserForm.get('email')?.value;
+    const updatedAvatarUrl = this.user.avatarURL;
 
     updateDoc(this.getDocRef(), {
       email: updatedEmail,
       name: updatedName,
+      avatarURL: updatedAvatarUrl
     })
       .then(() => {
         console.log('Dokument erfolgreich aktualisiert');
@@ -152,8 +154,7 @@ export class UserEditComponent implements OnInit {
 
 
     dialog.afterClosed().subscribe(result => {
-      console.log(result)
-      //user.avatarURL = neuer Avatar
+      this.user.avatarURL = result;
     })
 
   }
