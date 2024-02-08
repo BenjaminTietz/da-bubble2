@@ -15,6 +15,7 @@
     .container-edit-avatar {
         position: relative;
         display: block;
+        height: 200px; //noch nicht optimale Lösung
 
         .overlay {
             position: absolute;
@@ -32,7 +33,7 @@
             cursor: pointer;
 
             &:hover {
-                font-size: 64px;
+                font-size: 54px;
                 background: rgba(0, 0, 0, 0.8);
             }
 
