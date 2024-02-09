@@ -6,6 +6,7 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  gap: 16px;
 }
 .start-conversation-wrapper {
   display: flex;
@@ -22,6 +23,10 @@
   padding: 20px;
   margin-bottom: 20px;
   overflow-y: hidden;
+}
+
+.start-conversation-bottom {
+  width: 100%;
 }
 
 .online-status {
@@ -97,6 +102,8 @@
   
     h3 {
       @include Nunito(700, 24px, 32.74px, $black);
+      white-space: nowrap;
+      
     }
     img {
       width: 70px;
@@ -195,6 +202,7 @@
     h3 {
       @include Nunito(700, 24px, 32.74px, $black);
       transform: scaleX(-1);
+      white-space: nowrap;
     }
     img {
       width: 70px;
@@ -343,7 +351,7 @@
   justify-content: flex-start;
   flex-direction: column;
   width: fit-content;
-  min-width: 240px;
+  min-width: 48px;
   height: fit-content;
   border-radius: 0px 30px 30px 30px;
   padding: 15px;
@@ -372,7 +380,7 @@
   justify-content: flex-start;
   flex-direction: column;
   width: fit-content;
-  min-width: 240px;
+  min-width: 48px;
   height: fit-content;
   border-radius: 30px 0px 30px 30px;
   padding: 15px;
@@ -448,7 +456,7 @@
 .message-bottom {
   position: absolute;
   top: 66px;
-  left: 0px;
+  left: 96px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -559,7 +567,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 8px;
   width: 100%;
   height: 100%;
@@ -578,7 +586,7 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  width: 48vw;
+  width: 100%;
   box-sizing: border-box;
 
   textarea {
@@ -642,13 +650,19 @@
 }
   //answer message
   .container-answers {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-    background-color: white;
-    border-radius: 20px;
-    padding: 16px;
+    justify-content: space-between;
+    width: 100vw;
+    max-width: 50vw;
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 2 10px 0 rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    overflow-y: hidden;
     
 
     .answers-header {

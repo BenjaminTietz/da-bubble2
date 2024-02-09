@@ -89,6 +89,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     this.route.params.subscribe((params) => {
       this.chatId = params['id'];
       this.unsubMessages = this.subMessagesList(this.chatId);
+      //this.unsubAnswers = this.subMessageAnswersList(this.chatId, this.messageId);
       this.getChatDataById(this.chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
@@ -97,7 +98,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubMessages();
-    this.unsubAnswers();
+    //this.unsubAnswers();
   }
 
 
