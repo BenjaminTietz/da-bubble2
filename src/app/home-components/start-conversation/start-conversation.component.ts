@@ -28,6 +28,7 @@ import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-start-conversation',
   templateUrl: './start-conversation.component.html',
@@ -57,7 +58,8 @@ export class StartConversationComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private userService: UserService
   ) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
@@ -78,60 +80,7 @@ export class StartConversationComponent implements OnInit {
       console.log('Received Chat ID:', chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.getUser();
-  }
-
-  getUser() {
-    let q;
-    if (this.storedUserAuthUID) {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      );
-    } else {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      ); // q = input für Gastzugang
-    }
-
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()));
-      });
-    });
-  }
-
-  getUsersRef() {
-    return collection(this.firestore, 'users');
-  }
-
-  setUserObject(obj: any) {
-    return {
-      id: obj.id || '',
-      authUID: obj.authUID || '',
-      name: obj.name || '',
-      status: obj.status || true,
-      avatarURL: obj.avatarURL || '', 
-      photoURL: obj.photoURL || '',
-      channels: obj.channels || [],
-      email: obj.email || '',
-    };
-  }
-
-  getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  getCurrentDate() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2, '0');
-    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
-    const year = now.getFullYear();
-    return `${day}.${month}.${year}`;
+    this.userService.getUser();
   }
 
   selectChannel(channel: any) {
@@ -407,8 +356,8 @@ clearSearchResults() {
             channels: [],
             email: this.user.email,
           },
-          date: this.getCurrentDate(),
-          time: this.getCurrentTime(),
+          date: this.userService.getCurrentDate(),
+          time: this.userService.getCurrentTime(),
         };
   
         // 3. Save the Chat object in the 'chats' collection
@@ -438,8 +387,8 @@ clearSearchResults() {
           },
           messageAnswer: [],
           reactions: [],
-          date: this.getCurrentDate(),
-          time: this.getCurrentTime(),
+          date: this.userService.getCurrentDate(),
+          time: this.userService.getCurrentTime(),
           messageSendBy: {
             id: this.user.id,
             name: this.user.name,

@@ -58,6 +58,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 
 //services
 import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
 
 import { routes } from './app-routing.module';
 import { ImprintComponent } from './legal-components/imprint/imprint.component';
@@ -134,11 +135,11 @@ import { UserChangeAvatarComponent } from './home-components/dialogs/user-change
     MatMenuModule,
     MatDividerModule,
     PickerComponent,
-
   ],
   exports: [RouterModule],
   providers: [
     AuthService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

@@ -13,10 +13,7 @@ import {
   orderBy,
   getDoc,
 } from 'firebase/firestore';
-import { getAuth, Auth } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
 import { Router } from '@angular/router';
-import { onChildMoved } from 'firebase/database';
 import { Chat } from '../../../models/chat.class';
 import { User } from '../../../models/user.class';
 import { updateDoc } from 'firebase/firestore';
@@ -25,12 +22,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Message } from '../../../models/message.class';
 import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { ChatService } from '../../services/chat.service';
-import { Subscription } from 'rxjs';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 import { Answer } from '../../../models/answer.class';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-private-messages',
@@ -82,7 +79,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public dialog: MatDialog,
     public chatService: ChatService,
-    private router: Router
+    private router: Router,
+    public UserService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -93,51 +91,12 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       this.getChatDataById(this.chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.getUser();
+    this.UserService.getUser();
   }
 
   ngOnDestroy(): void {
     this.unsubMessages();
     //this.unsubAnswers();
-  }
-
-
-  getUser() {
-    let q;
-    if (this.storedUserAuthUID) {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      );
-    } else {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      ); // q = input für Gastzugang
-    }
-
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()));
-      });
-    });
-  }
-
-  getUsersRef() {
-    return collection(this.firestore, 'users');
-  }
-
-  setUserObject(obj: any) {
-    return {
-      id: obj.id || '',
-      authUID: obj.authUID || '',
-      name: obj.name || '',
-      status: obj.status || true,
-      avatarURL: obj.avatarURL || '', 
-      photoURL: obj.photoURL || '',
-      channels: obj.channels || [],
-      email: obj.email || '',
-    };
   }
 
   //Sucbscribe to the messages subcollection with chatId
@@ -170,24 +129,28 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       user: obj.user || this.user,
       date: obj.date || this.getCurrentDate(),
       time: obj.time || this.getCurrentTime(),
-      messageSendBy: obj.messageSendBy || this.getUserObjectForFirestore(),
+      messageSendBy: obj.messageSendBy || this.UserService.getUserObjectForFirestore(),
       messageAnswer: obj.messageAnswer || [],
       reactions: obj.reactions || [],
     };
   }
 
   async addMessage(chat_id: any) {
-    await this.getUser();
+    await this.UserService.getUser();
 
+    if (!this.messageText) {
+      console.error('No message text.');
+      return;
+    }
     // Create a new message object
     const newMessage: Message = {
       id: '',
       text: this.messageText,
       chatId: this.chatId,
-      user: this.getUserObjectForFirestore(),
+      user: this.UserService.getUserObjectForFirestore(),
       date: this.getCurrentDate(),
       time: this.getCurrentTime(),
-      messageSendBy: this.getUserObjectForFirestore(),
+      messageSendBy: this.UserService.getUserObjectForFirestore(),
       reactions: [],
       messageAnswer: [],
     };
@@ -214,19 +177,6 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  getUserObjectForFirestore() {
-    // Convert the User object to a plain JavaScript object
-    return {
-      id: this.user.id,
-      authUID: this.user.authUID,
-      name: this.user.name,
-      status: this.user.status,
-      avatarURL: this.user.avatarURL,
-      photoURL: this.user.photoURL,
-      channels: this.user.channels,
-      email: this.user.email,
-    };
-  }
 
   async updateMessageWithId(newId: any, chat_id: any) {
     const docRef = doc(this.getMessageSubcollectionRef(chat_id), newId);
@@ -319,10 +269,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: this.editingMessageId,
       text: this.editMessageText,
       chatId: this.chatId,
-      user: this.getUserObjectForFirestore(),
+      user: this.UserService.getUserObjectForFirestore(),
       date: existingMessage.date,
       time: existingMessage.time,
-      messageSendBy: this.getUserObjectForFirestore(),
+      messageSendBy: this.UserService.getUserObjectForFirestore(),
       reactions: [],
       messageAnswer: [],
     };
@@ -398,7 +348,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: obj.id || "",
       text: obj.text || "",
       messageId: obj.messageId || "",
-      user: obj.user ? this.setUserObject(obj.user) : {}, 
+      user: obj.user ? this.UserService.setUserObject(obj.user) : {}, 
       date: obj.date || "",
       time: obj.time || "",
       reactions: obj.reactions || [],
@@ -412,6 +362,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     console.log('Chat ID:', chatId);
     console.log('New answer is', this.newAnswer);
 
+    if (!this.newAnswer) {
+      console.error('No answer text.');
+      return;
+    }
 
     const newAnswer: MessageAnswer = {
       id: '',
