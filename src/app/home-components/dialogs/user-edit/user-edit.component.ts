@@ -154,7 +154,9 @@ export class UserEditComponent implements OnInit {
 
 
     dialog.afterClosed().subscribe(result => {
-      this.user.avatarURL = result;
+      if (result) {
+        this.user.avatarURL = result;
+      }
     })
 
   }
