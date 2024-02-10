@@ -14,6 +14,7 @@ import {
   deleteDoc,
   setDoc,
   DocumentReference,
+  arrayUnion
 } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../../../models/user.class';
@@ -114,8 +115,36 @@ export class DialogAddChannelComponent implements OnInit {
       .catch((err) => {
         console.log(err);
       })
-      .then(() => { });
+      .then(() => {
+        this.addCreatorToChannel(newId);
+      });
   }
+  
+
+  addCreatorToChannel(chan_id: any) {
+    setDoc(this.getUserInChannelSubcollectionRef(chan_id, this.user), this.setUserForSubcollectionInChannel(this.user)).then(() => {
+      updateDoc(this.getUserDocRef(this.user), { channels: arrayUnion(chan_id) })
+    })
+  }
+
+
+  getUserDocRef(user: any) {
+    return doc(this.firestore, 'users', user.id)
+  }
+
+
+  setUserForSubcollectionInChannel(obj: any) {
+    return {
+      id: obj.id || "",
+      authUID: obj.authUID || "",
+    }
+  }
+
+
+  getUserInChannelSubcollectionRef(chan_id: any, user: any) {
+    return doc(this.firestore, 'channels', chan_id, 'users', user.id)
+  }
+
 
   getChannelRef() {
     return collection(this.firestore, 'channels');

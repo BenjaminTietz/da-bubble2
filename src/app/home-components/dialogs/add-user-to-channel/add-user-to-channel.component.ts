@@ -25,12 +25,8 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
 
 
 
-
   constructor() {
     this.unsubUsers = this.subUsersList();
-
-
-
   }
 
 
@@ -38,8 +34,6 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
     this.unsubUserChannel = this.subUsersChannelList();
 
   }
-
-
 
   //Code für User im Channel
 
@@ -93,7 +87,6 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
   }
 
 
-
   searchFunction(user: any) {
     if (user.name.toLowerCase().includes(this.searchInput.toLowerCase())
       && !this.listUsersChannel.some((channelUser: any) => channelUser.id === user.id)
@@ -112,14 +105,9 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
   }
 
 
-
-
   getUserDocRef(user: any) {
     return doc(this.firestore, 'users', user.id)
   }
-
-
-
 
 
   setUserForSubcollectionInChannel(obj: any) {
@@ -130,17 +118,9 @@ export class AddUserToChannelComponent implements OnDestroy, OnInit {
   }
 
 
-
-
-
-
-
   getUserInChannelSubcollectionRef(chan_id: any, user: any) {
     return doc(this.firestore, 'channels', chan_id, 'users', user.id)
   }
-
-
-
 
 
   ngOnDestroy(): void {
