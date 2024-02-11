@@ -44,7 +44,7 @@
                 <div class="container-post">
                     <div class="name-and-time">
                         <b>{{ post.user.name }}</b>
-                        <span>{{ post.time }} Uhr</span>
+                        <span>{{ post.date }} Uhr</span>
                     </div>
 
                     <div class="post-content">
@@ -56,7 +56,7 @@
                                 *ngIf="post.answers == 0 || post.answers > 1">en</span></span>
                         <!--Lösung für letzte Antwort noch finden-->
                         <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
-                            1].time
+                            1].date
                             }}</span>
                     </div>
 
@@ -118,7 +118,7 @@
             <div class="container-post">
                 <div class="name-and-time">
                     <b>{{ listPosts[postDetail].user.name }}</b>
-                    <span>{{ listPosts[postDetail].time }} Uhr</span>
+                    <span>{{ listPosts[postDetail].date }} Uhr</span>
                 </div>
 
                 <div class="post-content">

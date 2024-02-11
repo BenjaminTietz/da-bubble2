@@ -169,8 +169,12 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   createPost(channel: any) {
     this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
-    this.newPost.date = this.getCurrentDate();
-    this.newPost.time = this.getCurrentTime();
+    //Test mit ISO-String Datum und Zeit
+    this.newPost.date = new Date().toISOString();
+
+    //alter Code
+    //this.newPost.date = this.getCurrentDate();
+    //this.newPost.time = this.getCurrentTime();
 
     addDoc(this.getPostSubcollectionRef(channel.id), this.setPostObject(this.newPost, '')).then((docRef) => {
       this.newPost.content = '';
