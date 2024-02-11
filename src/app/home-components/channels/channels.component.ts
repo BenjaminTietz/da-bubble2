@@ -177,7 +177,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       const newID = docRef?.id;
       this.updatePostWithId(channel, newID, channel.id);
       this.ngOnInit();
-
     })
   }
 

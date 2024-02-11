@@ -1,11 +1,16 @@
 <div class="start-conversation-wrapper">
   <div class="start-conversation-top">
     <h1>Neue Nachricht</h1>
-    <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText" (ngModelChange)="search()">
-    <div *ngIf="selectedUsers" class="selecetedUserInputfield">
-      <span *ngFor="let user of selectedUsers">{{ user.name }}</span>
-    </div>   
-    
+    <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText"
+      (ngModelChange)="search()">
+    <div *ngIf="selectedUsers.length > 0" class="selecetedUserInputfield">
+
+
+      <span *ngFor="let user of selectedUsers">{{ user.name }} {{ user.chanName}}</span>
+      <!--user.chanName ist channel-name-->
+      
+    </div>
+
     <div *ngIf="searchActive" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
       <div *ngIf="channelResults.length > 0">
@@ -44,12 +49,8 @@
 
       <!-- Emoji Picker -->
       <div class="inputfield-emoji-picker">
-        <emoji-mart
-          (emojiClick)="selectEmoji($event)"
-          *ngIf="emojiPickerAnswerVisible"
-          title="Pick your emoji…"
-          emoji="point_up"
-        ></emoji-mart>
+        <emoji-mart (emojiClick)="selectEmoji($event)" *ngIf="emojiPickerAnswerVisible" title="Pick your emoji…"
+          emoji="point_up"></emoji-mart>
       </div>
 
       <div class="container-icons">
@@ -61,7 +62,7 @@
         </div>
 
         <div class="icons-right" (click)="startChat()">
-          <mat-icon  matTooltip="send">send</mat-icon>
+          <mat-icon matTooltip="send">send</mat-icon>
         </div>
       </div>
     </div>
