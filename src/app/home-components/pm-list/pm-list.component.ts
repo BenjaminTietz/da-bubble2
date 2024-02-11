@@ -20,6 +20,7 @@ import { User } from '../../../models/user.class';
 import { Chat } from '../../../models/chat.class';
 import { ChatService } from '../../services/chat.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-pm-list',
@@ -41,56 +42,18 @@ export class PmListComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private chatService: ChatService) 
+    private chatService: ChatService,
+    private userService: UserService) 
   {}
 
   ngOnInit() {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.subChatList();
-    this.getUser();
+    this.userService.getUser();
     this.filterActiveUsers();
   }
 
   ngOnDestroy(): void {
-  }
-
-  getUser() {
-    let q;
-    if (this.storedUserAuthUID) {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      );
-    } else {
-      q = query(
-        this.getUsersRef(),
-        where('authUID', '==', this.storedUserAuthUID)
-      );
-    }
-
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.userData = new User(this.setUserObject(doc.data()));
-        this.filterActiveChats();
-      });
-    });
-  }
-
-  setUserObject(obj: any) {
-    return {
-      id: obj.id || '',
-      authUID: obj.authUID || '',
-      name: obj.name || '',
-      status: obj.status || true,
-      avatarURL: obj.avatarURL || '',
-      photoURL: obj.photoURL || '',
-      channels: obj.channels || [],
-      email: obj.email || '',
-    };
-  }
-
-  getUsersRef() {
-    return collection(this.firestore, 'users');
   }
 
   setChat(obj: any, id: string): Chat {
@@ -163,7 +126,7 @@ export class PmListComponent implements OnInit, OnDestroy {
   async filterActiveUsers() {
     const usersSnapshot = await getDocs(collection(this.firestore, 'users'));
     this.listUsers = usersSnapshot.docs.map((doc) =>
-      this.setUserObject(doc.data())
+      this.userService.setUserObject(doc.data())
     );
   
     // Filter users who are either participants or have started a chat
@@ -222,8 +185,8 @@ async createNewChat(participant: any) {
       },
       participants: [participant],
       messages: [],
-      date: this.getCurrentDate(),
-      time: this.getCurrentTime(),
+      date: this.userService.getCurrentDate(),
+      time: this.userService.getCurrentTime(),
     });
 
     console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
@@ -233,18 +196,4 @@ async createNewChat(participant: any) {
   }
 }
 
-  getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  getCurrentDate() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2, '0');
-    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
-    const year = now.getFullYear();
-    return `${day}.${month}.${year}`;
-  }
 }

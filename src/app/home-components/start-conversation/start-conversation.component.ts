@@ -45,6 +45,7 @@ export class StartConversationComponent implements OnInit {
   currentUser: any;
   selectedItemId: any | string;
   selectedUsers: any[] = [];
+  selectedChannels: Channel[] = [];
   selectedItem: any;
   additionalUsersInChat: User[] = [];
   selectedChannel!: Channel;
@@ -55,7 +56,6 @@ export class StartConversationComponent implements OnInit {
 
   // emoji
   emojiPickerAnswerVisible: boolean = false;
-
 
   constructor(
     private router: Router,
@@ -83,14 +83,33 @@ export class StartConversationComponent implements OnInit {
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.userService.getUser();
+    this.searchActive = false;
   }
 
+<<<<<<< Updated upstream
   selectChannel(channel: any) {
     this.selectedChannel = channel;
     console.log('Ausgewählter Channel:', this.selectedChannel.id);
 
     this.showChannelName(channel);
 
+=======
+  selectChannel(channel: Channel) {
+    // Überprüfen, ob der Kanal bereits ausgewählt ist
+    const index = this.selectedChannels.findIndex(
+      (selectedChannel) => selectedChannel.id === channel.id
+    );
+  
+    if (index === -1) {
+      // Kanal wurde noch nicht ausgewählt, füge ihn hinzu
+      this.selectedChannels.push(channel);
+      console.log('Kanal hinzugefügt:', channel);
+    } else {
+      // Kanal wurde bereits ausgewählt, entferne ihn
+      this.selectedChannels.splice(index, 1);
+      console.log('Kanal entfernt:', channel);
+    }
+>>>>>>> Stashed changes
   }
 
 
@@ -113,7 +132,10 @@ export class StartConversationComponent implements OnInit {
     }
   }
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   clearUserResults() {
     this.userResults = [];
   }
@@ -129,6 +151,7 @@ export class StartConversationComponent implements OnInit {
       this.selectedUsers = [];
       return;
     }
+<<<<<<< Updated upstream
 
     this.searchActive = true;
 
@@ -138,10 +161,27 @@ export class StartConversationComponent implements OnInit {
     } else if (this.searchText.startsWith('@')) {
       const username = this.searchText.slice(1);
       await this.loadUserResults(username);
+=======
+  
+
+    if (this.searchText.startsWith('@') && this.searchText.length > 1) {
+      this.searchActive = true;
+      const username = this.searchText.slice(1); // Entferne '@' vom Anfang des Benutzernamens
+      await this.loadUserResults(username);
+    } else if (this.searchText.startsWith('#')&& this.searchText.length > 1) {
+      // Wenn die Suche mit '#' beginnt, Channelsuche durchführen
+      this.searchActive = true;
+      const channelName = this.searchText.slice(1); // Entferne '#' vom Anfang des Channelnamens
+      await this.loadChannelResults(channelName);
+    } else {
+      // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
+      this.clearSearchResults();
+>>>>>>> Stashed changes
     }
   }
 
   async loadUserResults(username: string) {
+<<<<<<< Updated upstream
     const usersQuery = query(collection(this.firestore, 'users'), where('name', '>=', username));
     const usersSnapshot = await getDocs(usersQuery);
     this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
@@ -152,6 +192,53 @@ export class StartConversationComponent implements OnInit {
     const channelsSnapshot = await getDocs(channelsQuery);
     this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
   }
+=======
+    let usersQuery;
+  
+    if (username.length >= 3) {
+
+      usersQuery = query(
+        collection(this.firestore, 'users'),
+        where('name', '>=', username)
+      );
+    } else {
+
+      usersQuery = query(
+        collection(this.firestore, 'users'),
+        where('name', '>=', username),
+        where('name', '<', username + '\uf8ff')
+      );
+    }
+  
+    const usersSnapshot = await getDocs(usersQuery);
+    this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
+    this.filterUserResults(username); 
+  }
+
+  async loadChannelResults(channelName: string) {
+    let channelsQuery;
+  
+    if (channelName.length >= 3) {
+
+      channelsQuery = query(
+        collection(this.firestore, 'channels'),
+        where('description', '>=', channelName)
+      );
+    } else {
+
+      channelsQuery = query(
+        collection(this.firestore, 'channels'),
+        where('description', '>=', channelName),
+        where('description', '<', channelName + '\uf8ff')
+      );
+    }
+  
+    const channelsSnapshot = await getDocs(channelsQuery);
+    this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
+    this.filterChannelResults(channelName); 
+  }
+  
+>>>>>>> Stashed changes
 
   clearSearchResults() {
     this.channelResults = [];
@@ -166,22 +253,18 @@ export class StartConversationComponent implements OnInit {
 
   filterUserResults(username: string) {
     this.userResults = this.userResults.filter(
-      (user) => user.name && user.name.includes(username)
+      (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
     );
   }
 
   addToRecipientList(user: User) {
-    const existingUser = this.selectedUsers.find(
-      (selectedUser) => selectedUser.id === user.id
-    );
-
-    if (!existingUser) {
-      this.selectedUsers.push(user);
-      console.log('Benutzer hinzugefügt:', user);
-      console.log('Ausgewählte Benutzer:', this.selectedUsers);
-    } else {
-      console.log('Benutzer bereits ausgewählt:', user);
-    }
+    // Leere die ausgewählten Benutzer, bevor ein neuer hinzugefügt wird
+    this.selectedUsers = [];
+  
+    // Füge den neuen Benutzer hinzu
+    this.selectedUsers.push(user);
+    console.log('Benutzer hinzugefügt:', user);
+    console.log('Ausgewählte Benutzer:', this.selectedUsers);
   }
 
   // Create a private chat with the selected users
@@ -288,17 +371,6 @@ export class StartConversationComponent implements OnInit {
     };
   }
 
-  private userToDatabaseFormat(user: User): any {
-    return {
-      id: user.id,
-      name: user.name,
-      status: user.status,
-      authUID: user.authUID,
-      avatarURL: user.avatarURL,
-      photoURL: user.photoURL,
-    };
-  }
-
   private async savePrivateChat(
     privateChat: Chat
   ): Promise<DocumentReference<DocumentData>> {
@@ -317,15 +389,27 @@ export class StartConversationComponent implements OnInit {
 
 
   async startChat() {
+    if (!this.messageText.trim()) {
+      console.error('Nachrichtentext darf nicht leer sein.');
+      return;
+    }
     if (this.selectedChannel) {
+<<<<<<< Updated upstream
       // Logic to post a post with the selected channel must be implemented before navigating to the channel
       //addDoc (Logik aus channels.ts - ab ca. Zeile 169)
 
+=======
+>>>>>>> Stashed changes
       this.router.navigate(['/home/channels', this.selectedChannel.id]);
       return;
-    } else {
-      const userAuthUID = sessionStorage.getItem('userAuthUID');
+    }
 
+    try {
+      const userAuthUID = sessionStorage.getItem('userAuthUID');
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
       if (!userAuthUID) {
         console.error('AuthUID im Session Storage nicht gefunden.');
         return;
@@ -341,6 +425,7 @@ export class StartConversationComponent implements OnInit {
         return;
       }
 
+<<<<<<< Updated upstream
       try {
         // 1. Find the current user in the 'users' collection
         const userQuery = query(
@@ -428,18 +513,108 @@ export class StartConversationComponent implements OnInit {
         this.router.navigate(['/home/private-messages', docRef.id]);
       } catch (error) {
         console.error('Fehler beim Speichern des Chats:', error);
+=======
+      const currentUserData = await this.getCurrentUser(userAuthUID);
+      if (!currentUserData) {
+        console.error(
+          'Aktueller Benutzer nicht in der users-Sammlung gefunden.'
+        );
+        return;
+>>>>>>> Stashed changes
       }
+
+      const chat = await this.createChat(currentUserData);
+      if (!chat) {
+        console.error('Fehler beim Erstellen des Chats.');
+        return;
+      }
+
+      const message = await this.createMessage(chat.id);
+      if (!message) {
+        console.error('Fehler beim Erstellen der Nachricht.');
+        return;
+      }
+
+      this.router.navigate(['/home/private-messages', chat.id]);
+    } catch (error) {
+      console.error('Fehler beim Speichern des Chats:', error);
     }
   }
 
+<<<<<<< Updated upstream
+=======
+  async createChat(currentUserData: any) {
+    const chat: Chat = {
+      id: '',
+      participants: this.selectedUsers.map((user) =>
+        this.userToDatabaseFormat(user)
+      ),
+      messages: [],
+      chatStartedBy: this.getUserDetails(currentUserData),
+      date: this.userService.getCurrentDate(),
+      time: this.userService.getCurrentTime(),
+    };
+    const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
+    chat.id = docRef.id;
+    return chat;
+  }
+
+  async createMessage(chatId: string) {
+    const newMessage: Message = {
+      id: '',
+      text: this.messageText,
+      chatId: chatId,
+      user: this.getUserDetails(this.user),
+      messageAnswer: [],
+      reactions: [],
+      date: this.userService.getCurrentDate(),
+      time: this.userService.getCurrentTime(),
+      messageSendBy: this.getUserDetails(this.user),
+    };
+    const messagesCollectionRef = collection(
+      this.firestore,
+      'chats',
+      chatId,
+      'messages'
+    );
+    const messageDocRef = await addDoc(messagesCollectionRef, newMessage);
+    newMessage.id = messageDocRef.id;
+    return newMessage;
+  }
+
+  getUserDetails(user: User) {
+    return {
+      id: user.id,
+      name: user.name,
+      photoURL: user.photoURL,
+      authUID: user.authUID,
+      status: false,
+      avatarURL: user.avatarURL,
+      channels: [],
+      email: user.email,
+    };
+  }
+
+  userToDatabaseFormat(user: User) {
+    return {
+      id: user.id,
+      name: user.name,
+      photoURL: user.photoURL,
+      authUID: user.authUID,
+      status: false,
+      avatarURL: user.avatarURL,
+      channels: [],
+      email: user.email,
+    };
+  }
+>>>>>>> Stashed changes
 
   // emoji
-  selectEmoji($event: { emoji: { native: string; }; }) {
+  selectEmoji($event: { emoji: { native: string } }) {
     this.messageText += $event.emoji.native;
   }
 
   toggleSetEmojiPicker() {
     this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
   }
-
 }

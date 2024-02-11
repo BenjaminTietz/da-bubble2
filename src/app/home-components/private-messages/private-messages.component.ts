@@ -60,7 +60,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   showAnswers: boolean = false;
 
 
-  unsubAnswers!: () => void;
+  unsubAnswers: (() => void) | null = null;
   listAnswers: any[] = [];
   newAnswer: string = '';
 
@@ -96,7 +96,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubMessages();
-    //this.unsubAnswers();
+    this.unsubMessages();
+    if (this.unsubAnswers) {
+      this.unsubAnswers();
+    }
   }
 
   //Sucbscribe to the messages subcollection with chatId
@@ -127,8 +130,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       text: obj.text || '',
       chatId: obj.chatId || '',
       user: obj.user || this.user,
-      date: obj.date || this.getCurrentDate(),
-      time: obj.time || this.getCurrentTime(),
+      date: obj.date || this.UserService.getCurrentDate(),
+      time: obj.time || this.UserService.getCurrentTime(),
       messageSendBy: obj.messageSendBy || this.UserService.getUserObjectForFirestore(),
       messageAnswer: obj.messageAnswer || [],
       reactions: obj.reactions || [],
@@ -148,8 +151,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       text: this.messageText,
       chatId: this.chatId,
       user: this.UserService.getUserObjectForFirestore(),
-      date: this.getCurrentDate(),
-      time: this.getCurrentTime(),
+      date: this.UserService.getCurrentDate(),
+      time: this.UserService.getCurrentTime(),
       messageSendBy: this.UserService.getUserObjectForFirestore(),
       reactions: [],
       messageAnswer: [],
@@ -187,21 +190,6 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       .then(() => {});
   }
 
-  getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  getCurrentDate() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2, '0');
-    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
-    const year = now.getFullYear();
-    return `${day}.${month}.${year}`;
-  }
-
   getParticipantInfo(participant: User): string {
     return `${participant.name} (${participant.email})`;
   }
@@ -235,18 +223,22 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   // edit message
 
   editMessage(messageId: string) {
-    // logik zum öffnen nur für verfasser der message implementieren
-
+    // Logik zum Öffnen nur für Verfasser der Nachricht implementieren
     const messageToEdit = this.listMessages.find(
-      (message: { id: string }) => message.id === messageId
+      (message: { id: string; user: { authUID: string } }) => {
+        // Überprüfen, ob die Nachricht-ID übereinstimmt und der aktuelle Nutzer der Verfasser ist
+        return message.id === messageId && message.user.authUID === this.storedUserAuthUID;
+      }
     );
-
+  
     if (messageToEdit) {
       this.editMessageText = messageToEdit.text;
       this.editingMessageId = messageId;
-
+  
       console.log('Editing message:', messageId);
       console.log('Original Message:', messageToEdit);
+    } else {
+      console.log('User is not the author of the message or message not found.');
     }
   }
 
@@ -326,18 +318,36 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   //Subscribe to the messageAnswer subcollection with chatId & messageId
   
-  subMessageAnswersList(chat_id: any, message_id: any) {
-    console.log('subAnswersChat_ID',chat_id);
-    console.log('subAnswersMessage_ID',message_id);
-    const q = query(this.getMessageAnswerSubcollectionRef(chat_id, message_id), orderBy('date'), orderBy('time'));
+  subMessageAnswersList(chat_id: any, message_id: any): () => void {
+    console.log('subAnswersChat_ID', chat_id);
+    console.log('subAnswersMessage_ID', message_id);
+    const q = query(
+      this.getMessageAnswerSubcollectionRef(chat_id, message_id),
+      orderBy('date'),
+      orderBy('time')
+    );
     return onSnapshot(q, (list) => {
+      // Zuerst die listAnswers leeren
       this.listAnswers = [];
       list.forEach(element => {
         this.listAnswers.push(this.setAnswerObject(element.data()));
       });
-      console.log('ListAnswers',this.listAnswers);
+      console.log('ListAnswers', this.listAnswers);
+  
+      // Reaktionen für jede Nachricht abrufen und in listMessages speichern
+      this.listMessages.forEach((message: any) => {
+        const reactionsRef = this.getReactionsSubcollectionRef(chat_id, message.id);
+        onSnapshot(reactionsRef, (reactionsSnapshot) => {
+          const reactions: any[] = []; 
+          reactionsSnapshot.forEach((doc) => {
+            reactions.push(doc.data());
+          });
+          message.reactions = reactions;
+        });
+      });
     });
   }
+  
     
   getMessageAnswerSubcollectionRef(chat_id: any, message_id: any) {
     return collection(this.firestore, 'chats', chat_id, 'messages', message_id, 'messageAnswer')
@@ -357,41 +367,45 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   //Code für Answers
 
-  createAnswer(chatId: string, messageId: string) {
+  async createAnswer(chatId: string, messageId: string) {
+    console.log('createAnswer called.');
     console.log('Message ID:', messageId);
     console.log('Chat ID:', chatId);
     console.log('New answer is', this.newAnswer);
-
+  
     if (!this.newAnswer) {
       console.error('No answer text.');
       return;
     }
-
+  
     const newAnswer: MessageAnswer = {
-      id: '',
+      id: doc(collection(this.firestore, 'chats', chatId, 'messages', messageId, 'messageAnswer')).id,
       text: this.newAnswer,
       messageId: messageId,
-      user: this.user,
-      date: this.getCurrentDate(),
-      time: this.getCurrentTime(),
+      user: this.UserService.user,
+      date: this.UserService.getCurrentDate(),
+      time: this.UserService.getCurrentTime(),
       reactions: []
     };
-
+  
     const newAnswerJson = JSON.parse(JSON.stringify(newAnswer));
   
     const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
-    
+  
+    console.log('Message Answer Reference:', messageAnswerRef);
+  
     if (messageAnswerRef) {
       addDoc(messageAnswerRef, newAnswerJson)
-        .then((docRef) => {
-          console.log('Answer added successfully:', docRef.id);
-          newAnswer.id = docRef.id;
-          this.listAnswers.push(newAnswer);
-          this.newAnswer = ''; 
-        })
-        .catch((error) => {
-          console.error('Error adding answer:', error);
-        });
+      .then((docRef) => {
+        console.log('Answer added successfully:', docRef.id);
+        // Set the ID of the new answer
+        newAnswer.id = docRef.id; // <-- Set the ID here
+        //this.listAnswers.push(newAnswer);
+        this.newAnswer = ''; 
+      })
+      .catch((error) => {
+        console.error('Error adding answer:', error);
+      });
     } else {
       console.error('Invalid messageAnswerRef:', messageAnswerRef);
     }
@@ -401,7 +415,9 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   hideAnswers() {
     this.showAnswers = false;
-    this.unsubAnswers();
+    if (this.unsubAnswers) {
+      this.unsubAnswers();
+    }
   }
 
 
@@ -411,8 +427,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     const newReaction = {
       emoji: selectedEmoji,
       userId: this.user.id, 
-      date: this.getCurrentDate(),
-      time: this.getCurrentTime(),
+      date: this.UserService.getCurrentDate(),
+      time: this.UserService.getCurrentTime(),
     };
   
     addDoc(this.getReactionsSubcollectionRef(chatId, this.messageId), newReaction)

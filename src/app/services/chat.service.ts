@@ -67,19 +67,16 @@ export class ChatService {
       photoURL: currentUserData['photoURL'],
       channels: currentUserData['channels'],
       email: currentUserData['email'],
-      // ... weitere Eigenschaften
     } as User;
   }
 
-  // ... restliche Methoden
   
   async getChatDataById(chatId: string): Promise<Chat | null> {
     try {
-      // Query erstellen, um den Chat mit der gegebenen ID zu finden
+
       const chatQuery = query(collection(this.firestore, 'chats'), where('id', '==', chatId));
       const chatSnapshot = await getDocs(chatQuery);
   
-      // Überprüfen, ob der Chat gefunden wurde
       if (!chatSnapshot.empty) {
         const chatData: DocumentData = chatSnapshot.docs[0].data();
         return new Chat(chatData);  // Create an instance of Chat using the constructor
@@ -173,25 +170,19 @@ export class ChatService {
       chatsSnapshot.docs.map(async (doc) => {
         const chatData: DocumentData = doc.data();
   
-        // Überprüfen, ob 'participants' im Chat-Dokument ein Array ist
         if (Array.isArray(chatData['participants'])) {
           const participants: User[] = [];
   
-          // Durchsuche die participants und filtere nach dem aktuellen Nutzer
           for (const participant of chatData['participants']) {
             participants.push(participant);
           }
   
-          // Ensure that the current user is included in the participants
           if (!participants.some((participant) => participant.authUID === authUID)) {
-            // Überprüfe, ob der Benutzer bereits in der Liste ist, bevor er hinzugefügt wird
             if (!participants.some((participant) => participant.authUID === currentUser.authUID)) {
-              // Add the current user to the participants list
               participants.push(currentUser);
             }
           }
   
-          // Füge das Chat-Dokument mit den gefilterten participants zur Liste hinzu
           const filteredChat: Chat = {
             id: doc.id,
             participants: participants,
@@ -207,7 +198,7 @@ export class ChatService {
               photoURL: '',
               channels: [],
               email: ''
-            } // Assign an empty object instead of null
+            } 
           };
   
           chats.push(filteredChat);

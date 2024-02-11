@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../models/user.class';
-import { Inject } from '@angular/core'; // Import the Inject decorator
+import { Inject } from '@angular/core'; 
 import {
   getFirestore,
   Firestore,
