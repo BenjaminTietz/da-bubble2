@@ -29,7 +29,6 @@ import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { UserService } from '../../services/user.service';
-import { Post } from '../../../models/post.class';
 @Component({
   selector: 'app-start-conversation',
   templateUrl: './start-conversation.component.html',
@@ -52,7 +51,6 @@ export class StartConversationComponent implements OnInit {
   messageText: string = '';
   storedUserAuthUID: any;
   user: User = new User();
-  post: Post = new Post();
 
   // emoji
   emojiPickerAnswerVisible: boolean = false;
@@ -86,40 +84,22 @@ export class StartConversationComponent implements OnInit {
     this.searchActive = false;
   }
 
-<<<<<<< Updated upstream
-  selectChannel(channel: any) {
-    this.selectedChannel = channel;
-    console.log('Ausgewählter Channel:', this.selectedChannel.id);
+selectChannel(channel: Channel) {
+  // Überprüfen, ob der Kanal bereits ausgewählt ist
+  const index = this.selectedChannels.findIndex(
+    (selectedChannel) => selectedChannel.id === channel.id
+  );
 
-    this.showChannelName(channel);
-
-=======
-  selectChannel(channel: Channel) {
-    // Überprüfen, ob der Kanal bereits ausgewählt ist
-    const index = this.selectedChannels.findIndex(
-      (selectedChannel) => selectedChannel.id === channel.id
-    );
-  
-    if (index === -1) {
-      // Kanal wurde noch nicht ausgewählt, füge ihn hinzu
-      this.selectedChannels.push(channel);
-      console.log('Kanal hinzugefügt:', channel);
-    } else {
-      // Kanal wurde bereits ausgewählt, entferne ihn
-      this.selectedChannels.splice(index, 1);
-      console.log('Kanal entfernt:', channel);
-    }
->>>>>>> Stashed changes
+  if (index === -1) {
+    // Kanal wurde noch nicht ausgewählt, füge ihn hinzu
+    this.selectedChannels.push(channel);
+    console.log('Kanal hinzugefügt:', channel);
+  } else {
+    // Kanal wurde bereits ausgewählt, entferne ihn
+    this.selectedChannels.splice(index, 1);
+    console.log('Kanal entfernt:', channel);
   }
-
-
-  showChannelName(channel: any) {
-    this.selectedUsers.push(channel)
-    this.searchActive = false;
-  }
-
-
-
+}
 
   redirectToChannel() {
     if (this.selectedChannel) {
@@ -132,10 +112,6 @@ export class StartConversationComponent implements OnInit {
     }
   }
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
   clearUserResults() {
     this.userResults = [];
   }
@@ -151,17 +127,6 @@ export class StartConversationComponent implements OnInit {
       this.selectedUsers = [];
       return;
     }
-<<<<<<< Updated upstream
-
-    this.searchActive = true;
-
-    if (this.searchText.startsWith('#')) {
-      const channelName = this.searchText.slice(1);
-      await this.loadChannelResults(channelName);
-    } else if (this.searchText.startsWith('@')) {
-      const username = this.searchText.slice(1);
-      await this.loadUserResults(username);
-=======
   
 
     if (this.searchText.startsWith('@') && this.searchText.length > 1) {
@@ -176,23 +141,10 @@ export class StartConversationComponent implements OnInit {
     } else {
       // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
       this.clearSearchResults();
->>>>>>> Stashed changes
     }
   }
 
   async loadUserResults(username: string) {
-<<<<<<< Updated upstream
-    const usersQuery = query(collection(this.firestore, 'users'), where('name', '>=', username));
-    const usersSnapshot = await getDocs(usersQuery);
-    this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
-  }
-
-  async loadChannelResults(channelName: string) {
-    const channelsQuery = query(collection(this.firestore, 'channels'), where('description', '>=', channelName));
-    const channelsSnapshot = await getDocs(channelsQuery);
-    this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
-  }
-=======
     let usersQuery;
   
     if (username.length >= 3) {
@@ -238,7 +190,6 @@ export class StartConversationComponent implements OnInit {
     this.filterChannelResults(channelName); 
   }
   
->>>>>>> Stashed changes
 
   clearSearchResults() {
     this.channelResults = [];
@@ -295,7 +246,8 @@ export class StartConversationComponent implements OnInit {
       console.log(
         `Chat mit ${privateChat.participants
           .map((participant) => participant.name)
-          .join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id
+          .join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${
+          docRef.id
         }`
       );
       this.router.navigate(['/home/private-messages', docRef.id]);
@@ -313,15 +265,15 @@ export class StartConversationComponent implements OnInit {
     const currentUserData = currentUserSnapshot.docs[0]?.data();
     return currentUserData
       ? new User({
-        id: currentUserData['id'],
-        authUID: currentUserData['authUID'],
-        name: currentUserData['name'],
-        status: currentUserData['status'],
-        avatarURL: currentUserData['avatarURL'],
-        photoURL: currentUserData['photoURL'],
-        channels: currentUserData['channels'],
-        email: currentUserData['email'],
-      })
+          id: currentUserData['id'],
+          authUID: currentUserData['authUID'],
+          name: currentUserData['name'],
+          status: currentUserData['status'],
+          avatarURL: currentUserData['avatarURL'],
+          photoURL: currentUserData['photoURL'],
+          channels: currentUserData['channels'],
+          email: currentUserData['email'],
+        })
       : null;
   }
 
@@ -337,15 +289,15 @@ export class StartConversationComponent implements OnInit {
 
         return additionalUserData
           ? new User({
-            id: additionalUserData['id'],
-            authUID: additionalUserData['authUID'],
-            name: additionalUserData['name'],
-            status: additionalUserData['status'],
-            avatarURL: additionalUserData['avatarURL'],
-            photoURL: additionalUserData['photoURL'],
-            channels: additionalUserData['channels'],
-            email: additionalUserData['email'],
-          })
+              id: additionalUserData['id'],
+              authUID: additionalUserData['authUID'],
+              name: additionalUserData['name'],
+              status: additionalUserData['status'],
+              avatarURL: additionalUserData['avatarURL'],
+              photoURL: additionalUserData['photoURL'],
+              channels: additionalUserData['channels'],
+              email: additionalUserData['email'],
+            })
           : null;
       }
     );
@@ -386,30 +338,18 @@ export class StartConversationComponent implements OnInit {
     return docRef;
   }
 
-
-
   async startChat() {
     if (!this.messageText.trim()) {
       console.error('Nachrichtentext darf nicht leer sein.');
       return;
     }
     if (this.selectedChannel) {
-<<<<<<< Updated upstream
-      // Logic to post a post with the selected channel must be implemented before navigating to the channel
-      //addDoc (Logik aus channels.ts - ab ca. Zeile 169)
-
-=======
->>>>>>> Stashed changes
       this.router.navigate(['/home/channels', this.selectedChannel.id]);
       return;
     }
 
     try {
       const userAuthUID = sessionStorage.getItem('userAuthUID');
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
       if (!userAuthUID) {
         console.error('AuthUID im Session Storage nicht gefunden.');
         return;
@@ -425,102 +365,12 @@ export class StartConversationComponent implements OnInit {
         return;
       }
 
-<<<<<<< Updated upstream
-      try {
-        // 1. Find the current user in the 'users' collection
-        const userQuery = query(
-          collection(this.firestore, 'users'),
-          where('authUID', '==', userAuthUID)
-        );
-        const userSnapshot = await getDocs(userQuery);
-
-        if (userSnapshot.empty) {
-          console.error('Aktueller Benutzer nicht in der users-Sammlung gefunden.');
-          return;
-        }
-
-        const currentUserData = userSnapshot.docs[0].data();
-
-        // 2. Create a Chat object with the information of the current user
-        const chat: Chat = {
-          id: '', // Will be updated below
-          participants: this.selectedUsers.map((user) =>
-            this.userToDatabaseFormat(user)
-          ),
-          messages: [], // No need to include messages here, it will be stored in the subcollection
-          chatStartedBy: {
-            id: this.user.id,
-            name: this.user.name,
-            photoURL: this.user.photoURL,
-            authUID: this.user.authUID,
-            status: false,
-            avatarURL: this.user.avatarURL,
-            channels: [],
-            email: this.user.email,
-          },
-          date: this.userService.getCurrentDate(),
-          time: this.userService.getCurrentTime(),
-        };
-
-        // 3. Save the Chat object in the 'chats' collection
-        const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
-        console.log(`Chat mit ${this.selectedUsers.map((user) => user.name).join(', ')} erstellt und in der Datenbank gespeichert. Chat-ID: ${docRef.id}`);
-
-        // Update the ID in the created Chat object
-        chat.id = docRef.id;
-
-        // 4. Create a subcollection reference for 'messages'
-        const messagesCollectionRef = collection(this.firestore, 'chats', docRef.id, 'messages');
-
-        // 5. Add the new message to the 'messages' subcollection
-        const newMessage: Message = {
-          id: '', // Will be updated below
-          text: this.messageText,
-          chatId: docRef.id,
-          user: {
-            id: this.user.id,
-            name: this.user.name,
-            photoURL: this.user.photoURL,
-            authUID: this.user.authUID,
-            status: false,
-            avatarURL: this.user.avatarURL,
-            channels: [],
-            email: this.user.email,
-          },
-          messageAnswer: [],
-          reactions: [],
-          date: this.userService.getCurrentDate(),
-          time: this.userService.getCurrentTime(),
-          messageSendBy: {
-            id: this.user.id,
-            name: this.user.name,
-            photoURL: this.user.photoURL,
-            authUID: this.user.authUID,
-            status: false,
-            avatarURL: this.user.avatarURL,
-            channels: [],
-            email: this.user.email,
-          },
-        };
-
-        // 6. Add the new message to the 'messages' subcollection
-        const messageDocRef = await addDoc(messagesCollectionRef, newMessage);
-        console.log(`Neue Nachricht in der Subcollection 'messages' gespeichert. Nachricht-ID: ${messageDocRef.id}`);
-
-        // Update the ID in the created Message object
-        newMessage.id = messageDocRef.id;
-
-        this.router.navigate(['/home/private-messages', docRef.id]);
-      } catch (error) {
-        console.error('Fehler beim Speichern des Chats:', error);
-=======
       const currentUserData = await this.getCurrentUser(userAuthUID);
       if (!currentUserData) {
         console.error(
           'Aktueller Benutzer nicht in der users-Sammlung gefunden.'
         );
         return;
->>>>>>> Stashed changes
       }
 
       const chat = await this.createChat(currentUserData);
@@ -541,8 +391,6 @@ export class StartConversationComponent implements OnInit {
     }
   }
 
-<<<<<<< Updated upstream
-=======
   async createChat(currentUserData: any) {
     const chat: Chat = {
       id: '',
@@ -607,7 +455,6 @@ export class StartConversationComponent implements OnInit {
       email: user.email,
     };
   }
->>>>>>> Stashed changes
 
   // emoji
   selectEmoji($event: { emoji: { native: string } }) {

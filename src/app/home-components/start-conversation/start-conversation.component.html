@@ -1,7 +1,6 @@
 <div class="start-conversation-wrapper">
   <div class="start-conversation-top">
     <h1>Neue Nachricht</h1>
-<<<<<<< Updated upstream
     <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText"
       (ngModelChange)="search()">
     <div *ngIf="selectedUsers.length > 0" class="selecetedUserInputfield">
@@ -12,16 +11,6 @@
       
     </div>
 
-=======
-    <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText" (ngModelChange)="search()">
-    <div *ngIf="selectedUsers.length > 0" class="selecetedUserInputfield">
-      <span *ngFor="let user of selectedUsers">{{ user.name }}</span>
-    </div>   
-    <div *ngIf="selectedChannels.length > 0" class="selecetedUserInputfield">
-      <span *ngFor="let channel of selectedChannels">{{ channel.chanName }}</span>
-    </div> 
-    
->>>>>>> Stashed changes
     <div *ngIf="searchActive" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
       <div *ngIf="channelResults.length > 0">
