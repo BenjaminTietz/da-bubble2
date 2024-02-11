@@ -123,7 +123,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   subPostsList(chan_id: any) {
-    const q = query(this.getPostSubcollectionRef(chan_id), where('channelId', '==', chan_id), orderBy('date'), orderBy('time'));
+    const q = query(this.getPostSubcollectionRef(chan_id), where('channelId', '==', chan_id), orderBy('date'));
     return onSnapshot(q, (list) => {
       this.listPosts = [];
       list.forEach(element => {
@@ -169,12 +169,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   createPost(channel: any) {
     this.newPost.user = this.user;
     this.newPost.channelId = channel.id;
-    //Test mit ISO-String Datum und Zeit
     this.newPost.date = new Date().toISOString();
-
-    //alter Code
-    //this.newPost.date = this.getCurrentDate();
-    //this.newPost.time = this.getCurrentTime();
 
     addDoc(this.getPostSubcollectionRef(channel.id), this.setPostObject(this.newPost, '')).then((docRef) => {
       this.newPost.content = '';
@@ -213,23 +208,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   //Ende Code für Post als Subcollection
 
-
-
-
-  getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  getCurrentDate() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2, '0');
-    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Monate sind 0-indiziert
-    const year = now.getFullYear();
-    return `${day}.${month}.${year}`;
-  }
 
 
   setPostObject(obj: any, id: string,): Post {
@@ -282,8 +260,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   createAnswer(chan_id: any, post: any) {
     if (this.newAnswer.content) {
       this.newAnswer.user = this.user;
-      this.newAnswer.date = this.getCurrentDate();
-      this.newAnswer.time = this.getCurrentTime();
+      this.newAnswer.date = new Date().toISOString();
       this.newAnswer.postId = post.id;
 
       addDoc(this.getAnswerSubcollectionRef(chan_id, post.id), this.setAnswerObject(this.newAnswer)).then((docRef) => {
@@ -323,7 +300,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   subAnswersList(chan_id: any, post_id: any) {
-    const q = query(this.getAnswerSubcollectionRef(chan_id, post_id), where('postId', '==', post_id), orderBy('date'), orderBy('time'));
+    const q = query(this.getAnswerSubcollectionRef(chan_id, post_id), where('postId', '==', post_id), orderBy('date'));
     return onSnapshot(q, (list) => {
       this.listAnswers = [];
       list.forEach(element => {

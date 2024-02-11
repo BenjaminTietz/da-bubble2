@@ -44,7 +44,7 @@
                 <div class="container-post">
                     <div class="name-and-time">
                         <b>{{ post.user.name }}</b>
-                        <span>{{ post.date }} Uhr</span>
+                        <span>{{ post.date | date:'yyyy-MM-dd' }}</span>
                     </div>
 
                     <div class="post-content">
@@ -54,10 +54,18 @@
                     <div (click)="openAnswers(channel.id , post, i)" class="answers">
                         <span>{{ post.answers }} Antwort<span
                                 *ngIf="post.answers == 0 || post.answers > 1">en</span></span>
-                        <!--Lösung für letzte Antwort noch finden-->
-                        <span *ngIf="post.answers.length > 0">Letzte Antwort {{ post.answers[post.answers.length -
-                            1].date
-                            }}</span>
+                        <!--Lösung für letzte Antwort noch optimieren-->
+
+                        <span *ngIf="post.answers > 0">
+                            <span *ngFor="let answer of listAnswers">
+                                <span *ngIf="answer.postId == post.id">
+                                    Letzte Antwort: {{ listAnswers[listAnswers.length -
+                                    1].date | date:'yyyy-MM-dd'
+                                    }}
+                                </span>
+                            </span>
+                        </span>
+
                     </div>
 
                     <div class="reactions">
@@ -118,7 +126,7 @@
             <div class="container-post">
                 <div class="name-and-time">
                     <b>{{ listPosts[postDetail].user.name }}</b>
-                    <span>{{ listPosts[postDetail].date }} Uhr</span>
+                    <span>{{ listPosts[postDetail].date | date:'yyyy-MM-dd' }}</span>
                 </div>
 
                 <div class="post-content">
@@ -156,7 +164,7 @@
             <div class="container-post">
                 <div class="name-and-time">
                     <b>{{ answer.user.name }}</b>
-                    <span>{{ answer.time }} Uhr</span>
+                    <span>{{ answer.date | date:'yyyy-MM-dd' }}</span>
                 </div>
 
                 <div class="post-content">

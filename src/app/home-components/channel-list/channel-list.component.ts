@@ -110,7 +110,7 @@ export class ChannelListComponent implements OnDestroy, OnInit {
 
 
 
-  private checkScreenSize() {
+  checkScreenSize() {
     this.isScreenSmall = window.innerWidth < 850;
     this.drawerMode = this.isScreenSmall ? 'over' : 'side';
     this.drawerOpened = !this.isScreenSmall;
