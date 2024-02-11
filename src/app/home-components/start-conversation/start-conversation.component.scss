@@ -52,8 +52,16 @@ border-radius: 20px;
 box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
 padding: 20px;
 
-&:hover {
-    cursor: pointer;
+li {
+    width: fit-content;
+    padding: 16px;
+    border-radius: 20px;
+    &:hover {
+        background-color: #ADB0D9;
+        cursor: pointer;
+        @include Nunito(400, 18px, 24.55px, $white);
+    }
+    @include Nunito(400, 18px, 24.55px, $text-gray);
 }
 }
 
