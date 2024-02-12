@@ -314,7 +314,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     try {
       // Referenz zur Nachricht in der Hauptsammlung und zur Nachrichtenantwort in der Subsammlung
       const messageDocRef = doc(this.getMessageSubcollectionRef(this.chatId), messageId);
-      const answerDocRef = doc(collection(messageDocRef, 'messageAnswers'), answerId);
+      const answerDocRef = doc(collection(messageDocRef, 'messageAnswer'), answerId);
       
       // Überprüfen, ob die Nachrichtenantwort vorhanden ist
       const answerSnapshot = await getDoc(answerDocRef);
@@ -329,7 +329,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       console.error('Error deleting message answer:', error);
     }
   }
-
+  
   editMessageAnswer(messageId: string, answerId: string) {
     // Logik zum Öffnen nur für den Verfasser der Antwort implementieren
     const answerToEdit = this.listAnswers.find(
@@ -367,15 +367,14 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     }
   
     const editedAnswer: MessageAnswer = {
-      id: '',
+      id: existingAnswer.id,
       text: this.editMessageAnswerText,
-      message_id: this.editingMessageId,
+      messageId: existingAnswer.messageId,
       user: this.UserService.getUserObjectForFirestore(),
       date: existingAnswer.date,
       time: existingAnswer.time,
       messageSendBy: this.UserService.getUserObjectForFirestore(),
       reactions: [],
-      messageId: ''
     };
   
     try {
@@ -473,10 +472,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   async createAnswer(chatId: string, messageId: string) {
-    console.log('createAnswer called.');
-    console.log('Message ID:', messageId);
-    console.log('Chat ID:', chatId);
-    console.log('New answer is', this.newAnswer);
+    // console.log('createAnswer called.');
+    // console.log('Message ID:', messageId);
+    // console.log('Chat ID:', chatId);
+    // console.log('New answer is', this.newAnswer);
   
     if (!this.newAnswer) {
       console.error('No answer text.');
