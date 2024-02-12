@@ -12,6 +12,7 @@ import {
   DocumentReference,
   orderBy,
   getDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { Router } from '@angular/router';
 import { Chat } from '../../../models/chat.class';
@@ -38,6 +39,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   [x: string]: any;
   chatId: any;
   messageId: any;
+  messageAnswerId: any;
   selectedUsers: User[] = [];
   messageText: string = '';
   chatData: Chat | undefined;
@@ -56,6 +58,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   editMessageText: string = '';
   editingMessageId: string | null = null;
 
+    //edit messageAnswer
+    editMessageAnswerText: string = '';
+    editingMessageAnswerId: string | null = null;
+  
   //answers
   showAnswers: boolean = false;
 
@@ -107,8 +113,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     const q = query(
       this.getMessageSubcollectionRef(chat_id),
       where('chatId', '==', chat_id),
-      orderBy('date'),
-      orderBy('time')
+      orderBy('date')
     );
     return onSnapshot(q, (list) => {
       this.listMessages = [];
@@ -145,20 +150,18 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       console.error('No message text.');
       return;
     }
-    // Create a new message object
     const newMessage: Message = {
       id: '',
       text: this.messageText,
       chatId: this.chatId,
       user: this.UserService.getUserObjectForFirestore(),
-      date: this.UserService.getCurrentDate(),
+      date: new Date().toISOString(),
       time: this.UserService.getCurrentTime(),
       messageSendBy: this.UserService.getUserObjectForFirestore(),
       reactions: [],
       messageAnswer: [],
     };
 
-    // Add the new message to the Firestore subcollection
     try {
       const docRef = await addDoc(
         this.getMessageSubcollectionRef(chat_id),
@@ -167,13 +170,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       console.log('Message written with ID: ', docRef.id);
       console.log('Chat ', chat_id);
 
-      // Retrieve the new document ID
       const newID = docRef.id;
 
-      // Update the message with its ID
       await this.updateMessageWithId(newID, chat_id);
 
-      // Clear the messageText input
       this.messageText = '';
     } catch (error) {
       console.error('Error adding message:', error);
@@ -287,6 +287,112 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
   cancelEditingMessage() {
     this.editingMessageId = null;
+    this.editingMessageAnswerId = null; 
+  }
+
+  async deleteMessage(messageId: string) {
+    try {
+      // Überprüfen, ob die Nachricht vorhanden ist
+      const messageDocRef = doc(this.getMessageSubcollectionRef(this.chatId), messageId);
+      const messageSnapshot = await getDoc(messageDocRef);
+  
+      if (messageSnapshot.exists()) {
+        // Nachricht existiert, also löschen
+        await deleteDoc(messageDocRef);
+        console.log('Message deleted successfully:', messageId);
+      } else {
+        console.error('Message not found.');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  }
+
+  async deleteMessageAnswer(messageId: string, answerId: string) {
+    console.log('Deleting message answer:', answerId);
+    console.log('Message ID:', messageId);
+    try {
+      // Referenz zur Nachricht in der Hauptsammlung und zur Nachrichtenantwort in der Subsammlung
+      const messageDocRef = doc(this.getMessageSubcollectionRef(this.chatId), messageId);
+      const answerDocRef = doc(collection(messageDocRef, 'messageAnswers'), answerId);
+      
+      // Überprüfen, ob die Nachrichtenantwort vorhanden ist
+      const answerSnapshot = await getDoc(answerDocRef);
+      if (answerSnapshot.exists()) {
+        // Nachrichtenantwort existiert, also löschen
+        await deleteDoc(answerDocRef);
+        console.log('Message answer deleted successfully:', answerId);
+      } else {
+        console.error('Message answer not found.');
+      }
+    } catch (error) {
+      console.error('Error deleting message answer:', error);
+    }
+  }
+
+  editMessageAnswer(messageId: string, answerId: string) {
+    // Logik zum Öffnen nur für den Verfasser der Antwort implementieren
+    const answerToEdit = this.listAnswers.find(
+      (answer: { id: string; user: { authUID: string } }) => {
+        // Überprüfen, ob die Antwort-ID übereinstimmt und der aktuelle Nutzer der Verfasser ist
+        return answer.id === answerId && answer.user.authUID === this.storedUserAuthUID;
+      }
+    );
+  
+    if (answerToEdit) {
+      this.editMessageAnswerText = answerToEdit.text;
+      this.editingMessageId = messageId;
+      this.editingMessageAnswerId = answerId;
+  
+      console.log('Editing message answer:', answerId);
+      console.log('Original Message Answer:', answerToEdit);
+    } else {
+      console.log('User is not the author of the message answer or answer not found.');
+    }
+  }
+
+  async saveEditedMessageAnswer() {
+    if (!this.editingMessageId || !this.editingMessageAnswerId) {
+      console.error('No message answer being edited.');
+      return;
+    }
+  
+    const existingAnswer = this.listAnswers.find(
+      (answer: { id: string }) => answer.id === this.editingMessageAnswerId
+    );
+  
+    if (!existingAnswer) {
+      console.error('Original message answer not found.');
+      return;
+    }
+  
+    const editedAnswer: MessageAnswer = {
+      id: '',
+      text: this.editMessageAnswerText,
+      message_id: this.editingMessageId,
+      user: this.UserService.getUserObjectForFirestore(),
+      date: existingAnswer.date,
+      time: existingAnswer.time,
+      messageSendBy: this.UserService.getUserObjectForFirestore(),
+      reactions: [],
+      messageId: ''
+    };
+  
+    try {
+      await updateDoc(
+        doc(
+          this.getMessageAnswerSubcollectionRef(this.chatId, this.editingMessageId),
+          this.editingMessageAnswerId
+        ),
+        editedAnswer
+      );
+  
+      console.log('Message answer updated successfully:', editedAnswer);
+      this.editingMessageId = null;
+      this.editingMessageAnswerId = null;
+    } catch (error) {
+      console.error('Error updating message answer:', error);
+    }
   }
 
   // edit message end
@@ -323,8 +429,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     console.log('subAnswersMessage_ID', message_id);
     const q = query(
       this.getMessageAnswerSubcollectionRef(chat_id, message_id),
-      orderBy('date'),
-      orderBy('time')
+      orderBy('date')
     );
     return onSnapshot(q, (list) => {
       // Zuerst die listAnswers leeren
@@ -350,8 +455,10 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   
     
   getMessageAnswerSubcollectionRef(chat_id: any, message_id: any) {
-    return collection(this.firestore, 'chats', chat_id, 'messages', message_id, 'messageAnswer')
+    const messageRef = doc(this.firestore, 'chats', chat_id, 'messages', message_id);
+    return collection(messageRef, 'messageAnswer');
   }
+  
 
   setAnswerObject(obj: any) {
     return new MessageAnswer({
@@ -365,8 +472,6 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     });
   }
 
-  //Code für Answers
-
   async createAnswer(chatId: string, messageId: string) {
     console.log('createAnswer called.');
     console.log('Message ID:', messageId);
@@ -378,39 +483,45 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       return;
     }
   
-    const newAnswer: MessageAnswer = {
-      id: doc(collection(this.firestore, 'chats', chatId, 'messages', messageId, 'messageAnswer')).id,
-      text: this.newAnswer,
-      messageId: messageId,
-      user: this.UserService.user,
-      date: this.UserService.getCurrentDate(),
-      time: this.UserService.getCurrentTime(),
-      reactions: []
-    };
+    try {
+      const newAnswer: MessageAnswer = {
+        text: this.newAnswer,
+        messageId: messageId,
+        user: this.UserService.user,
+        date: new Date().toISOString(),
+        time: this.UserService.getCurrentTime(),
+        reactions: [],
+        id: ''
+      };
+
+      const newAnswerJson = JSON.parse(JSON.stringify(newAnswer));
   
-    const newAnswerJson = JSON.parse(JSON.stringify(newAnswer));
+      const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
   
-    const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
+      console.log('Message Answer Reference:', messageAnswerRef);
   
-    console.log('Message Answer Reference:', messageAnswerRef);
-  
-    if (messageAnswerRef) {
-      addDoc(messageAnswerRef, newAnswerJson)
-      .then((docRef) => {
+      if (messageAnswerRef) {
+        const docRef = await addDoc(messageAnswerRef, newAnswerJson);
         console.log('Answer added successfully:', docRef.id);
-        // Set the ID of the new answer
-        newAnswer.id = docRef.id; // <-- Set the ID here
-        //this.listAnswers.push(newAnswer);
+        
+        await this.updateAnswerWithId(docRef, { id: docRef.id });
+
         this.newAnswer = ''; 
-      })
-      .catch((error) => {
-        console.error('Error adding answer:', error);
-      });
-    } else {
-      console.error('Invalid messageAnswerRef:', messageAnswerRef);
+      } else {
+        console.error('Invalid messageAnswerRef:', messageAnswerRef);
+      }
+    } catch (error) {
+      console.error('Error adding answer:', error);
     }
-  }
-  
+}
+
+async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
+    await updateDoc(docRef, data)
+      .then(() => {})
+      .catch((err) => {
+        console.error('Error updating answer:', err);
+      });
+}
  
 
   hideAnswers() {
