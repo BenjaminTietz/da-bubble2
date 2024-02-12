@@ -39,7 +39,9 @@ export class UserDetailComponent implements OnInit {
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     console.log(this.storedUserAuthUID)
-    this.getUser();
+
+
+    //this.getUser(); prüfen warum code eingefügt wurde...scheint nicht notwendig, da user immer übergeben wird
   }
 
   updateUser(name: string, email: string) {

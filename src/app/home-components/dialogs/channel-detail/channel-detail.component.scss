@@ -140,7 +140,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        width: 100%;
+        //width: 100%;
         box-sizing: border-box;
 
         button {
@@ -190,3 +190,18 @@ input {
 
 }
 
+
+.wrapper-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    width: 100%;
+}
+
+
+.btn-disabled {
+    background-color: grey !important;
+    cursor: not-allowed !important;
+
+}
