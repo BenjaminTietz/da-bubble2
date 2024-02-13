@@ -52,13 +52,22 @@
 
     </div>
 
+    <div class="wrapper-buttons">
 
-    <div class="container-btn">
-        <button (click)="leaveChannel()">Channel verlassen</button>
+        <div class="container-btn">
+            <button [ngClass]="{'btn-disabled': channel.creator.authUID != user.authUID}"
+                [matTooltip]="channel.creator.authUID != user.authUID ? 'Nur als Ersteller des Channels möglich' : '' "
+                [disabled]="channel.creator.authUID != user.authUID" (click)="deleteChannel()">Channel löschen</button>
+        </div>
+
+
+        <div class="container-btn">
+            <button [ngClass]="{'btn-disabled': channel.creator.authUID == user.authUID}"
+                [matTooltip]="channel.creator.authUID == user.authUID ? 'Nicht möglich als Ersteller des Channels' : '' "
+                [disabled]="channel.creator.authUID == user.authUID" (click)="leaveChannel()">Channel verlassen</button>
+        </div>
 
     </div>
-
-
 
 
 

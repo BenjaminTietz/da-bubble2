@@ -3,7 +3,9 @@ import { Channel } from '../../../../models/channel.class';
 import { User } from '../../../../models/user.class';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDetailComponent } from '../user-detail/user-detail.component';
-import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, FieldValue } from '@angular/fire/firestore';
+import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, arrayRemove, FieldValue } from '@angular/fire/firestore';
+import { UserService } from '../../../services/user.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,11 +25,11 @@ export class ChannelDetailComponent implements OnInit {
   newName: string = '';
   newDesc: string = '';
 
+  user!: User;
 
 
 
-  constructor(public dialog: MatDialog) {
-
+  constructor(public dialog: MatDialog, private router: Router) {
   }
 
 
@@ -38,23 +40,13 @@ export class ChannelDetailComponent implements OnInit {
   }
 
 
-
-
-
-
   startEditName() {
     this.editName = true;
-
-
-
   }
 
 
   startEditDesc() {
     this.editDesc = true;
-
-
-
   }
 
 
@@ -68,7 +60,6 @@ export class ChannelDetailComponent implements OnInit {
     }
 
   }
-
 
 
   async updateChannel() {
@@ -87,8 +78,44 @@ export class ChannelDetailComponent implements OnInit {
 
 
   leaveChannel() {
-    console.log('Leave Channel:', this.channel.chanName)
+    this.deleteUserFromChannel();
   }
+
+
+  deleteUserFromChannel() {
+    deleteDoc(this.getUserInChannelDocRef(this.channel.id)).then(() => {
+      this.deleteChannelFromUser();
+    }).then(() => {
+      this.dialog.closeAll();
+      this.router.navigate(['/home']);
+    })
+  }
+
+
+  getUserInChannelDocRef(chan_id: any) {
+    return doc(this.firestore, 'channels', chan_id, 'users', this.user.id)
+  }
+
+
+  deleteChannelFromUser() {
+    updateDoc(this.getUserRef(), {
+      channels: arrayRemove(this.channel.id)
+    })
+  }
+
+
+  getUserRef() {
+    return doc(this.firestore, 'users', this.user.id)
+  }
+
+
+  deleteChannel() {
+    console.log('Channel löschen')
+  }
+
+
+
+
 
 
 

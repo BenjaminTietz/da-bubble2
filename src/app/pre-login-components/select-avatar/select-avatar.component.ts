@@ -24,6 +24,10 @@ export class SelectAvatarComponent {
   username: string = '';
   selectedAvatarUrl: string = '';
   userId!: string;
+  //Liste mit Dateinamen der Bilder...bei Bedarf ergänzen
+  listImages = ['character_1.png', 'character_2.png', 'character_3.png', 'character_4.png', 'character_5.png', 'character_6.png']
+
+
 
   @ViewChild('popupDesktop') popupDesktop!: ElementRef;
 

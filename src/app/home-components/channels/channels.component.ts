@@ -345,7 +345,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     dialog.componentInstance.chan_id = this.channel.id;
 
     dialog.afterClosed().subscribe(result => {
-      console.log(result)
+      //console.log(result)
     })
 
   }
@@ -377,9 +377,10 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //code für channel-detail
 
 
-  openDialogChannelDetail(channel: any) {
+  openDialogChannelDetail(channel: any, user: any) {
     const dialog = this.dialog.open(ChannelDetailComponent);
     dialog.componentInstance.channel = new Channel(channel);
+    dialog.componentInstance.user = new User(user);
 
 
   }
