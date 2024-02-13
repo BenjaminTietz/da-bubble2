@@ -3,7 +3,7 @@ import { Channel } from '../../../../models/channel.class';
 import { User } from '../../../../models/user.class';
 import { MatDialog } from '@angular/material/dialog';
 import { UserDetailComponent } from '../user-detail/user-detail.component';
-import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, arrayRemove, FieldValue } from '@angular/fire/firestore';
+import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, DocumentData, DocumentSnapshot, arrayUnion, arrayRemove, FieldValue, getDocs } from '@angular/fire/firestore';
 import { UserService } from '../../../services/user.service';
 import { Router } from '@angular/router';
 
@@ -26,6 +26,10 @@ export class ChannelDetailComponent implements OnInit {
   newDesc: string = '';
 
   user!: User;
+
+  wantToDelete: boolean = false;
+  counting!: number;
+  intervalCountDown!: any;
 
 
 
@@ -109,14 +113,62 @@ export class ChannelDetailComponent implements OnInit {
   }
 
 
-  deleteChannel() {
-    console.log('Channel löschen')
+  startDeleteChannel() {
+    this.stopCountDown();
+    console.log('Channel löschen:', this.channel.id)
+    this.deleteChannel();
   }
 
 
+  deleteChannel() {
+    deleteDoc(doc(this.firestore, 'channels', this.channel.id)).then(() => {
+      this.deleteChannelFromAllUsers();
+    })
+  }
 
 
+  async deleteChannelFromAllUsers() {
+    const q = query(collection(this.firestore, 'users')); // Erstellt eine Query für die users-Collection
+    const querySnapshot = await getDocs(q); // Führt die Query aus und holt die Dokumente
 
+    querySnapshot.forEach((doc) => {
+      const userRef = doc.ref; // Referenz auf das aktuelle Dokument/Benutzer
+      updateDoc(userRef, {
+        channels: arrayRemove(this.channel.id) // Entfernt den Channel aus dem channels-Array
+      }).then(() => {
+        //console.log(`Channel entfernt für Benutzer ${doc.id}`);
+        this.dialog.closeAll();
+        this.router.navigate(['/home']);
+      }).catch((error) => {
+        //console.error(`Fehler beim Entfernen des Channels für Benutzer ${doc.id}: `, error);
+      });
+    });
+  }
+
+
+  checkDelete() {
+    console.log('Wechsel zu really delete')
+    this.wantToDelete = true;
+    this.counting = 5;
+    this.startCountdown();
+  }
+
+
+  startCountdown() {
+    this.intervalCountDown = setInterval(() => {
+      if (this.counting > 0) {
+        this.counting -= 1;
+      } else {
+        this.stopCountDown();
+      }
+    }, 1000);
+  }
+
+
+  stopCountDown() {
+    clearInterval(this.intervalCountDown);
+    this.wantToDelete = false;
+  }
 
 
   openDialogUserDetail(user: any) {
