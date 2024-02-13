@@ -167,33 +167,22 @@ export class PmListComponent implements OnInit, OnDestroy {
   }
   
 
-async createNewChat(participant: any) {
-  console.log('Create new chat with user:', participant);
+  async createNewChat(participant: any) {
+    console.log('Create new chat with user:', participant);
 
-  try {
-    // Create a new chat document
-    const chatDocRef = await addDoc(collection(this.firestore, 'chats'), {
-      chatStartedBy: {
-        id: this.userData.id,
-        name: this.userData.name,
-        photoURL: this.userData.photoURL,
-        authUID: this.userData.authUID,
-        status: this.userData.status,
-        avatarURL: this.userData.avatarURL,
-        channels: [],
-        email: this.userData.email,
-      },
-      participants: [participant],
-      messages: [],
-      date: this.userService.getCurrentDate(),
-      time: this.userService.getCurrentTime(),
-    });
+    try {
+      const chatDocRef = await addDoc(collection(this.firestore, 'chats'), {
+        chatStartedBy: this.userService.getUserObjectForFirestore(),
+        participants: [participant],
+        messages: [],
+        date: this.userService.getCurrentDate(),
+        time: this.userService.getCurrentTime(),
+      });
 
-    console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
-    this.router.navigate(['/home/private-messages', chatDocRef.id]);
-  } catch (error) {
-    console.error('Error creating and storing the chat:', error);
+      console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
+      this.router.navigate(['/home/private-messages', chatDocRef.id]);
+    } catch (error) {
+      console.error('Error creating and storing the chat:', error);
+    }
   }
-}
-
 }

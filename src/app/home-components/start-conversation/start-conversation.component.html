@@ -1,23 +1,32 @@
 <div class="start-conversation-wrapper">
   <div class="start-conversation-top">
     <h1>Neue Nachricht</h1>
-    <input placeholder="An: #channel oder @jemanden oder E-Mail Adresse" [(ngModel)]="searchText"
-      (ngModelChange)="search()">
+    <input
+      placeholder="An: #channel oder @jemanden oder E-Mail Adresse"
+      [(ngModel)]="searchText"
+      (ngModelChange)="search()"
+    />
     <div *ngIf="selectedUsers.length > 0" class="selecetedUserInputfield">
-
-
-      <span *ngFor="let user of selectedUsers">{{ user.name }} {{ user.chanName}}</span>
-      <!--user.chanName ist channel-name-->
-      
+      <span *ngFor="let user of selectedUsers">{{ user.name }}</span>
+      <div (click)="deleteAssignedUser()" class="close-btn"><img src="assets/img/close_btn.png" /></div>
     </div>
 
+    <div *ngIf="selectedChannels.length > 0" class="selecetedUserInputfield">
+      <span *ngFor="let channel of selectedChannels"
+        >{{ channel.chanName }}
+      </span>
+      <div  (click)="deleteAssignedChannel()" class="close-btn"><img src="assets/img/close_btn.png" /></div>
+    </div>
     <div *ngIf="searchActive" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
       <div *ngIf="channelResults.length > 0">
         <h2>Kanal Ergebnisse</h2>
         <ul>
-          <li *ngFor="let channel of channelResults" (click)="selectChannel(channel)">
-            {{ channel.chanName || channel.description || 'Unbekannter Kanal' }}
+          <li
+            *ngFor="let channel of channelResults"
+            (click)="selectChannel(channel)"
+          >
+            {{ channel.chanName || channel.description || "Unbekannter Kanal" }}
           </li>
         </ul>
       </div>
@@ -26,14 +35,23 @@
       <div *ngIf="userResults.length > 0">
         <h2>Benutzer Ergebnisse</h2>
         <ul>
-          <li *ngFor="let user of userResults" (click)="selectedItem = user; addToRecipientList(user)">
-            {{ user.name || 'Unbekannter Benutzer' }}
+          <li
+            *ngFor="let user of userResults"
+            (click)="selectedItem = user; addToRecipientList(user)"
+          >
+            {{ user.name || "Unbekannter Benutzer" }}
           </li>
         </ul>
       </div>
 
       <!-- Wenn keine Suchergebnisse vorhanden sind, eine entsprechende Meldung anzeigen -->
-      <div *ngIf="channelResults.length === 0 && userResults.length === 0 && searchText.trim() !== ''">
+      <div
+        *ngIf="
+          channelResults.length === 0 &&
+          userResults.length === 0 &&
+          searchText.trim() !== ''
+        "
+      >
         <p>Keine Ergebnisse gefunden.</p>
       </div>
     </div>
@@ -49,15 +67,21 @@
 
       <!-- Emoji Picker -->
       <div class="inputfield-emoji-picker">
-        <emoji-mart (emojiClick)="selectEmoji($event)" *ngIf="emojiPickerAnswerVisible" title="Pick your emoji…"
-          emoji="point_up"></emoji-mart>
+        <emoji-mart
+          (emojiClick)="selectEmoji($event)"
+          *ngIf="emojiPickerAnswerVisible"
+          title="Pick your emoji…"
+          emoji="point_up"
+        ></emoji-mart>
       </div>
 
       <div class="container-icons">
         <div class="icons-left">
           <mat-icon matTooltip="add file">add</mat-icon>
           <div class="vertical-line"></div>
-          <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji">add_reaction</mat-icon>
+          <mat-icon (click)="toggleSetEmojiPicker()" matTooltip="add emoji"
+            >add_reaction</mat-icon
+          >
           <mat-icon>alternate_email</mat-icon>
         </div>
 

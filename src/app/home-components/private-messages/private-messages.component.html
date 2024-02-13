@@ -147,7 +147,13 @@
 
       <div class="start-conversation-bottom">
         <div class="container-new-message">
-          <textarea [(ngModel)]="messageText"></textarea>
+          <textarea 
+          maxlength="160"
+          [(ngModel)]="messageText"
+          cols="30"
+          rows="auto"
+          [placeholder]="'Antworten...'"
+          ></textarea>
 
           <!-- Emoji Picker -->
           <div class="inputfield-emoji-picker">
@@ -169,8 +175,15 @@
               <mat-icon matTooltip="tag user">alternate_email</mat-icon>
             </div>
 
-            <div class="icons-right" (click)="addMessage(chatId)">
-              <mat-icon matTooltip="send">send</mat-icon>
+            <div class="icons-right">
+              <mat-icon
+              (click)="addMessage(chatId)"
+                [matTooltip]="
+                  messageText ? 'send' : 'Zuerst Antwort eintippen'
+                "
+                [ngClass]="messageText ? '' : 'cursor-no'"
+                >send</mat-icon
+              >
             </div>
           </div>
         </div>

@@ -146,6 +146,7 @@ li {
 
 .selecetedUserInputfield {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 16px;
     padding: 8px 16px;
@@ -156,11 +157,27 @@ li {
     cursor: pointer;
     transition: 0.3s;
     position: absolute;
-    top: 68px;
+    top: 62px;
     left: 80px;
 
+    .close-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 100%;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $bg-color;
+        }
+    }
+
     &:hover {
+        transition: all 0.225s ease-in-out;
         background-color: #E8E9F5;
+        color: $white;
     }
 
     .selectedUser {
@@ -172,6 +189,9 @@ li {
             width: 40px;
             height: 40px;
             border-radius: 50%;
+        }
+        span {
+            @include Nunito(400, 18px, 24.55px, $black);
         }
 
         p {

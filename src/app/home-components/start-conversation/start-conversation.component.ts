@@ -456,6 +456,16 @@ selectChannel(channel: Channel) {
     };
   }
 
+  deleteAssignedUser() {
+    console.log('deleteAssignedUser');
+    this.selectedUsers = [];
+  }
+
+  deleteAssignedChannel() {
+    this.selectedChannels = [];
+    console.log('deleteAssignedChannel');
+  }
+
   // emoji
   selectEmoji($event: { emoji: { native: string } }) {
     this.messageText += $event.emoji.native;
