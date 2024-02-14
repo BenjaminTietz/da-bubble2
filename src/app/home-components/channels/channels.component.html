@@ -55,18 +55,14 @@
                     <div (click)="openAnswers(channel.id , post, i)" class="answers">
                         <span>{{ post.answers }} Antwort<span
                                 *ngIf="post.answers == 0 || post.answers > 1">en</span></span>
-                        <!--Lösung für letzte Antwort noch optimieren-->
 
                         <span *ngIf="post.answers > 0">
-                            <span *ngFor="let answer of listAnswers">
-                                <span *ngIf="answer.postId == post.id">
-                                    Letzte Antwort: {{ listAnswers[listAnswers.length -
-                                    1].date | date:'yyyy-MM-dd'
-                                    }}
-                                </span>
-                            </span>
-                        </span>
 
+                            <span>
+                                Letzte Antwort: {{ post.lastAnswer | date:'yyyy-MM-dd - HH:mm' }} Uhr
+                            </span>
+
+                        </span>
                     </div>
 
                     <div class="reactions">
@@ -74,7 +70,6 @@
                     </div>
                 </div>
 
-                <!--Testcode für Post löschen-->
                 <div *ngIf="post.user.id == this.user.id" class="container-delete">
                     <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
                 </div>

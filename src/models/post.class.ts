@@ -11,7 +11,7 @@ export class Post {
     channelId!: string;
     user!: User;
     date!: string;
-    time!: string;
+    lastAnswer!: string;
     answers!: number;
     reactions!: Reaction[];
 
@@ -24,7 +24,7 @@ export class Post {
         this.channelId = obj ? obj.channelId : '';
         this.user = obj ? obj.user : '';
         this.date = obj ? obj.date : '';
-        this.time = obj ? obj.time : '';
+        this.lastAnswer = obj ? obj.lastAnswer : '';
         this.answers = obj ? obj.answers : 0;
         this.reactions = obj ? obj.reactions : [];
 

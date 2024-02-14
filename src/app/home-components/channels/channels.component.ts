@@ -191,13 +191,36 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   async updatePostAmountAnswers(post_id: any, amount: any, chan_id: any) {
+
+    const dateLastAnswer = this.getLastAnswerDate();
+
     const docRef = doc(this.getPostSubcollectionRef(chan_id), post_id);
-    await updateDoc(docRef, { answers: amount }).catch(
+    await updateDoc(docRef, {
+      answers: amount,
+      lastAnswer: dateLastAnswer
+    }).catch(
       (err) => { console.log(err); }
     ).then(
       () => { }
     );
   }
+
+
+  getLastAnswerDate() {
+    if (this.listAnswers.length === 0) {
+      return null; // oder ein sinnvoller Standardwert
+    }
+
+    const latestDate = this.listAnswers.reduce((latest: any, current: any) => {
+      return latest.date > current.date ? latest : current;
+    }).date;
+
+    return latestDate;
+  }
+
+
+
+
 
 
 
@@ -217,7 +240,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       channelId: obj.channelId || "",
       user: this.setUserObject(obj.user),
       date: obj.date || "",
-      time: obj.time || "",
+      lastAnswer: obj.lastAnswer || "",
       answers: obj.answers ? obj.answers : 0,
       reactions: obj.reactions || [],
     }
