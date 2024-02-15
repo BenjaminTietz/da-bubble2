@@ -54,11 +54,20 @@
 
     <div class="wrapper-buttons">
 
-        <div class="container-btn">
+        <div *ngIf="!wantToDelete" class="container-btn">
             <button [ngClass]="{'btn-disabled': channel.creator.authUID != user.authUID}"
-                [matTooltip]="channel.creator.authUID != user.authUID ? 'Nur als Ersteller des Channels möglich' : '' "
-                [disabled]="channel.creator.authUID != user.authUID" (click)="deleteChannel()">Channel löschen</button>
+                [matTooltip]="channel.creator.authUID != user.authUID ? 'Nur als Ersteller des Channels möglich' : 'Channel für alle User löschen' "
+                [disabled]="channel.creator.authUID != user.authUID" (click)="checkDelete()">Channel löschen</button>
         </div>
+
+
+        <div *ngIf="wantToDelete" class="container-btn">
+            <button class="red-bg" [ngClass]="{'btn-disabled': channel.creator.authUID != user.authUID}"
+                [matTooltip]="channel.creator.authUID != user.authUID ? 'Nur als Ersteller des Channels möglich' : 'Channel für alle User löschen' "
+                [disabled]="channel.creator.authUID != user.authUID" (click)="startDeleteChannel()">Wirklich löschen? {{ counting }} sec</button>
+        </div>
+
+
 
 
         <div class="container-btn">
@@ -66,6 +75,9 @@
                 [matTooltip]="channel.creator.authUID == user.authUID ? 'Nicht möglich als Ersteller des Channels' : '' "
                 [disabled]="channel.creator.authUID == user.authUID" (click)="leaveChannel()">Channel verlassen</button>
         </div>
+
+
+
 
     </div>
 
