@@ -44,8 +44,10 @@
                 <div class="container-post">
                     <div class="name-and-time">
                         <b>{{ post.user.name }}</b>
-                        <span>{{ post.date | date:'yyyy-MM-dd' }}</span>
-                        <span>{{ post.date | date:'HH:mm' }} Uhr</span>
+                        <div class="wrapper-no-flex-reverse">
+                            <span>{{ post.date | date:'yyyy-MM-dd' }}</span>
+                            <span>{{ post.date | date:'HH:mm' }} Uhr</span>
+                        </div>
                     </div>
 
                     <div class="post-content">
@@ -122,8 +124,10 @@
             <div class="container-post">
                 <div class="name-and-time">
                     <b>{{ listPosts[postDetail].user.name }}</b>
-                    <span>{{ listPosts[postDetail].date | date:'yyyy-MM-dd' }}</span>
-                    <span>{{ listPosts[postDetail].date | date:'HH:mm' }} Uhr</span>
+                    <div class="wrapper-no-flex-reverse">
+                        <span>{{ listPosts[postDetail].date | date:'yyyy-MM-dd' }}</span>
+                        <span>{{ listPosts[postDetail].date | date:'HH:mm' }} Uhr</span>
+                    </div>
                 </div>
 
                 <div class="post-content">
@@ -161,8 +165,10 @@
             <div class="container-post">
                 <div class="name-and-time">
                     <b>{{ answer.user.name }}</b>
-                    <span>{{ answer.date | date:'yyyy-MM-dd' }}</span>
-                    <span>{{ answer.date | date:'HH:mm' }} Uhr</span>
+                    <div class="wrapper-no-flex-reverse">
+                        <span>{{ answer.date | date:'yyyy-MM-dd' }}</span>
+                        <span>{{ answer.date | date:'HH:mm' }} Uhr</span>
+                    </div>
                 </div>
 
                 <div class="post-content">

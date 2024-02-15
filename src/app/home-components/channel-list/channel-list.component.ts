@@ -39,6 +39,7 @@ export class ChannelListComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.getUser();
+
   }
 
 
