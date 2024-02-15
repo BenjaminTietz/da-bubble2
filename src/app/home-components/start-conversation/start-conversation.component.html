@@ -3,11 +3,11 @@
     <h1>Neue Nachricht</h1>
     <input
       placeholder="An: #channel oder @jemanden oder E-Mail Adresse"
-      [(ngModel)]="searchText"
-      (ngModelChange)="search()"
+      [(ngModel)]="this.searchService.searchText"
+      (ngModelChange)="this.searchService.search()"
     />
-    <div *ngIf="selectedUsers.length > 0" class="selecetedUserInputfield">
-      <span *ngFor="let user of selectedUsers">{{ user.name }}</span>
+    <div *ngIf="this.searchService.selectedUsers.length > 0" class="selecetedUserInputfield">
+      <span *ngFor="let user of this.searchService.selectedUsers">{{ user.name }}</span>
       <div (click)="deleteAssignedUser()" class="close-btn"><img src="assets/img/close_btn.png" /></div>
     </div>
 
@@ -17,13 +17,13 @@
       </span>
       <div  (click)="deleteAssignedChannel()" class="close-btn"><img src="assets/img/close_btn.png" /></div>
     </div>
-    <div *ngIf="searchActive" class="search-result-recipients">
+    <div *ngIf="this.searchService.searchActive" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
-      <div *ngIf="channelResults.length > 0">
+      <div *ngIf="this.searchService.channelResults.length > 0">
         <h2>Kanal Ergebnisse</h2>
         <ul>
           <li
-            *ngFor="let channel of channelResults"
+            *ngFor="let channel of this.searchService.channelResults"
             (click)="selectChannel(channel)"
           >
             {{ channel.chanName || channel.description || "Unbekannter Kanal" }}
@@ -32,11 +32,11 @@
       </div>
 
       <!-- Hier werden die Benutzerergebnisse gerendert -->
-      <div *ngIf="userResults.length > 0">
+      <div *ngIf="this.searchService.userResults.length > 0">
         <h2>Benutzer Ergebnisse</h2>
         <ul>
           <li
-            *ngFor="let user of userResults"
+            *ngFor="let user of this.searchService.userResults"
             (click)="selectedItem = user; addToRecipientList(user)"
           >
             {{ user.name || "Unbekannter Benutzer" }}
@@ -47,9 +47,9 @@
       <!-- Wenn keine Suchergebnisse vorhanden sind, eine entsprechende Meldung anzeigen -->
       <div
         *ngIf="
-          channelResults.length === 0 &&
-          userResults.length === 0 &&
-          searchText.trim() !== ''
+          this.searchService.channelResults.length === 0 &&
+          this.searchService.userResults.length === 0 &&
+          this.searchService.searchText.trim() !== ''
         "
       >
         <p>Keine Ergebnisse gefunden.</p>

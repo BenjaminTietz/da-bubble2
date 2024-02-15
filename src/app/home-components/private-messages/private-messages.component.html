@@ -34,14 +34,14 @@
         <ng-container>
           <div class="date-wrapper">
             <div class="purple-line"></div>
-            <p>{{ message.date }}</p>
+            <p>{{ message.date | date:'yyyy-MM-dd' }}</p>
             <div class="purple-line"></div>
           </div>
           <div class="user-wrapper">
             <img [src]="message.user.avatarURL" alt="user avatar" />
             <div class="user-info">
               <h3>{{ message.user.name }}</h3>
-              <p>{{ message.time }}</p>
+              <p>{{ message.date | date:'HH:mm' }} Uhr</p>
               <div class="message-options">
                 <mat-icon
                   (click)="toggleEmojiPicker()"
@@ -79,8 +79,17 @@
               (click)="openAnswers(chatId, message.id, i)"
               class="message-bottom"
             >
-              <span>2 Antworten</span>
-              <h4>Letzte Antwort 14:35</h4>
+            <!-- funktioniert nicht-->
+            <span>{{ listAnswers.length }} Antwort<span *ngIf="listAnswers.length != 1">en</span></span>
+
+            <!-- Anzeige der letzten Antwort für eine spezifische Nachricht -->
+            <span *ngIf="message.messageAnswer > 0">
+              <span *ngFor="let messageAnswer of listAnswers">
+                <span *ngIf="messageAnswer.messageId == message.id">
+                  Letzte Antwort: {{ messageAnswer.date | date:'yyyy-MM-dd' }}
+                </span>
+              </span>
+            </span>
             </div>
             <div
               *ngIf="editingMessageId === message.id"
@@ -219,14 +228,14 @@
     <ng-container *ngIf=" i === answerDetail">
       <div class="date-wrapper">
         <div class="purple-line"></div>
-        <p>{{ message.date }}</p>
+        <p>{{ message.date | date:'yyyy-MM-dd' }}</p>
         <div class="purple-line"></div>
       </div>
       <div class="user-wrapper">
         <img [src]="message.user.avatarURL" alt="user avatar" />
         <div class="user-info">
           <h3>{{ message.user.name }}</h3>
-          <p>{{ message.time }}</p>
+          <p>{{ message.date | date:'HH:mm' }} Uhr</p>
           <div class="message-options">
             <mat-icon
               (click)="toggleEmojiPicker()"
@@ -292,14 +301,14 @@
 >
  <div class="date-wrapper">
    <div class="purple-line"></div>
-   <p>{{ answer.date }}</p>
+   <p>{{ answer.date | date:'HH:mm' }} Uhr</p>
    <div class="purple-line"></div>
  </div>
  <div class="user-wrapper">
    <img [src]="answer.user.avatarURL" alt="user avatar" />
    <div class="user-info">
      <h3>{{ answer.user.name }}</h3>
-     <p>{{ answer.time }}</p>
+     <p>{{ answer.date | date:'HH:mm' }} Uhr</p>
      <div class="message-options">
        <mat-icon
          (click)="toggleEmojiPicker()"

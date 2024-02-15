@@ -29,21 +29,22 @@ import { MessageAnswer } from '../../../models/messageAnswer.class';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { UserService } from '../../services/user.service';
+import { SearchService } from '../../services/search.service';
 @Component({
   selector: 'app-start-conversation',
   templateUrl: './start-conversation.component.html',
   styleUrls: ['./start-conversation.component.scss'],
 })
 export class StartConversationComponent implements OnInit {
-  searchText: string = '';
-  searchActive: boolean = false;
-  channelResults: any[] = [];
-  userResults: any[] = [];
+  // searchText: string = '';
+  // searchActive: boolean = false;
+  // channelResults: any[] = [];
+  // userResults: any[] = [];
   auth: Auth;
   firestore: Firestore;
   currentUser: any;
   selectedItemId: any | string;
-  selectedUsers: any[] = [];
+  // selectedUsers: any[] = [];
   selectedChannels: Channel[] = [];
   selectedItem: any;
   additionalUsersInChat: User[] = [];
@@ -59,7 +60,8 @@ export class StartConversationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private chatService: ChatService,
-    private userService: UserService
+    private userService: UserService,
+    public searchService: SearchService
   ) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
@@ -81,7 +83,7 @@ export class StartConversationComponent implements OnInit {
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.userService.getUser();
-    this.searchActive = false;
+    this.searchService.searchActive = false;
   }
 
 selectChannel(channel: Channel) {
@@ -113,136 +115,152 @@ selectChannel(channel: Channel) {
   }
 
   clearUserResults() {
-    this.userResults = [];
+    this.searchService.userResults = [];
   }
 
   clearChannelResults() {
-    this.channelResults = [];
+    this.searchService.channelResults = [];
   }
 
-  async search() {
-    if (!this.searchText) {
-      this.searchActive = false;
-      this.clearSearchResults();
-      this.selectedUsers = [];
-      return;
-    }
+  // async search() {
+  //   if (!this.searchText) {
+  //     this.searchActive = false;
+  //     this.clearSearchResults();
+  //     this.selectedUsers = [];
+  //     return;
+  //   }
   
 
-    if (this.searchText.startsWith('@') && this.searchText.length > 1) {
-      this.searchActive = true;
-      const username = this.searchText.slice(1); // Entferne '@' vom Anfang des Benutzernamens
-      await this.loadUserResults(username);
-    } else if (this.searchText.startsWith('#')&& this.searchText.length > 1) {
-      // Wenn die Suche mit '#' beginnt, Channelsuche durchführen
-      this.searchActive = true;
-      const channelName = this.searchText.slice(1); // Entferne '#' vom Anfang des Channelnamens
-      await this.loadChannelResults(channelName);
-    } else {
-      // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
-      this.clearSearchResults();
-    }
-  }
+  //   if (this.searchText.startsWith('@') && this.searchText.length > 1) {
+  //     this.searchActive = true;
+  //     const username = this.searchText.slice(1); // Entferne '@' vom Anfang des Benutzernamens
+  //     await this.loadUserResults(username);
+  //   } else if (this.searchText.startsWith('#')&& this.searchText.length > 1) {
+  //     // Wenn die Suche mit '#' beginnt, Channelsuche durchführen
+  //     this.searchActive = true;
+  //     const channelName = this.searchText.slice(1); // Entferne '#' vom Anfang des Channelnamens
+  //     await this.loadChannelResults(channelName);
+  //   } else {
+  //     // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
+  //     this.clearSearchResults();
+  //   }
+  // }
 
-  async loadUserResults(username: string) {
-    let usersQuery;
+  // async loadUserResults(username: string) {
+  //   let usersQuery;
   
-    if (username.length >= 3) {
+  //   if (username.length >= 3) {
 
-      usersQuery = query(
-        collection(this.firestore, 'users'),
-        where('name', '>=', username)
-      );
-    } else {
+  //     usersQuery = query(
+  //       collection(this.firestore, 'users'),
+  //       where('name', '>=', username)
+  //     );
+  //   } else {
 
-      usersQuery = query(
-        collection(this.firestore, 'users'),
-        where('name', '>=', username),
-        where('name', '<', username + '\uf8ff')
-      );
-    }
+  //     usersQuery = query(
+  //       collection(this.firestore, 'users'),
+  //       where('name', '>=', username),
+  //       where('name', '<', username + '\uf8ff')
+  //     );
+  //   }
   
-    const usersSnapshot = await getDocs(usersQuery);
-    this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
-    this.filterUserResults(username); 
-  }
+  //   const usersSnapshot = await getDocs(usersQuery);
+  //   this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
+  //   this.filterUserResults(username); 
+  // }
 
-  async loadChannelResults(channelName: string) {
-    let channelsQuery;
+  // async loadChannelResults(channelName: string) {
+  //   let channelsQuery;
   
-    if (channelName.length >= 3) {
+  //   if (channelName.length >= 3) {
 
-      channelsQuery = query(
-        collection(this.firestore, 'channels'),
-        where('description', '>=', channelName)
-      );
-    } else {
+  //     channelsQuery = query(
+  //       collection(this.firestore, 'channels'),
+  //       where('description', '>=', channelName)
+  //     );
+  //   } else {
 
-      channelsQuery = query(
-        collection(this.firestore, 'channels'),
-        where('description', '>=', channelName),
-        where('description', '<', channelName + '\uf8ff')
-      );
-    }
+  //     channelsQuery = query(
+  //       collection(this.firestore, 'channels'),
+  //       where('description', '>=', channelName),
+  //       where('description', '<', channelName + '\uf8ff')
+  //     );
+  //   }
   
-    const channelsSnapshot = await getDocs(channelsQuery);
-    this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
-    this.filterChannelResults(channelName); 
-  }
+  //   const channelsSnapshot = await getDocs(channelsQuery);
+  //   this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
+  //   this.filterChannelResults(channelName); 
+  // }
   
 
-  clearSearchResults() {
-    this.channelResults = [];
-    this.userResults = [];
-  }
+  // clearSearchResults() {
+  //   this.channelResults = [];
+  //   this.userResults = [];
+  // }
 
-  filterChannelResults(channelName: string) {
-    this.channelResults = this.channelResults.filter((channel) =>
-      channel.description.includes(channelName)
-    );
-  }
+  // filterChannelResults(channelName: string) {
+  //   this.channelResults = this.channelResults.filter((channel) =>
+  //     channel.description.includes(channelName)
+  //   );
+  // }
 
-  filterUserResults(username: string) {
-    this.userResults = this.userResults.filter(
-      (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
-    );
-  }
+  // filterUserResults(username: string) {
+  //   this.userResults = this.userResults.filter(
+  //     (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
+  //   );
+  // }
 
   addToRecipientList(user: User) {
-    // Leere die ausgewählten Benutzer, bevor ein neuer hinzugefügt wird
-    this.selectedUsers = [];
+    const currentUser = this.userService.user; 
+    if (user.id === currentUser.id) {
+      console.error('Sie können sich nicht selbst als Empfänger hinzufügen.');
+      return;
+    }
+
+    this.searchService.selectedUsers = [];
   
-    // Füge den neuen Benutzer hinzu
-    this.selectedUsers.push(user);
+    this.searchService.selectedUsers.push(user);
     console.log('Benutzer hinzugefügt:', user);
-    console.log('Ausgewählte Benutzer:', this.selectedUsers);
+    console.log('Ausgewählte Benutzer:', this.searchService.selectedUsers);
   }
 
   // Create a private chat with the selected users
 
   async createPrivateChat() {
     const userId = sessionStorage.getItem('userAuthUID');
-
+  
     if (!userId) {
       console.error('AuthUID im Session Storage nicht gefunden.');
       return;
     }
-
+  
     try {
+      // Holen des aktuellen Benutzers
       const currentUser = await this.getCurrentUser(userId);
-      const additionalUsers = await this.getAdditionalUsers();
-
-      if (!currentUser || additionalUsers.length === 0) {
-        console.error('Ungültige Teilnehmerdaten.');
+  
+      if (!currentUser) {
+        console.error('Ungültige Benutzerdaten.');
         return;
       }
-
+  
+      // Filtern der ausgewählten Benutzer, um den aktuellen Benutzer auszuschließen
+      const selectedUsersWithoutCurrentUser = this.searchService.selectedUsers.filter(user => user.id !== currentUser.id);
+  
+      if (selectedUsersWithoutCurrentUser.length === 0) {
+        console.error('Es wurden keine gültigen zusätzlichen Benutzer ausgewählt.');
+        return;
+      }
+  
+      // Holen der zusätzlichen Benutzer
+      const additionalUsers = await this.getAdditionalUsers(selectedUsersWithoutCurrentUser);
+  
       const privateChat: Chat = this.buildPrivateChat(
         currentUser,
         additionalUsers
       );
+  
       const docRef = await this.savePrivateChat(privateChat);
-
+  
       console.log(
         `Chat mit ${privateChat.participants
           .map((participant) => participant.name)
@@ -277,8 +295,8 @@ selectChannel(channel: Channel) {
       : null;
   }
 
-  private async getAdditionalUsers(): Promise<User[]> {
-    const additionalUsersPromises = this.selectedUsers.map(
+  private async getAdditionalUsers(selectedUsersWithoutCurrentUser: User[]): Promise<User[]> {
+    const additionalUsersPromises = selectedUsersWithoutCurrentUser.map(
       async (selectedUser) => {
         const additionalUserQuery = query(
           collection(this.firestore, 'users'),
@@ -286,7 +304,7 @@ selectChannel(channel: Channel) {
         );
         const additionalUserSnapshot = await getDocs(additionalUserQuery);
         const additionalUserData = additionalUserSnapshot.docs[0]?.data();
-
+  
         return additionalUserData
           ? new User({
               id: additionalUserData['id'],
@@ -301,9 +319,9 @@ selectChannel(channel: Channel) {
           : null;
       }
     );
-
-    const additionalUsersInChat = await Promise.all(additionalUsersPromises);
-    return additionalUsersInChat.filter((user) => user !== null) as User[];
+  
+    const additionalUsers = await Promise.all(additionalUsersPromises);
+    return additionalUsers.filter((user) => user !== null) as User[];
   }
 
   private buildPrivateChat(currentUser: User, additionalUsers: User[]): Chat {
@@ -355,7 +373,7 @@ selectChannel(channel: Channel) {
         return;
       }
 
-      if (this.selectedUsers.length === 0) {
+      if (this.searchService.selectedUsers.length === 0) {
         console.error('Mindestens ein Empfänger muss ausgewählt sein.');
         return;
       }
@@ -394,7 +412,7 @@ selectChannel(channel: Channel) {
   async createChat(currentUserData: any) {
     const chat: Chat = {
       id: '',
-      participants: this.selectedUsers.map((user) =>
+      participants: this.searchService.selectedUsers.map((user) =>
         this.userToDatabaseFormat(user)
       ),
       messages: [],
@@ -458,7 +476,7 @@ selectChannel(channel: Channel) {
 
   deleteAssignedUser() {
     console.log('deleteAssignedUser');
-    this.selectedUsers = [];
+    this.searchService.selectedUsers = [];
   }
 
   deleteAssignedChannel() {
