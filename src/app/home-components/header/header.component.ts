@@ -4,7 +4,7 @@ import { query, orderBy, limit, where, Firestore, collection, doc, getDoc, onSna
 import { MatDialog } from '@angular/material/dialog';
 import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 import { AuthService } from '../../services/auth.service';
-
+import { SearchService } from '../../services/search.service';
 
 
 @Component({
@@ -20,7 +20,11 @@ export class HeaderComponent implements OnInit {
   storedUserAuthUID: any;
 
 
-  constructor(public dialog: MatDialog, private AuthService: AuthService) {
+  constructor(
+    public dialog: MatDialog, 
+    private AuthService: AuthService,
+    public searchService: SearchService
+    ) {
 
   }
 

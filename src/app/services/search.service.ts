@@ -52,18 +52,17 @@ export class SearchService {
     return;
   }
 
+  const searchTextLower = this.searchText.toUpperCase();
 
-  if (this.searchText.startsWith('@') && this.searchText.length > 1) {
+  if (searchTextLower.startsWith('@') && searchTextLower.length > 1) {
     this.searchActive = true;
-    const username = this.searchText.slice(1); // Entferne '@' vom Anfang des Benutzernamens
+    const username = searchTextLower.slice(1); 
     await this.loadUserResults(username);
-  } else if (this.searchText.startsWith('#')&& this.searchText.length > 1) {
-    // Wenn die Suche mit '#' beginnt, Channelsuche durchführen
+  } else if (searchTextLower.startsWith('#') && searchTextLower.length > 1) {
     this.searchActive = true;
-    const channelName = this.searchText.slice(1); // Entferne '#' vom Anfang des Channelnamens
+    const channelName = searchTextLower.slice(1); 
     await this.loadChannelResults(channelName);
   } else {
-    // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
     this.clearSearchResults();
   }
 }
