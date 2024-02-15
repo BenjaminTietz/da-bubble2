@@ -3,6 +3,8 @@ import { query, orderBy, limit, where, Firestore, collection, doc, onSnapshot, a
 import { Channel } from '../../../models/channel.class';
 import { User } from '../../../models/user.class';
 import { UserService } from '../../services/user.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 
 
@@ -33,13 +35,25 @@ export class ChannelListComponent implements OnDestroy, OnInit {
   godMode: boolean = false;
 
 
-  constructor() {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
     this.checkScreenSize();
   }
 
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+    //this.getUserWithService();
+    this.loadData();
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => { this.loadData(); })
+
+  }
+
+
+
+
+  loadData() {
     this.getUserWithService();
+
   }
 
 

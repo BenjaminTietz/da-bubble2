@@ -12,6 +12,7 @@ import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.co
 import { DeletePostComponent } from '../dialogs/delete-post/delete-post.component';
 import { UserListChannelComponent } from '../user-list-channel/user-list-channel.component';
 import { ChannelDetailComponent } from '../dialogs/channel-detail/channel-detail.component';
+import { UserService } from '../../services/user.service';
 
 
 
@@ -24,6 +25,8 @@ import { ChannelDetailComponent } from '../dialogs/channel-detail/channel-detail
 })
 export class ChannelsComponent implements OnDestroy, OnInit {
   firestore: Firestore = inject(Firestore);
+  userService: UserService = inject(UserService);
+
   activatedRoute = inject(ActivatedRoute);
   routeId: any;
   channelID: any;
@@ -44,9 +47,8 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   unsubUsers!: () => void;
   listUsers: any = [];
+  user: User | null = null;
 
-
-  user: User = new User();
   storedUserAuthUID: any;
 
   newPost: Post = new Post();
@@ -101,7 +103,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     });
 
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.getUser();
+    this.getUserWithService();
   }
 
 
@@ -133,20 +135,8 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-  getUser() {
-    let q;
-    if (this.storedUserAuthUID) {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
-    } else {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
-    }
-
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()))
-      })
-    })
-
+  async getUserWithService() {
+    this.user = await this.userService.getUser()
   }
 
 
@@ -167,7 +157,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   createPost(channel: any) {
-    this.newPost.user = this.user;
+    this.newPost.user = this.user ? this.user : new User();
     this.newPost.channelId = channel.id;
     this.newPost.date = new Date().toISOString();
 
@@ -282,7 +272,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   createAnswer(chan_id: any, post: any) {
     if (this.newAnswer.content) {
-      this.newAnswer.user = this.user;
+      this.newAnswer.user = this.user ? this.user : new User();
       this.newAnswer.date = new Date().toISOString();
       this.newAnswer.postId = post.id;
 

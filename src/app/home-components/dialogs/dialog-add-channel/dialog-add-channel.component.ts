@@ -18,6 +18,8 @@ import {
 } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from '../../../../models/user.class';
+import { UserService } from '../../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-add-channel',
@@ -31,11 +33,13 @@ export class DialogAddChannelComponent implements OnInit {
   loading: boolean = false;
 
   firestore: Firestore = inject(Firestore);
+  userService: UserService = inject(UserService);
+
   storedUserAuthUID: any;
   user: User = new User();
 
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
@@ -53,7 +57,7 @@ export class DialogAddChannelComponent implements OnInit {
 
     return onSnapshot(q, (docSnap: any) => {
       docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()))
+        this.user = new User(this.userService.setUserObject(doc.data()))
       })
     })
   }
@@ -62,21 +66,6 @@ export class DialogAddChannelComponent implements OnInit {
   getUsersRef() {
     return collection(this.firestore, 'users');
   }
-
-
-  setUserObject(obj: any) {
-    return {
-      id: obj.id || "",
-      authUID: obj.authUID || "",
-      name: obj.name || "",
-      status: obj.status || true,
-      avatarURL: obj.avatarURL || '',  // code added Ben
-      photoURL: obj.photoURL || '',
-      channels: obj.channels || [],
-      email: obj.email || ''
-    }
-  }
-
 
 
   saveChannel() {
@@ -89,7 +78,7 @@ export class DialogAddChannelComponent implements OnInit {
       id: id || '',
       chanName: obj.chanName || '',
       description: obj.description || '',
-      creator: this.setUserObject(this.user) || '',
+      creator: this.userService.setUserObject(this.user) || '',
       users: obj.users || [],
       posts: obj.posts || [],
     };
@@ -119,11 +108,13 @@ export class DialogAddChannelComponent implements OnInit {
         this.addCreatorToChannel(newId);
       });
   }
-  
+
 
   addCreatorToChannel(chan_id: any) {
     setDoc(this.getUserInChannelSubcollectionRef(chan_id, this.user), this.setUserForSubcollectionInChannel(this.user)).then(() => {
       updateDoc(this.getUserDocRef(this.user), { channels: arrayUnion(chan_id) })
+      this.router.navigate([`/home/channels/` + chan_id])
+      //location.reload();
     })
   }
 
