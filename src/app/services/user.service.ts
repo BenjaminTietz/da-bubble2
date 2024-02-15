@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../models/user.class';
-import { Inject } from '@angular/core'; 
+import { Inject } from '@angular/core';
 import {
   getFirestore,
   Firestore,
@@ -28,7 +28,7 @@ export class UserService {
   auth: Auth;
   firestore: Firestore;
 
-  constructor() { 
+  constructor() {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
       authDomain: 'da-bubble-9f879.firebaseapp.com',
@@ -42,32 +42,32 @@ export class UserService {
     this.auth = getAuth();
     this.firestore = getFirestore();
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
- 
+
     this.getUser();
   }
 
-async getUser() {
-  let q;
-  if (this.storedUserAuthUID) {
-    q = query(
-      this.getUsersRef(),
-      where('authUID', '==', this.storedUserAuthUID)
-    );
-    console.log('this.storedUserAuthUID is defined')
-  } else {
-    // Wenn this.storedUserAuthUID undefined ist, wird eine leere Abfrage erstellt
-    q = query(
-      this.getUsersRef()
-    );
-    console.log('this.storedUserAuthUID is undefined')
-  }
+  async getUser() {
+    let q;
+    if (this.storedUserAuthUID) {
+      q = query(
+        this.getUsersRef(),
+        where('authUID', '==', this.storedUserAuthUID)
+      );
+      console.log('this.storedUserAuthUID is defined')
+    } else {
+      // Wenn this.storedUserAuthUID undefined ist, wird eine leere Abfrage erstellt
+      q = query(
+        this.getUsersRef()
+      );
+      console.log('this.storedUserAuthUID is undefined')
+    }
 
-  return onSnapshot(q, (docSnap: any) => {
-    docSnap.forEach((doc: any) => {
-      this.user = new User(this.setUserObject(doc.data()));
+    return onSnapshot(q, (docSnap: any) => {
+      docSnap.forEach((doc: any) => {
+        this.user = new User(this.setUserObject(doc.data()));
+      });
     });
-  });
-}
+  }
 
   getUsersRef() {
     return collection(this.firestore, 'users');
@@ -79,7 +79,7 @@ async getUser() {
       authUID: obj.authUID || '',
       name: obj.name || '',
       status: obj.status || true,
-      avatarURL: obj.avatarURL || '', 
+      avatarURL: obj.avatarURL || '',
       photoURL: obj.photoURL || '',
       channels: obj.channels || [],
       email: obj.email || '',

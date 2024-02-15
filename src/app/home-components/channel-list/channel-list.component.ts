@@ -2,6 +2,7 @@ import { Component, HostListener, inject, OnDestroy, OnInit } from '@angular/cor
 import { query, orderBy, limit, where, Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc, Unsubscribe } from '@angular/fire/firestore';
 import { Channel } from '../../../models/channel.class';
 import { User } from '../../../models/user.class';
+import { UserService } from '../../services/user.service';
 
 
 
@@ -19,6 +20,8 @@ export class ChannelListComponent implements OnDestroy, OnInit {
 
 
   firestore: Firestore = inject(Firestore);
+  userService: UserService = inject(UserService);
+
   //displayedColumns: string[] = ['position'];
   unsubChannels!: Unsubscribe;
   listChannels: any = [];
@@ -38,11 +41,18 @@ export class ChannelListComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.getUser();
+    this.getUser(); // alter code ohne service
 
   }
 
 
+
+
+
+
+
+
+  //alter code ohne service:
   getUser() {
     let q;
     if (this.storedUserAuthUID) {
