@@ -27,7 +27,7 @@ export class ChannelListComponent implements OnDestroy, OnInit {
   listChannels: any = [];
   channel = new Channel();
 
-  user: User = new User();
+  user: User | null = null;
   storedUserAuthUID: any;
   listUserChannels: any = [];
   godMode: boolean = false;
@@ -35,60 +35,19 @@ export class ChannelListComponent implements OnDestroy, OnInit {
 
   constructor() {
     this.checkScreenSize();
-    //this.unsubChannels = this.subChannelsList();
-
   }
 
   ngOnInit(): void {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.getUser(); // alter code ohne service
-
+    this.getUserWithService();
   }
 
 
-
-
-
-
-
-
-  //alter code ohne service:
-  getUser() {
-    let q;
-    if (this.storedUserAuthUID) {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID));
-    } else {
-      q = query(this.getUsersRef(), where("authUID", "==", this.storedUserAuthUID)); // q = input für Gastzugang
-    }
-
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()))
-        this.listUserChannels = doc.data()['channels']
-      })
-      this.unsubChannels = this.subChannelsList();
-    })
+  async getUserWithService() {
+    this.user = await this.userService.getUser()
+    this.listUserChannels = this.userService.listUserChannels;
+    this.unsubChannels = this.subChannelsList();
   }
-
-
-  getUsersRef() {
-    return collection(this.firestore, 'users');
-  }
-
-
-  setUserObject(obj: any) {
-    return {
-      id: obj.id || "",
-      authUID: obj.authUID || "",
-      name: obj.name || "",
-      status: obj.status || true,
-      avatarURL: obj.avatarURL || '',  // code added Ben
-      photoURL: obj.photoURL || '',
-      channels: obj.channels || [],
-      email: obj.email || ''
-    }
-  }
-
 
 
   subChannelsList() {
@@ -103,7 +62,6 @@ export class ChannelListComponent implements OnDestroy, OnInit {
   }
 
 
-
   setChannel(obj: any, id: string,): Channel {
     return {
       id: id || "",
@@ -115,10 +73,10 @@ export class ChannelListComponent implements OnDestroy, OnInit {
     }
   }
 
+
   getChannelsRef() {
     return collection(this.firestore, 'channels');
   }
-
 
 
   checkScreenSize() {
@@ -141,7 +99,6 @@ export class ChannelListComponent implements OnDestroy, OnInit {
 
   toggleGodmode() {
     this.godMode = !this.godMode;
-
   }
 
 

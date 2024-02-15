@@ -28,6 +28,8 @@ export class UserService {
   auth: Auth;
   firestore: Firestore;
 
+  listUserChannels: any = [];
+
   constructor() {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
@@ -62,12 +64,22 @@ export class UserService {
       console.log('this.storedUserAuthUID is undefined')
     }
 
-    return onSnapshot(q, (docSnap: any) => {
-      docSnap.forEach((doc: any) => {
-        this.user = new User(this.setUserObject(doc.data()));
-      });
+    const querySnapshot = await getDocs(q);
+    let user = null;
+    querySnapshot.forEach((doc) => {
+      const userData = doc.data();
+      user = new User(this.setUserObject(userData));
+      this.fillListUserChannels(userData);
     });
+
+    return user;
   }
+
+
+  fillListUserChannels(userData: any) {
+    this.listUserChannels = userData['channels']
+  }
+
 
   getUsersRef() {
     return collection(this.firestore, 'users');
