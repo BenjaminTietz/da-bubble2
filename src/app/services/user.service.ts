@@ -71,7 +71,7 @@ export class UserService {
       user = new User(this.setUserObject(userData));
       this.fillListUserChannels(userData);
     });
-
+    
     return user;
   }
 
