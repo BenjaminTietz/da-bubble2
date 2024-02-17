@@ -80,7 +80,7 @@ export class StartConversationComponent implements OnInit {
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.userService.getUser();
-    this.searchService.searchActive = false;
+    this.searchService.searchActivefromStartConversation = false;
   }
 
 selectChannel(channel: Channel) {

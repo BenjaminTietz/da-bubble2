@@ -2,14 +2,14 @@
   <img class="img-logo" src="../../../assets/img/da_bubble_reset_password_logo.png" alt="Logo da-bubble">
 
   <div class="container-search">
-    <input type="text" placeholder="Suchen" [(ngModel)]="this.searchService.searchText"
-      (ngModelChange)="this.searchService.search()">
+    <input type="text" placeholder="Suchen" [(ngModel)]="this.searchService.searchTextfromHeader"
+      (ngModelChange)="this.searchService.search('header')">
     <div *ngIf="this.searchService.selectedUsers.length > 0" class="selecetedUserInputfield">
       <span *ngFor="let user of this.searchService.selectedUsers">{{ user.name }}</span>
       <div class="close-btn"><img src="assets/img/close_btn.png" /></div>
     </div>
 
-    <div *ngIf="this.searchService.searchActive" class="search-result-recipients">
+    <div *ngIf="this.searchService.searchActivefromHeader" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
       <div *ngIf="this.searchService.channelResults.length > 0">
         <h2>Kanal Ergebnisse</h2>
@@ -34,7 +34,7 @@
       <div *ngIf="
                 this.searchService.channelResults.length === 0 &&
                 this.searchService.userResults.length === 0 &&
-                this.searchService.searchText.trim() !== ''
+                this.searchService.searchTextfromHeader.trim() !== ''
               ">
         <p>Keine Ergebnisse gefunden.</p>
       </div>

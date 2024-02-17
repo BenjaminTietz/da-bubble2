@@ -27,8 +27,10 @@ export class SearchService implements OnInit {
   user: User | null = null;
 
 
-  searchText: string = '';
-  searchActive: boolean = false;
+  searchTextfromStartConversation: string = '';
+  searchTextfromHeader: string = '';
+  searchActivefromStartConversation: boolean = false;
+  searchActivefromHeader: boolean = false;
 
   userResults: any[] = [];
   channelResults: any[] = [];
@@ -67,31 +69,51 @@ export class SearchService implements OnInit {
   }
 
 
+  async search(searchSource: string) {
+    let searchText: string;
+    let searchActive: boolean;
 
-
-
-  async search() {
-    if (!this.searchText) {
-      this.searchActive = false;
-      this.clearSearchResults();
-      this.selectedUsers = [];
-      return;
+    if (searchSource === 'header') {
+        searchText = this.searchTextfromHeader;
+        searchActive = searchText.trim().length > 0; 
+        this.searchActivefromStartConversation = false; 
+    } else if (searchSource === 'startConversation') {
+        searchText = this.searchTextfromStartConversation;
+        searchActive = searchText.trim().length > 0; 
+        this.searchActivefromHeader = false; 
+    } else {
+        return; 
     }
 
-    const searchTextLower = this.searchText.toUpperCase();
+    if (!searchText) { 
+        searchActive = false; 
+        this.searchActivefromStartConversation = false;
+        this.searchActivefromHeader = false;
+    }
+
+    let searchTextLower = searchText.toUpperCase();
 
     if (searchTextLower.startsWith('@') && searchTextLower.length > 1) {
-      this.searchActive = true;
-      const username = searchTextLower.slice(1);
-      await this.loadUserResults(username);
+        searchActive = true;
+        let username = searchTextLower.slice(1);
+        await this.loadUserResults(username);
     } else if (searchTextLower.startsWith('#') && searchTextLower.length > 1) {
-      this.searchActive = true;
-      const channelName = searchTextLower.slice(1);
-      await this.loadChannelResults(channelName);
+        searchActive = true;
+        let channelName = searchTextLower.slice(1);
+        await this.loadChannelResults(channelName);
     } else {
-      this.clearSearchResults();
+        this.clearSearchResults();
     }
-  }
+
+    if (searchSource === 'header') {
+        this.searchActivefromHeader = searchActive;
+    } else if (searchSource === 'startConversation') {
+        this.searchActivefromStartConversation = searchActive;
+    }
+}
+
+
+ 
 
   async loadUserResults(username: string) {
     let usersQuery;
@@ -111,7 +133,7 @@ export class SearchService implements OnInit {
       );
     }
 
-    const usersSnapshot = await getDocs(usersQuery);
+    let usersSnapshot = await getDocs(usersQuery);
     this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
     this.filterUserResults(username);
   }
@@ -134,7 +156,7 @@ export class SearchService implements OnInit {
       );
     }
 
-    const channelsSnapshot = await getDocs(channelsQuery);
+    let channelsSnapshot = await getDocs(channelsQuery);
     this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
     this.filterChannelResults(channelName);
   }

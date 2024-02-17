@@ -3,8 +3,8 @@
     <h1>Neue Nachricht</h1>
     <input
       placeholder="An: #channel oder @jemanden oder E-Mail Adresse"
-      [(ngModel)]="this.searchService.searchText"
-      (ngModelChange)="this.searchService.search()"
+      [(ngModel)]="this.searchService.searchTextfromStartConversation"
+      (ngModelChange)="this.searchService.search('startConversation')"
     />
     <div *ngIf="this.searchService.selectedUsers.length > 0" class="selecetedUserInputfield">
       <span *ngFor="let user of this.searchService.selectedUsers">{{ user.name }}</span>
@@ -17,7 +17,7 @@
       </span>
       <div  (click)="deleteAssignedChannel()" class="close-btn"><img src="assets/img/close_btn.png" /></div>
     </div>
-    <div *ngIf="this.searchService.searchActive" class="search-result-recipients">
+    <div *ngIf="this.searchService.searchActivefromStartConversation" class="search-result-recipients">
       <!-- Hier werden die Kanalergebnisse gerendert -->
       <div *ngIf="this.searchService.channelResults.length > 0">
         <h2>Kanal Ergebnisse</h2>
@@ -49,7 +49,7 @@
         *ngIf="
           this.searchService.channelResults.length === 0 &&
           this.searchService.userResults.length === 0 &&
-          this.searchService.searchText.trim() !== ''
+          this.searchService.searchTextfromStartConversation.trim() !== ''
         "
       >
         <p>Keine Ergebnisse gefunden.</p>
