@@ -36,15 +36,12 @@ import { SearchService } from '../../services/search.service';
   styleUrls: ['./start-conversation.component.scss'],
 })
 export class StartConversationComponent implements OnInit {
-  // searchText: string = '';
-  // searchActive: boolean = false;
-  // channelResults: any[] = [];
-  // userResults: any[] = [];
+
   auth: Auth;
   firestore: Firestore;
   currentUser: any;
   selectedItemId: any | string;
-  // selectedUsers: any[] = [];
+
   selectedChannels: Channel[] = [];
   selectedItem: any;
   additionalUsersInChat: User[] = [];
@@ -121,94 +118,6 @@ selectChannel(channel: Channel) {
   clearChannelResults() {
     this.searchService.channelResults = [];
   }
-
-  // async search() {
-  //   if (!this.searchText) {
-  //     this.searchActive = false;
-  //     this.clearSearchResults();
-  //     this.selectedUsers = [];
-  //     return;
-  //   }
-  
-
-  //   if (this.searchText.startsWith('@') && this.searchText.length > 1) {
-  //     this.searchActive = true;
-  //     const username = this.searchText.slice(1); // Entferne '@' vom Anfang des Benutzernamens
-  //     await this.loadUserResults(username);
-  //   } else if (this.searchText.startsWith('#')&& this.searchText.length > 1) {
-  //     // Wenn die Suche mit '#' beginnt, Channelsuche durchführen
-  //     this.searchActive = true;
-  //     const channelName = this.searchText.slice(1); // Entferne '#' vom Anfang des Channelnamens
-  //     await this.loadChannelResults(channelName);
-  //   } else {
-  //     // Wenn weder '@' noch '#' vorhanden sind, leere die Suchergebnisse
-  //     this.clearSearchResults();
-  //   }
-  // }
-
-  // async loadUserResults(username: string) {
-  //   let usersQuery;
-  
-  //   if (username.length >= 3) {
-
-  //     usersQuery = query(
-  //       collection(this.firestore, 'users'),
-  //       where('name', '>=', username)
-  //     );
-  //   } else {
-
-  //     usersQuery = query(
-  //       collection(this.firestore, 'users'),
-  //       where('name', '>=', username),
-  //       where('name', '<', username + '\uf8ff')
-  //     );
-  //   }
-  
-  //   const usersSnapshot = await getDocs(usersQuery);
-  //   this.userResults = usersSnapshot.docs.map((doc) => doc.data()) as any[];
-  //   this.filterUserResults(username); 
-  // }
-
-  // async loadChannelResults(channelName: string) {
-  //   let channelsQuery;
-  
-  //   if (channelName.length >= 3) {
-
-  //     channelsQuery = query(
-  //       collection(this.firestore, 'channels'),
-  //       where('description', '>=', channelName)
-  //     );
-  //   } else {
-
-  //     channelsQuery = query(
-  //       collection(this.firestore, 'channels'),
-  //       where('description', '>=', channelName),
-  //       where('description', '<', channelName + '\uf8ff')
-  //     );
-  //   }
-  
-  //   const channelsSnapshot = await getDocs(channelsQuery);
-  //   this.channelResults = channelsSnapshot.docs.map((doc) => doc.data()) as any[];
-  //   this.filterChannelResults(channelName); 
-  // }
-  
-
-  // clearSearchResults() {
-  //   this.channelResults = [];
-  //   this.userResults = [];
-  // }
-
-  // filterChannelResults(channelName: string) {
-  //   this.channelResults = this.channelResults.filter((channel) =>
-  //     channel.description.includes(channelName)
-  //   );
-  // }
-
-  // filterUserResults(username: string) {
-  //   this.userResults = this.userResults.filter(
-  //     (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
-  //   );
-  // }
 
   addToRecipientList(user: User) {
     const currentUser = this.userService.user; 

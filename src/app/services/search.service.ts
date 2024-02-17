@@ -36,6 +36,9 @@ export class SearchService implements OnInit {
   selectedUsers: any[] = [];
   firestore: Firestore;
 
+
+  storedUserAuthUID: any;
+
   constructor() {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
@@ -48,12 +51,13 @@ export class SearchService implements OnInit {
 
     initializeApp(firebaseConfig);
     this.firestore = getFirestore();
-
-    //this.getUserWithService();
+    this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
+   this.getUserWithService();
   }
 
   ngOnInit(): void {
     this.getUserWithService();
+    
   }
 
 
@@ -71,8 +75,6 @@ export class SearchService implements OnInit {
       this.searchActive = false;
       this.clearSearchResults();
       this.selectedUsers = [];
-      //this.getUserWithService();
-
       return;
     }
 
@@ -139,16 +141,17 @@ export class SearchService implements OnInit {
 
   filterChannelResults(channelName: string) {
     this.channelResults = this.channelResults.filter(
-      (channel) => channel.chanName && channel.chanName.toLowerCase().includes(channelName.toLowerCase()) && this.userService.user && this.userService.user.channels.indexOf(channel.id) != -1);
-    console.log(this.user)
-    console.log(this.userService.user)
+      (channel) => channel.chanName && channel.chanName.toLowerCase().includes(channelName.toLowerCase()) && this.user && this.user.channels.indexOf(channel.id) != -1);
   }
 
   filterUserResults(username: string) {
     this.userResults = this.userResults.filter(
-      (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
+        (user) => user.name && user.name.toLowerCase().includes(username.toLowerCase())
+        && user.authUID !== this.storedUserAuthUID
     );
-  }
+}
+
+
 
   clearSearchResults() {
     this.channelResults = [];
