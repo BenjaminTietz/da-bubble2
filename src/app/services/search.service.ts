@@ -196,6 +196,8 @@ export class SearchService implements OnInit {
       panelClass: 'dialog-profile-detail',
     });
     dialog.componentInstance.user = new User(user);
+    this.searchTextfromHeader = '';
+    this.searchActivefromHeader = false; 
   }
 
   redirectToChannel(selectedChannel : Channel) {
