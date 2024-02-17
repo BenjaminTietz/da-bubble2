@@ -14,7 +14,7 @@
       <div *ngIf="this.searchService.channelResults.length > 0">
         <h2>Kanal Ergebnisse</h2>
         <ul>
-          <li *ngFor="let channel of this.searchService.channelResults">
+          <li (click)="this.searchService.redirectToChannel(channel)" *ngFor="let channel of this.searchService.channelResults">
             {{ channel.chanName || channel.description || "Unbekannter Kanal" }}
           </li>
         </ul>
@@ -24,7 +24,7 @@
       <div *ngIf="this.searchService.userResults.length > 0">
         <h2>Benutzer Ergebnisse</h2>
         <ul>
-          <li *ngFor="let user of this.searchService.userResults">
+          <li (click)="this.searchService.openDialogProfile(user)" *ngFor="let user of this.searchService.userResults">
             {{ user.name || "Unbekannter Benutzer" }}
           </li>
         </ul>

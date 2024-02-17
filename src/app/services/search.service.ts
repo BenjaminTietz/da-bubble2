@@ -16,6 +16,10 @@ import {
 import { initializeApp } from 'firebase/app';
 import { UserService } from './user.service';
 import { User } from '../../models/user.class';
+import { MatDialog } from '@angular/material/dialog';
+import { UserDetailComponent } from '../home-components/dialogs/user-detail/user-detail.component';
+import { Channel } from '../../models/channel.class';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +45,8 @@ export class SearchService implements OnInit {
 
   storedUserAuthUID: any;
 
-  constructor() {
+
+  constructor(public dialog: MatDialog,private router: Router,) {
     const firebaseConfig = {
       apiKey: 'AIzaSyDmu3sXXJKQu_H4grv8B-H8i5Bx3jbFmQc',
       authDomain: 'da-bubble-9f879.firebaseapp.com',
@@ -55,6 +60,7 @@ export class SearchService implements OnInit {
     this.firestore = getFirestore();
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
    this.getUserWithService();
+
   }
 
   ngOnInit(): void {
@@ -179,6 +185,27 @@ export class SearchService implements OnInit {
     this.channelResults = [];
     this.userResults = [];
   }
+
+  openDialogProfile(user: any): void {
+    const dialog = this.dialog.open(UserDetailComponent, {
+      position: {
+        top: '32px',
+        right: '32px',
+      },
+      maxWidth: '100%',
+      panelClass: 'dialog-profile-detail',
+    });
+    dialog.componentInstance.user = new User(user);
+  }
+
+  redirectToChannel(selectedChannel : Channel) {
+      const channelUrl = `/home/channels/${selectedChannel.id}`;
+      this.router.navigate([channelUrl]);
+      this.searchTextfromHeader = '';
+      this.searchActivefromHeader = false; 
+      this.clearSearchResults();
+  }
+
 }
 
 
