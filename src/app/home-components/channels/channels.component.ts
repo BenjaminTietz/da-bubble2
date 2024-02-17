@@ -49,6 +49,15 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   listUsers: any = [];
   user: User | null = null;
 
+  unsubReactionsPost!: () => void;
+  listReactionsPost: any = [];
+
+
+  unsubReactionsAnswer!: () => void;
+  listReactionsAnswer: any = [];
+
+
+
   storedUserAuthUID: any;
 
   newPost: Post = new Post();
@@ -60,6 +69,39 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   };
+
+  //Code für Reactions
+
+  reactPost(chan_id: any, post: any, i: any) {
+    console.log(chan_id)
+    console.log(post)
+    console.log(i)
+
+
+
+
+
+  }
+
+
+
+
+
+  addReactionPost(chan_id: any, post: any, i: any, reaction: any) {
+    console.log(chan_id)
+    console.log(post)
+    console.log(i)
+    console.log(reaction)
+    console.log(reaction.emoji)
+  }
+
+
+
+
+
+
+
+
 
   //Code für Users
 

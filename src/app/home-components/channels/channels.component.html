@@ -67,7 +67,21 @@
                         </span>
                     </div>
 
+                    <div class="menu-reactions">
+                        <mat-icon (click)="reactPost(channel.id, post, i)" matTooltip="Auf Post reagieren"
+                            class="icon-add-reaction">add_reaction</mat-icon>
+                        <mat-icon (click)="openAnswers(channel.id, post, i)" matTooltip="Auf Post antworten"
+                            class="icon-add-reaction">question_answer</mat-icon>
+                    </div>
+
                     <div class="reactions">
+
+                        <div class="container-single-reactions">
+                            <div (click)="addReactionPost(channel.id, post, i, reaction)" class="single-reaction" *ngFor="let reaction of post.reactions">
+                                <span>{{ reaction.emoji }}</span>
+                                <span class="reaction-amount">{{ reaction.amount }}</span>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
