@@ -13,6 +13,9 @@ import { DeletePostComponent } from '../dialogs/delete-post/delete-post.componen
 import { UserListChannelComponent } from '../user-list-channel/user-list-channel.component';
 import { ChannelDetailComponent } from '../dialogs/channel-detail/channel-detail.component';
 import { UserService } from '../../services/user.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { Reaction } from '../../../models/reaction.class';
 
 
 
@@ -26,6 +29,12 @@ import { UserService } from '../../services/user.service';
 export class ChannelsComponent implements OnDestroy, OnInit {
   firestore: Firestore = inject(Firestore);
   userService: UserService = inject(UserService);
+
+  emojiPickerAnswerVisible: boolean = false;
+  postEmoji: number = 0;
+
+  newReaction: Reaction = new Reaction();
+
 
   activatedRoute = inject(ActivatedRoute);
   routeId: any;
@@ -76,14 +85,54 @@ export class ChannelsComponent implements OnDestroy, OnInit {
     console.log(chan_id)
     console.log(post)
     console.log(i)
-
-
-
-
+    this.toggleEmojiPicker(i);
 
   }
 
 
+
+
+  //Code für emoji-picker
+  selectEmoji($event: { emoji: { native: string } }, i: any, chan_id: any, post_id: any) {
+    const emoji = $event.emoji.native
+    console.log(emoji)
+    console.log(i);
+    this.addEmojiToFirebase(chan_id, post_id, i, emoji)
+
+
+  }
+
+  toggleEmojiPicker(i: any) {
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+    this.postEmoji = i;
+  }
+
+
+  addEmojiToFirebase(chan_id: any, post_id: any, i: any, emoji: any) {
+    //getPostDocRef
+    this.newReaction.post_id = post_id;
+    this.newReaction.user = this.setUserObject(this.user);
+    this.newReaction.amount = 1;
+    this.newReaction.emoji = emoji;
+
+    updateDoc(this.getPostDocRef(chan_id, post_id), { reactions: arrayUnion(this.setReactionObject(this.newReaction)) }).then(() => {
+      this.toggleEmojiPicker(i);
+    })
+
+  }
+
+
+  setReactionObject(obj: any) {
+    return {
+      id: obj.id || "",
+      user: obj.user || "",
+      emoji: obj.emoji || "",
+      post_id: obj.post_id || "",
+      answer_id: obj.answer_id || "",
+      amount: obj.amount || 0
+
+    }
+  }
 
 
 

@@ -586,6 +586,10 @@
                     background-color: white;
                     border-radius: 20px;
 
+                    &:hover {
+                        scale: 1.05;
+                    }
+
 
                     .reaction-amount {
                         font-size: 16px;
@@ -604,7 +608,12 @@
         }
 
 
-
+        .inputfield-emoji-picker {
+            position: absolute;
+            left: 0;
+            top: 16px;
+            z-index: 99;
+        }
 
 
 

@@ -74,10 +74,18 @@
                             class="icon-add-reaction">question_answer</mat-icon>
                     </div>
 
+                    <!--Emoji Picker-->
+                    <div class="inputfield-emoji-picker">
+                        <emoji-mart (emojiClick)="selectEmoji($event, i, channel.id, post.id)"
+                            *ngIf="emojiPickerAnswerVisible && this.postEmoji == i" title="Pick your emoji…"
+                            emoji="point_up"></emoji-mart>
+                    </div>
+
                     <div class="reactions">
 
                         <div class="container-single-reactions">
-                            <div (click)="addReactionPost(channel.id, post, i, reaction)" class="single-reaction" *ngFor="let reaction of post.reactions">
+                            <div (click)="addReactionPost(channel.id, post, i, reaction)" class="single-reaction"
+                                *ngFor="let reaction of post.reactions">
                                 <span>{{ reaction.emoji }}</span>
                                 <span class="reaction-amount">{{ reaction.amount }}</span>
                             </div>
