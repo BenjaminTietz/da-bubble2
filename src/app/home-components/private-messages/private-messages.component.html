@@ -107,11 +107,12 @@
               </div>
             </div>
           </div>
-          <!-- Reactions -->
+<!-- Reactions -->
 <div class="reactions-wrapper">
   <div *ngFor="let message of listMessages" class="reaction">
-    <span *ngFor="let reaction of message.reactions">{{ reaction.set }}</span>
-    <p>{{ message.reactions.shortName }}</p>
+    <div *ngFor="let reaction of message.reactions">
+      <span>{{ reaction.emoji.native }}</span>
+    </div>
   </div>
 </div>
 <!-- end of Reactions -->

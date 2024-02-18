@@ -29,6 +29,8 @@ import { Answer } from '../../../models/answer.class';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { EmojiComponent } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { UserService } from '../../services/user.service';
+import { Emoji } from '../../../models/emoji.class';
+import { Reaction } from '../../../models/reaction.class';
 
 @Component({
   selector: 'app-private-messages',
@@ -117,21 +119,40 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   //Sucbscribe to the messages subcollection with chatId
-  subMessagesList(chat_id: any) {
-    const q = query(
-      this.getMessageSubcollectionRef(chat_id),
-      where('chatId', '==', chat_id),
-      orderBy('date')
-    );
-    return onSnapshot(q, (list) => {
-      this.listMessages = [];
-      list.forEach((element) => {
-        this.listMessages.push(
-          this.setMessageObject(element.data(), element.id)
-        );
-      });
-    });
-  }
+//Sucbscribe to the messages subcollection with chatId
+subMessagesList(chat_id: any) {
+  const q = query(
+    this.getMessageSubcollectionRef(chat_id),
+    orderBy('date')
+  );
+  return onSnapshot(q, async (snapshot) => {
+    this.listMessages = [];
+    const docs = snapshot.docs; 
+    for (const doc of docs) {
+      const messageData = doc.data();
+      // Laden der Reaktionen für die aktuelle Nachricht
+      const reactions = await this.loadReactions(chat_id, doc.id);
+      const message = this.setMessageObject(messageData, doc.id);
+      message.reactions = reactions as Reaction[]; // Explicitly cast reactions to Reaction[]
+      this.listMessages.push(message);
+    }
+    console.log('listmessages', this.listMessages);
+  });
+}
+
+// Laden der Reaktionen für eine bestimmte Nachricht
+async loadReactions(chat_id: any, message_id: string) {
+  const q = query(
+    this.getReactionsSubcollectionRef(chat_id, message_id)
+  );
+  const reactionsSnapshot = await getDocs(q);
+  const reactions: DocumentData[] = [];
+  reactionsSnapshot.forEach((reactionDoc) => {
+    reactions.push(reactionDoc.data());
+  });
+  return reactions;
+}
+
 
   getMessageSubcollectionRef(chat_id: any) {
     return collection(this.firestore, 'chats', chat_id, 'messages');
@@ -580,17 +601,13 @@ async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
       });
   }
 
-  getReactionsSubcollectionRef(chatId: string, messageId: string) {
-    if (!chatId || !messageId) {
-      throw new Error('Invalid chatId or messageId');
-    }
-    
+  getReactionsSubcollectionRef(chat_id: any, message_id: string) {
     return collection(
       this.firestore,
       'chats',
-      chatId,
+      chat_id,
       'messages',
-      this.messageId,
+      message_id,
       'reactions'
     );
   }
