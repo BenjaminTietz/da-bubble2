@@ -376,6 +376,7 @@
 .container-posts {
     max-height: 50vh;
     overflow-y: scroll;
+    padding-top: 16px;
 
 }
 
@@ -613,6 +614,9 @@
             left: 0;
             top: 16px;
             z-index: 99;
+
+
+
         }
 
 
