@@ -97,7 +97,15 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       this.getChatDataById(this.chatId);
     });
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-    this.UserService.getUser();
+    this.getUserByService();
+  }
+
+  async getUserByService() {
+    const user = await this.UserService.getUser();
+    if (user) {
+      this.user = user;
+      console.log(this.user);
+    }
   }
 
   ngOnDestroy(): void {
@@ -134,7 +142,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       id: id || '',
       text: obj.text || '',
       chatId: obj.chatId || '',
-      user: obj.user || this.user,
+      user: obj.user || this.UserService.user,
       date: obj.date || this.UserService.getCurrentDate(),
       time: obj.time || this.UserService.getCurrentTime(),
       messageSendBy: obj.messageSendBy || this.UserService.getUserObjectForFirestore(),
@@ -144,24 +152,30 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   async addMessage(chat_id: any) {
-    await this.UserService.getUser();
-
+    await this.getUserByService();
     if (!this.messageText) {
       console.error('No message text.');
       return;
     }
+  
+    const userObject = await this.UserService.getUserObjectForFirestore();
+    if (!userObject) {
+      console.error('Failed to get user object.');
+      return;
+    }
+  
     const newMessage: Message = {
       id: '',
       text: this.messageText,
       chatId: this.chatId,
-      user: this.UserService.getUserObjectForFirestore(),
+      user: userObject,
       date: new Date().toISOString(),
       time: this.UserService.getCurrentTime(),
-      messageSendBy: this.UserService.getUserObjectForFirestore(),
+      messageSendBy: userObject,
       reactions: [],
       messageAnswer: [],
     };
-
+  
     try {
       const docRef = await addDoc(
         this.getMessageSubcollectionRef(chat_id),
@@ -169,11 +183,11 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       );
       console.log('Message written with ID: ', docRef.id);
       console.log('Chat ', chat_id);
-
+  
       const newID = docRef.id;
-
+  
       await this.updateMessageWithId(newID, chat_id);
-
+  
       this.messageText = '';
     } catch (error) {
       console.error('Error adding message:', error);
@@ -247,28 +261,34 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       console.error('No message being edited.');
       return;
     }
-
+  
     const existingMessage = this.listMessages.find(
       (message: { id: string }) => message.id === this.editingMessageId
     );
-
+  
     if (!existingMessage) {
       console.error('Original message not found.');
       return;
     }
-
+  
+    const userObject = await this.UserService.getUserObjectForFirestore();
+    if (!userObject) {
+      console.error('Failed to get user object.');
+      return;
+    }
+  
     const editedMessage: Message = {
       id: this.editingMessageId,
       text: this.editMessageText,
       chatId: this.chatId,
-      user: this.UserService.getUserObjectForFirestore(),
+      user: userObject,
       date: existingMessage.date,
       time: existingMessage.time,
-      messageSendBy: this.UserService.getUserObjectForFirestore(),
+      messageSendBy: userObject,
       reactions: [],
       messageAnswer: [],
     };
-
+  
     try {
       await updateDoc(
         doc(
@@ -277,13 +297,14 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
         ),
         editedMessage
       );
-
+  
       console.log('Message updated successfully:', editedMessage);
       this.editingMessageId = null;
     } catch (error) {
       console.error('Error updating message:', error);
     }
   }
+  
 
   cancelEditingMessage() {
     this.editingMessageId = null;
@@ -366,14 +387,20 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       return;
     }
   
+    const userObject = await this.UserService.getUserObjectForFirestore();
+    if (!userObject) {
+      console.error('Failed to get user object.');
+      return;
+    }
+  
     const editedAnswer: MessageAnswer = {
       id: existingAnswer.id,
       text: this.editMessageAnswerText,
       messageId: existingAnswer.messageId,
-      user: this.UserService.getUserObjectForFirestore(),
+      user: userObject,
       date: existingAnswer.date,
       time: existingAnswer.time,
-      messageSendBy: this.UserService.getUserObjectForFirestore(),
+      messageSendBy: userObject,
       reactions: [],
     };
   
@@ -393,6 +420,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       console.error('Error updating message answer:', error);
     }
   }
+  
 
   // edit message end
 
@@ -472,27 +500,28 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   async createAnswer(chatId: string, messageId: string) {
-    // console.log('createAnswer called.');
-    // console.log('Message ID:', messageId);
-    // console.log('Chat ID:', chatId);
-    // console.log('New answer is', this.newAnswer);
-  
     if (!this.newAnswer) {
       console.error('No answer text.');
       return;
     }
   
     try {
+      const userObject = await this.UserService.getUserObjectForFirestore();
+      if (!userObject) {
+        console.error('Failed to get user object.');
+        return;
+      }
+  
       const newAnswer: MessageAnswer = {
         text: this.newAnswer,
         messageId: messageId,
-        user: this.UserService.user,
+        user: userObject,
         date: new Date().toISOString(),
         time: this.UserService.getCurrentTime(),
         reactions: [],
         id: ''
       };
-
+  
       const newAnswerJson = JSON.parse(JSON.stringify(newAnswer));
   
       const messageAnswerRef = this.getMessageAnswerSubcollectionRef(chatId, messageId);
@@ -502,9 +531,9 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
       if (messageAnswerRef) {
         const docRef = await addDoc(messageAnswerRef, newAnswerJson);
         console.log('Answer added successfully:', docRef.id);
-        
+  
         await this.updateAnswerWithId(docRef, { id: docRef.id });
-
+  
         this.newAnswer = ''; 
       } else {
         console.error('Invalid messageAnswerRef:', messageAnswerRef);
@@ -512,7 +541,8 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error adding answer:', error);
     }
-}
+  }
+  
 
 async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
     await updateDoc(docRef, data)

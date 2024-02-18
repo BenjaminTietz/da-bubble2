@@ -24,7 +24,7 @@
 
       <div
         [ngClass]="
-          message.user.authUID == this.storedUserAuthUID
+          message.user.authUID == this.storedUserAuthUID 
             ? 'user-chat-message'
             : 'other-user-chat-message'
         "
@@ -34,14 +34,14 @@
         <ng-container>
           <div class="date-wrapper">
             <div class="purple-line"></div>
-            <p>{{ message.date | date:'yyyy-MM-dd' }}</p>
+            <p>{{ message.date }}</p>
             <div class="purple-line"></div>
           </div>
           <div class="user-wrapper">
             <img [src]="message.user.avatarURL" alt="user avatar" />
             <div class="user-info">
               <h3>{{ message.user.name }}</h3>
-              <p>{{ message.date | date:'HH:mm' }} Uhr</p>
+              <p>{{ message.time }}</p>
               <div class="message-options">
                 <mat-icon
                   (click)="toggleEmojiPicker()"
@@ -86,7 +86,7 @@
             <span *ngIf="message.messageAnswer > 0">
               <span *ngFor="let messageAnswer of listAnswers">
                 <span *ngIf="messageAnswer.messageId == message.id">
-                  Letzte Antwort: {{ messageAnswer.date | date:'yyyy-MM-dd' }}
+                  Letzte Antwort: {{ messageAnswer.date }}
                 </span>
               </span>
             </span>
@@ -228,7 +228,7 @@
     <ng-container *ngIf=" i === answerDetail">
       <div class="date-wrapper">
         <div class="purple-line"></div>
-        <p>{{ message.date | date:'yyyy-MM-dd' }}</p>
+        <p>{{ message.date }}</p>
         <div class="purple-line"></div>
       </div>
       <div class="user-wrapper">

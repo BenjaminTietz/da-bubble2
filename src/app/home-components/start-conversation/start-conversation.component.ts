@@ -319,56 +319,92 @@ selectChannel(channel: Channel) {
   }
 
   async createChat(currentUserData: any) {
-    const chat: Chat = {
-      id: '',
-      participants: this.searchService.selectedUsers.map((user) =>
-        this.userToDatabaseFormat(user)
-      ),
-      messages: [],
-      chatStartedBy: this.getUserDetails(currentUserData),
-      date: this.userService.getCurrentDate(),
-      time: this.userService.getCurrentTime(),
-    };
-    const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
-    chat.id = docRef.id;
-    return chat;
+    try {
+      const currentUser = await this.userService.getUser();
+      if (!currentUser) {
+        console.error('Failed to load current user.');
+        return null;
+      }
+  
+      const chatStartedByObject = await this.userService.getUserObjectForFirestore();
+      const chat: Chat = {
+        id: '', 
+        participants: this.searchService.selectedUsers.map((user) =>
+          this.userToDatabaseFormat(user)
+        ),
+        messages: [],
+        chatStartedBy: chatStartedByObject ? chatStartedByObject : { id: '', authUID: '', name: '', status: false, avatarURL: '', photoURL: '', channels: [], email: '' },
+        date: this.userService.getCurrentDate(),
+        time: this.userService.getCurrentTime(),
+      };
+  
+      const docRef = await addDoc(collection(this.firestore, 'chats'), chat);
+      
+      await updateDoc(doc(collection(this.firestore, 'chats'), docRef.id), { id: docRef.id });
+      
+      chat.id = docRef.id; 
+  
+      return chat;
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      return null;
+    }
   }
+  
+  
+  
 
   async createMessage(chatId: string) {
-    const newMessage: Message = {
-      id: '',
-      text: this.messageText,
-      chatId: chatId,
-      user: this.getUserDetails(this.user),
-      messageAnswer: [],
-      reactions: [],
-      date: this.userService.getCurrentDate(),
-      time: this.userService.getCurrentTime(),
-      messageSendBy: this.getUserDetails(this.user),
-    };
-    const messagesCollectionRef = collection(
-      this.firestore,
-      'chats',
-      chatId,
-      'messages'
-    );
-    const messageDocRef = await addDoc(messagesCollectionRef, newMessage);
-    newMessage.id = messageDocRef.id;
-    return newMessage;
+    try {
+      const currentUser = await this.userService.getUser();
+      if (!currentUser) {
+        console.error('Failed to load current user.');
+        return null;
+      }
+  
+      const userObject = await this.userService.getUserObjectForFirestore();
+      const messageSendBy: User = userObject ? userObject : { id: '', authUID: '', name: '', status: false, avatarURL: '', photoURL: '', channels: [], email: '' };
+      const newMessage: Message = {
+        id: '',
+        text: this.messageText,
+        chatId: chatId,
+        user: userObject ? userObject : { id: '', authUID: '', name: '', status: false, avatarURL: '', photoURL: '', channels: [], email: '' },
+        messageAnswer: [],
+        reactions: [],
+        date: this.userService.getCurrentDate(),
+        time: this.userService.getCurrentTime(),
+        messageSendBy: messageSendBy,
+      };
+  
+      const messagesCollectionRef = collection(
+        this.firestore,
+        'chats',
+        chatId,
+        'messages'
+      );
+  
+      const messageDocRef = await addDoc(messagesCollectionRef, newMessage);
+      newMessage.id = messageDocRef.id;
+      return newMessage;
+    } catch (error) {
+      console.error('Error creating message:', error);
+      return null;
+    }
   }
+  
 
-  getUserDetails(user: User) {
-    return {
-      id: user.id,
-      name: user.name,
-      photoURL: user.photoURL,
-      authUID: user.authUID,
-      status: false,
-      avatarURL: user.avatarURL,
-      channels: [],
-      email: user.email,
-    };
-  }
+  // getUserDetails(user: User) {
+  //   return {
+  //     id: user.id,
+  //     name: user.name,
+  //     photoURL: user.photoURL,
+  //     authUID: user.authUID,
+  //     status: false,
+  //     avatarURL: user.avatarURL,
+  //     channels: [],
+  //     email: user.email,
+  //   };
+  // }
 
   userToDatabaseFormat(user: User) {
     return {

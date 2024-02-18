@@ -44,8 +44,6 @@ export class UserService {
     this.auth = getAuth();
     this.firestore = getFirestore();
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
-
-    this.getUser();
   }
 
   async getUser() {
@@ -98,18 +96,21 @@ export class UserService {
     };
   }
 
-  getUserObjectForFirestore() {
-    // Convert the User object to a plain JavaScript object
-    return {
-      id: this.user.id,
-      authUID: this.user.authUID,
-      name: this.user.name,
-      status: this.user.status,
-      avatarURL: this.user.avatarURL,
-      photoURL: this.user.photoURL,
-      channels: this.user.channels,
-      email: this.user.email,
-    };
+  async getUserObjectForFirestore() {
+    const user = await this.getUser() as unknown as User; 
+    if (user) {
+      return {
+        id: user.id,
+        authUID: user.authUID,
+        name: user.name,
+        status: user.status,
+        avatarURL: user.avatarURL,
+        photoURL: user.photoURL,
+        channels: user.channels,
+        email: user.email,
+      };
+    }
+    return null; 
   }
 
   getCurrentTime() {
