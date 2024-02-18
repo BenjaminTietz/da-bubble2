@@ -15,6 +15,7 @@ import {
   addDoc,
   doc,
   getDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { User } from '../../../models/user.class';
 import { Chat } from '../../../models/chat.class';
@@ -30,7 +31,7 @@ import { UserService } from '../../services/user.service';
 export class PmListComponent implements OnInit, OnDestroy {
   firestore: Firestore = inject(Firestore);
   storedUserAuthUID: any;
-  user: User = new User();
+  user: User | null = null;
 
   userData: User = new User();
   chatsData: any = [];
@@ -49,11 +50,15 @@ export class PmListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.storedUserAuthUID = sessionStorage.getItem('userAuthUID');
     this.subChatList();
-    this.userService.getUser();
+    this.getUserByService();
     this.filterActiveUsers();
   }
 
   ngOnDestroy(): void {
+  }
+
+  async getUserByService() {
+    this.user = await this.userService.getUser();
   }
 
   setChat(obj: any, id: string): Chat {
@@ -96,31 +101,40 @@ export class PmListComponent implements OnInit, OnDestroy {
   }
 
   //hier fehlt eine Logik zum filtern, dass man entweder den Chat begonnen hat und den Teilnehmer angezeigt bekommt oder dass man Teilnehmer ist und denjenigen angezeigt bekommt der den Chat gestartet hat
-  filterActiveChats() {
-    this.activeChats = this.chatsData.filter((chat: any) => {
-      const isChatStartedByCurrentUser = chat.chatStartedBy.authUID === this.userData.authUID;
-      const isCurrentUserParticipant = Array.isArray(chat.participants) &&
-        chat.participants.some((participant: any) => participant.authUID === this.userData.authUID);
+  async filterActiveChats() {
+    console.log('Filter active chats');
+    console.log('Chats data:', this.chatsData);
   
-      // Setze den Status für den Initiator des Chats (chatStartedBy)
-      if (isChatStartedByCurrentUser) {
-        chat.chatStartedBy.status = this.userData.status;
-      }
-  
-      // Setze den Status für jeden Teilnehmer des Chats
-      if (Array.isArray(chat.participants)) {
-        chat.participants.forEach((participant: any) => {
-          if (participant.authUID === this.userData.authUID) {
-            participant.status = this.userData.status;
-          }
-        });
-      }
-  
-      return isChatStartedByCurrentUser || isCurrentUserParticipant;
-    });
-  
-    this.filterActiveUsers();
+    if (this.user) {
+      console.log('User data:', this.user);
+      this.activeChats = this.chatsData.filter((chat: any) => {
+        const isChatStartedByCurrentUser = chat.chatStartedBy.authUID === this.user!.authUID;
+        const isCurrentUserParticipant = Array.isArray(chat.participants) &&
+          chat.participants.some((participant: any) => participant.authUID === this.user!.authUID);
+    
+        // Setze den Status für den Initiator des Chats (chatStartedBy)
+        if (isChatStartedByCurrentUser) {
+          chat.chatStartedBy.status = this.user!.status;
+        }
+    
+        // Setze den Status für jeden Teilnehmer des Chats
+        if (Array.isArray(chat.participants)) {
+          chat.participants.forEach((participant: any) => {
+            if (participant.authUID === this.user!.authUID) {
+              participant.status = this.user!.status;
+            }
+          });
+        }
+    
+        return isChatStartedByCurrentUser || isCurrentUserParticipant;
+      });
+      console.log('Active chats:', this.activeChats);
+      this.filterActiveUsers();
+    } else {
+      console.log('User data is null');
+    }
   }
+  
 
   // Hier müssen die aktiven Benutzer aus den bereits gestarteten Chats gefiltert werden
   async filterActiveUsers() {
@@ -169,17 +183,21 @@ export class PmListComponent implements OnInit, OnDestroy {
 
   async createNewChat(participant: any) {
     console.log('Create new chat with user:', participant);
-
+  
     try {
+      const chatStartedByObject = await this.userService.getUserObjectForFirestore();
       const chatDocRef = await addDoc(collection(this.firestore, 'chats'), {
-        chatStartedBy: this.userService.getUserObjectForFirestore(),
+        chatStartedBy: chatStartedByObject ? chatStartedByObject : { id: '', authUID: '', name: '', status: false, avatarURL: '', photoURL: '', channels: [], email: '' },
         participants: [participant],
         messages: [],
         date: this.userService.getCurrentDate(),
         time: this.userService.getCurrentTime(),
       });
-
+  
+  
       console.log(`Chat created and stored in the database. Chat ID: ${chatDocRef.id}`);
+
+      await updateDoc(doc(collection(this.firestore, 'chats'), chatDocRef.id), { id: chatDocRef.id });
       this.router.navigate(['/home/private-messages', chatDocRef.id]);
     } catch (error) {
       console.error('Error creating and storing the chat:', error);
