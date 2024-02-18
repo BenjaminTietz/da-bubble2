@@ -581,17 +581,22 @@ async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
   }
 
   getReactionsSubcollectionRef(chatId: string, messageId: string) {
+    if (!chatId || !messageId) {
+      throw new Error('Invalid chatId or messageId');
+    }
+    
     return collection(
       this.firestore,
       'chats',
       chatId,
       'messages',
-      messageId,
+      this.messageId,
       'reactions'
     );
   }
 
-  toggleEmojiPicker() {
+  toggleEmojiPicker(messageId: string) {
+    this.messageId = messageId;
     this.emojiPickerVisible = !this.emojiPickerVisible;
   }
 

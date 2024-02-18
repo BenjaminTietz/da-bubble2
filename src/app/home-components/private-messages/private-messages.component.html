@@ -44,7 +44,7 @@
               <p>{{ message.time }}</p>
               <div class="message-options">
                 <mat-icon
-                  (click)="toggleEmojiPicker()"
+                  (click)="toggleEmojiPicker(message.id)"
                   matTooltip="Add Reaction"
                   [ngStyle]="{ color: 'orange' }"
                   >add_reaction</mat-icon
@@ -121,7 +121,7 @@
       <!-- Emoji Picker -->
       <div class="reactions-emoji-picker">
         <emoji-mart
-          (emojiClick)="addReaction($event, chatId)"
+            (emojiClick)="addReaction($event, chatId)"
           *ngIf="emojiPickerVisible"
           title="Pick your emoji…"
           emoji="point_up"
@@ -238,7 +238,7 @@
           <p>{{ message.date | date:'HH:mm' }} Uhr</p>
           <div class="message-options">
             <mat-icon
-              (click)="toggleEmojiPicker()"
+              (click)="toggleEmojiPicker(message.id)"
               matTooltip="Add Reaction"
               [ngStyle]="{ color: 'orange' }"
               >add_reaction</mat-icon
@@ -311,7 +311,7 @@
      <p>{{ answer.date | date:'HH:mm' }} Uhr</p>
      <div class="message-options">
        <mat-icon
-         (click)="toggleEmojiPicker()"
+         (click)="toggleEmojiPicker(answer.id)"
          matTooltip="Add Reaction"
          [ngStyle]="{ color: 'orange' }"
          >add_reaction</mat-icon
