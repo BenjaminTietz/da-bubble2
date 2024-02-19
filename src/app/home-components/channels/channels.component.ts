@@ -5,7 +5,7 @@ import { Channel } from '../../../models/channel.class';
 import { MatDialog } from '@angular/material/dialog';
 import { Post } from '../../../models/post.class';
 import { User } from '../../../models/user.class';
-import { getDocs } from 'firebase/firestore';
+import { getDocs, runTransaction } from 'firebase/firestore';
 import { Answer } from '../../../models/answer.class';
 import { AddUserToChannelComponent } from '../dialogs/add-user-to-channel/add-user-to-channel.component';
 import { DeleteAnswerComponent } from '../dialogs/delete-answer/delete-answer.component';
@@ -82,11 +82,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Code für Reactions
 
   reactPost(chan_id: any, post: any, i: any) {
-    console.log(chan_id)
-    console.log(post)
-    console.log(i)
     this.toggleEmojiPicker(i);
-
   }
 
 
@@ -95,12 +91,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Code für emoji-picker
   selectEmoji($event: { emoji: { native: string } }, i: any, chan_id: any, post_id: any) {
     const emoji = $event.emoji.native
-    console.log(emoji)
-    console.log(i);
     this.addEmojiToFirebase(chan_id, post_id, i, emoji)
-
-
   }
+
 
   toggleEmojiPicker(i: any) {
     this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
@@ -109,17 +102,47 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   addEmojiToFirebase(chan_id: any, post_id: any, i: any, emoji: any) {
-    //getPostDocRef
     this.newReaction.post_id = post_id;
     this.newReaction.user = this.setUserObject(this.user);
     this.newReaction.amount = 1;
     this.newReaction.emoji = emoji;
 
-    updateDoc(this.getPostDocRef(chan_id, post_id), { reactions: arrayUnion(this.setReactionObject(this.newReaction)) }).then(() => {
+    this.addOrUpdateReaction(chan_id, post_id, this.setReactionObject(this.newReaction)).then(() => {
       this.toggleEmojiPicker(i);
     })
-
   }
+
+  async addOrUpdateReaction(chan_id: any, post_id: any, newReaction: any) {
+
+    await runTransaction(this.firestore, async (transaction) => {
+      const postDoc = await transaction.get(this.getPostDocRef(chan_id, post_id))
+      const post = postDoc.data();
+
+      if (!post) {
+        console.log("Post-Daten nicht gefunden!")
+      } else {
+
+        const existingReactionIndex = post['reactions'].findIndex((r: any) => r.emoji === newReaction.emoji);
+
+        if (existingReactionIndex !== -1) {
+          const updatedReactions = [...post['reactions']];
+          updatedReactions[existingReactionIndex] = { ...updatedReactions[existingReactionIndex], amount: updatedReactions[existingReactionIndex].amount + 1 };
+          transaction.update(this.getPostDocRef(chan_id, post_id), { reactions: updatedReactions });
+        } else {
+          const updatedReactions = [...post['reactions'], newReaction];
+          transaction.update(this.getPostDocRef(chan_id, post_id), { reactions: updatedReactions })
+        }
+      }
+    })
+  }
+
+
+
+
+
+
+
+
 
 
   setReactionObject(obj: any) {
@@ -136,12 +159,19 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
 
+
+
   addReactionPost(chan_id: any, post: any, i: any, reaction: any) {
-    console.log(chan_id)
-    console.log(post)
-    console.log(i)
-    console.log(reaction)
-    console.log(reaction.emoji)
+    this.newReaction.post_id = post.id;
+    this.newReaction.user = this.setUserObject(this.user);
+    this.newReaction.amount = 1;
+    this.newReaction.emoji = reaction.emoji;
+
+    this.addOrUpdateReaction(chan_id, post.id, this.setReactionObject(this.newReaction)).then(() => {
+      if (this.emojiPickerAnswerVisible) {
+        this.toggleEmojiPicker(i);
+      }
+    })
   }
 
 
