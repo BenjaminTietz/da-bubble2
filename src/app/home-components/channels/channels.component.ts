@@ -111,6 +111,7 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       this.toggleEmojiPicker(i);
     })
   }
+  
 
   async addOrUpdateReaction(chan_id: any, post_id: any, newReaction: any) {
 
