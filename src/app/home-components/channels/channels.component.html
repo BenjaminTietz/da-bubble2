@@ -77,7 +77,7 @@
                     <!--Emoji Picker-->
                     <div class="inputfield-emoji-picker">
                         <emoji-mart (emojiClick)="selectEmoji($event, i, channel.id, post.id)"
-                            *ngIf="emojiPickerAnswerVisible && this.postEmoji == i" title="Pick your emoji…"
+                            *ngIf="emojiPickerPostVisible && this.postEmoji == i" title="Pick your emoji…"
                             emoji="point_up">
                         </emoji-mart>
                     </div>
@@ -176,7 +176,7 @@
         </div>
 
 
-        <div *ngFor="let answer of listAnswers"
+        <div *ngFor="let answer of listAnswers; let i = index"
             [ngClass]="answer.user.authUID == this.storedUserAuthUID ? 'single-answers-own-answer' : 'single-answers'">
             <!-- </div> class="single-answers"> -->
 
@@ -198,9 +198,35 @@
                     {{ answer.content }}
                 </div>
 
+                <!--Code für Reactions-->
+
+                <div class="menu-reactions">
+                    <mat-icon (click)="reactAnswer(channel.id, answer, i)" matTooltip="Auf Post reagieren"
+                        class="icon-add-reaction">add_reaction</mat-icon>
+                </div>
+
+                <!--Emoji Picker-->
+                <div class="inputfield-emoji-picker">
+                    <emoji-mart (emojiClick)="selectEmojiAnswer($event, i, channel.id, answer)"
+                        *ngIf="emojiPickerAnswerVisible && this.answerEmoji == i" title="Pick your emoji…"
+                        emoji="point_up">
+                    </emoji-mart>
+                </div>
+
                 <div class="reactions">
 
+                    <div class="container-single-reactions">
+                        <div (click)="addReactionAnswer(channel.id, answer, i, reaction)" class="single-reaction"
+                            *ngFor="let reaction of answer.reactions">
+                            <span>{{ reaction.emoji }}</span>
+                            <span class="reaction-amount">{{ reaction.amount }}</span>
+                        </div>
+                    </div>
+
                 </div>
+
+
+                <!--Ende Code Reactions-->
 
             </div>
 
