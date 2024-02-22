@@ -13,6 +13,7 @@ import {
   orderBy,
   getDoc,
   deleteDoc,
+  runTransaction
 } from 'firebase/firestore';
 import { Router } from '@angular/router';
 import { Chat } from '../../../models/chat.class';
@@ -77,10 +78,15 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
 
 
 
-  // emoji
-  emojiPickerVisible: boolean = false;
-  emojiPickerAnswerVisible: boolean = false;
+  // emoji Messages
+  emojiPickerMessagesVisible: boolean = false;
   selectedEmoji: string = '';
+  messageEmoji: number = 0;
+
+  newReaction: Reaction = new Reaction();
+
+// emoji MessageAnswers
+    emojiPickerAnswerVisible: boolean = false;
 
 
   constructor(
@@ -119,7 +125,6 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   }
 
   //Sucbscribe to the messages subcollection with chatId
-//Sucbscribe to the messages subcollection with chatId
 subMessagesList(chat_id: any) {
   const q = query(
     this.getMessageSubcollectionRef(chat_id),
@@ -130,27 +135,11 @@ subMessagesList(chat_id: any) {
     const docs = snapshot.docs; 
     for (const doc of docs) {
       const messageData = doc.data();
-      // Laden der Reaktionen für die aktuelle Nachricht
-      const reactions = await this.loadReactions(chat_id, doc.id);
       const message = this.setMessageObject(messageData, doc.id);
-      message.reactions = reactions as Reaction[]; // Explicitly cast reactions to Reaction[]
       this.listMessages.push(message);
     }
     console.log('listmessages', this.listMessages);
   });
-}
-
-// Laden der Reaktionen für eine bestimmte Nachricht
-async loadReactions(chat_id: any, message_id: string) {
-  const q = query(
-    this.getReactionsSubcollectionRef(chat_id, message_id)
-  );
-  const reactionsSnapshot = await getDocs(q);
-  const reactions: DocumentData[] = [];
-  reactionsSnapshot.forEach((reactionDoc) => {
-    reactions.push(reactionDoc.data());
-  });
-  return reactions;
 }
 
 
@@ -486,18 +475,6 @@ async loadReactions(chat_id: any, message_id: string) {
         this.listAnswers.push(this.setAnswerObject(element.data()));
       });
       console.log('ListAnswers', this.listAnswers);
-  
-      // Reaktionen für jede Nachricht abrufen und in listMessages speichern
-      this.listMessages.forEach((message: any) => {
-        const reactionsRef = this.getReactionsSubcollectionRef(chat_id, message.id);
-        onSnapshot(reactionsRef, (reactionsSnapshot) => {
-          const reactions: any[] = []; 
-          reactionsSnapshot.forEach((doc) => {
-            reactions.push(doc.data());
-          });
-          message.reactions = reactions;
-        });
-      });
     });
   }
   
@@ -582,47 +559,157 @@ async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
   }
 
 
-  // emoji
-  addReaction(event: any, chatId: string) {
-    const selectedEmoji = event.emoji;
-    const newReaction = {
-      emoji: selectedEmoji,
-      userId: this.user.id, 
-      date: this.UserService.getCurrentDate(),
-      time: this.UserService.getCurrentTime(),
-    };
+  // emoji // reactions
+  // async addReaction(event: any, chatId: string) {
+
+  //   const userObject = await this.UserService.getUserObjectForFirestore();
+  //   if (!userObject) {
+  //     console.error('Failed to get user object.');
+  //     return;
+  //   }
+
+  //   const selectedEmoji = event.emoji;
+  //   const newReaction = {
+  //     id: '',
+  //     user: userObject, 
+  //     emoji: selectedEmoji,
+  //     post_id: this.messageId,
+  //     answer_id: '',
+  //     amount: '',
+  //   };
   
-    addDoc(this.getReactionsSubcollectionRef(chatId, this.messageId), newReaction)
-      .then((docRef) => {
-        console.log('Reaction added successfully:', docRef.id);
+  //   try {
+  //     const docRef = await addDoc(this.getReactionsSubcollectionRef(chatId, this.messageId), newReaction);
+  //     console.log('Reaction added successfully:', docRef.id);
+  
+  //     await updateDoc(doc(this.getReactionsSubcollectionRef(chatId, this.messageId), docRef.id), { id: docRef.id });
+  //     console.log('Document updated with new ID:', docRef.id);
+  //   } catch (error) {
+  //     console.error('Error adding reaction:', error);
+  //   }
+  //   this.ngOnInit();
+  // }
+  
+
+  // getReactionsSubcollectionRef(chat_id: any, message_id: string) {
+  //   return collection(
+  //     this.firestore,
+  //     'chats',
+  //     chat_id,
+  //     'messages',
+  //     message_id,
+  //     'reactions'
+  //   );
+  // }
+
+  // toggleEmojiPicker(messageId: string) {
+  //   this.messageId = messageId;
+  //   this.emojiPickerVisible = !this.emojiPickerVisible;
+  // }
+
+  // selectEmoji(event: any) {
+  //   const selectedEmoji = event.emoji.native; 
+  //   this.messageText += selectedEmoji;
+  // }
+
+  // toggleSetEmojiPicker() {
+  //   this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+  // }
+
+  // async deleteReaction(chatId: string, messageId: string, reactionId: string) {
+  //   try {
+  //     await deleteDoc(doc(this.getReactionsSubcollectionRef(chatId, messageId), reactionId));
+  //     console.log('Reaction deleted successfully:', reactionId);
+  //   } catch (error) {
+  //     console.error('Error deleting reaction:', error);
+  //   }
+  //   this.ngOnInit();
+  // }
+  
+    //Code für Reactions für Messages
+
+    reactMessage(chat_id: any, message: any, i: any) {
+      this.toggleEmojiPicker(i);
+    }
+
+    selectEmoji($event: { emoji: { native: string } }, i: any, chat_id: any, message_id: any) {
+      const emoji = $event.emoji.native
+      console.log('Emoji', emoji);
+      console.log('Chat_ID', chat_id);
+      console.log('Message_ID', message_id);
+      console.log('Index', i);
+      this.addEmojiToFirebase(chat_id, message_id, i, emoji)
+    }
+  
+  
+    toggleEmojiPicker(i: any) {
+      this.emojiPickerMessagesVisible = !this.emojiPickerMessagesVisible;
+      this.messageEmoji = i;
+    }
+
+    addEmojiToFirebase(chat_id: any, message_id: any, i: any, emoji: any) {
+
+      this.newReaction.post_id = message_id;
+      this.newReaction.user = this.UserService.setUserObject(this.user);
+      this.newReaction.amount = 1;
+      this.newReaction.emoji = emoji;
+  
+      this.addOrUpdateReaction(chat_id, message_id, this.setReactionObject(this.newReaction)).then(() => {
+        this.toggleEmojiPicker(i);
       })
-      .catch((error) => {
-        console.error('Error adding reaction:', error);
-      });
-  }
+    }
+  
+    async addOrUpdateReaction(chat_id: any, message_id: any, newReaction: any) {
 
-  getReactionsSubcollectionRef(chat_id: any, message_id: string) {
-    return collection(
-      this.firestore,
-      'chats',
-      chat_id,
-      'messages',
-      message_id,
-      'reactions'
-    );
-  }
+      await runTransaction(this.firestore, async (transaction) => {
+        const postDoc = await transaction.get(this.getMessageDocRef(chat_id, message_id))
+        const post = postDoc.data();
+  
+        if (!post) {
+          console.log("Message-Daten nicht gefunden!")
+        } else {
+  
+          const existingReactionIndex = post['reactions'].findIndex((r: any) => r.emoji === newReaction.emoji);
+  
+          if (existingReactionIndex !== -1) {
+            const updatedReactions = [...post['reactions']];
+            updatedReactions[existingReactionIndex] = { ...updatedReactions[existingReactionIndex], amount: updatedReactions[existingReactionIndex].amount + 1 };
+            transaction.update(this.getMessageDocRef(chat_id, message_id), { reactions: updatedReactions });
+          } else {
+            const updatedReactions = [...post['reactions'], newReaction];
+            transaction.update(this.getMessageDocRef(chat_id, message_id), { reactions: updatedReactions })
+          }
+        }
+      })
+    }
 
-  toggleEmojiPicker(messageId: string) {
-    this.messageId = messageId;
-    this.emojiPickerVisible = !this.emojiPickerVisible;
-  }
+    setReactionObject(obj: any) {
+      return {
+        id: obj.id || "",
+        user: obj.user || "",
+        emoji: obj.emoji || "",
+        post_id: obj.message_id || "",
+        answer_id: obj.answer_id || "",
+        amount: obj.amount || 0
+  
+      }
+    }
 
-  selectEmoji(event: any) {
-    const selectedEmoji = event.emoji.native; 
-    this.messageText += selectedEmoji;
-  }
+    getMessageDocRef(chat_id: any, message_id: any) {
+      return doc(this.firestore, "chats", chat_id, "messages", message_id);
+    }
 
-  toggleSetEmojiPicker() {
-    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
-  }
+    addReactionMessage(chat_id: any, message: any, i: any, reaction: any) {
+      this.newReaction.post_id = message.id;
+      this.newReaction.user = this.UserService.setUserObject(this.user);
+      this.newReaction.amount = 1;
+      this.newReaction.emoji = reaction.emoji;
+  
+      this.addOrUpdateReaction(chat_id, message.id, this.setReactionObject(this.newReaction)).then(() => {
+        if (this.emojiPickerAnswerVisible) {
+          this.toggleEmojiPicker(i);
+        }
+      })
+    }
 }
+

@@ -843,7 +843,46 @@
 
 .reactions-emoji-picker  {
   position:absolute;
-  top: 564px;
+  top: 132px;
   left: 100px;
+  z-index: 5;
+  opacity: 1;
+
 }
 
+// reactions
+
+.reactions-wrapper {
+  position: absolute;
+  top: 154px;
+  right: 148px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.reaction {
+  display: flex;
+}
+
+.single-reaction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 63.96px;
+  height: 34px;
+  border-radius: 20px;
+  border: 1px solid $light-purple-lines;
+  gap: 10px;
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+}
