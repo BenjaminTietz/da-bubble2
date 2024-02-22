@@ -67,29 +67,31 @@
                   >
                 </ng-container>
               </div>
-              <!-- Emoji Picker -->
-              <div class="reactions-emoji-picker">
-                <emoji-mart
-                  (emojiClick)="selectEmoji($event, i, chatId, message.id)"
-                  *ngIf="emojiPickerMessagesVisible && this.messageEmoji == i"
-                  title="Pick your emoji…"
-                  emoji="point_up"
-                ></emoji-mart>
-              </div>
-
-              <!-- Reactions -->
-              <div class="reactions-wrapper">
-                <div
-                  (click)="addReactionMessage(chatId, message, i, reaction)"
-                  *ngFor="let reaction of message.reactions"
-                  class="single-reaction"
-                >
-                  <span>{{ reaction.emoji }}</span>
-                  <span class="reaction-amount">{{ reaction.amount }}</span>
-                </div>
-              </div>
             </div>
           </div>
+
+          <!-- Emoji Picker -->
+          <div class="reactions-emoji-picker">
+            <emoji-mart
+              (emojiClick)="selectEmoji($event, i, chatId, message.id)"
+              *ngIf="emojiPickerMessagesVisible && this.messageEmoji == i"
+              title="Pick your emoji…"
+              emoji="point_up"
+            ></emoji-mart>
+          </div>
+
+          <!-- Reactions -->
+          <div class="reactions-wrapper">
+            <div
+              (click)="addReactionMessage(chatId, message, i, reaction)"
+              *ngFor="let reaction of message.reactions"
+              class="single-reaction"
+            >
+              <span>{{ reaction.emoji }}</span>
+              <span class="reaction-amount">{{ reaction.amount }}</span>
+            </div>
+          </div>
+          
           <div
             [ngClass]="
               message.user.authUID == this.storedUserAuthUID
