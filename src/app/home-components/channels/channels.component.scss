@@ -89,7 +89,7 @@
 
                 }
 
-                
+
             }
         }
 
@@ -121,18 +121,26 @@
             justify-content: flex-start;
             width: 100%;
             box-sizing: border-box;
-            padding: 16px 0;
+            padding: 12px 0;
             gap: 24px;
             position: relative;
 
             .container-user-img {
                 width: 10%;
                 min-width: 32px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-end;
 
                 img {
                     width: 90%;
                     border-radius: 100%;
                 }
+
+
+
+
             }
 
             .container-post {
@@ -162,9 +170,6 @@
                 }
 
                 .menu-reactions {
-                    position: absolute;
-                    right: 0;
-                    top: -5px;
                     display: flex;
                     align-items: center;
                     justify-content: flex-start;
@@ -172,33 +177,38 @@
                     padding: 4px 8px;
                     border: 1px solid black;
                     border-radius: 100px;
-    
+                    height: max-content;
+
                     mat-icon {
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         font-size: 16px;
                         cursor: pointer;
-    
+
                         &:hover {
                             font-size: 20px;
                         }
-    
+
                     }
-    
-    
-    
+
+
+
                 }
-    
+
                 .reactions {
+                    display: flex;
+                    gap: 4px;
+
                     .container-single-reactions {
                         display: flex;
                         align-items: center;
                         justify-content: flex-end;
+                        flex-wrap: wrap;
                         gap: 8px;
                         font-size: 24px;
-    
-    
+
+
                         .single-reaction {
                             cursor: pointer;
                             display: flex;
@@ -209,29 +219,29 @@
                             padding: 4px 8px;
                             background-color: white;
                             border-radius: 20px;
-    
+
                             &:hover {
                                 scale: 1.05;
                             }
-    
-    
+
+
                             .reaction-amount {
                                 font-size: 16px;
                             }
-    
-    
-    
+
+
+
                         }
-    
-    
-    
-    
+
+
+
+
                     }
-    
-    
+
+
                 }
-    
-    
+
+
                 .inputfield-emoji-picker {
                     position: absolute;
                     left: 0;
@@ -474,7 +484,7 @@
     justify-content: flex-start;
     width: 100%;
     box-sizing: border-box;
-    padding: 16px 0;
+    padding: 12px 0;
     gap: 24px;
     position: relative;
 
@@ -521,19 +531,17 @@
             gap: 16px;
             cursor: pointer;
             animation-duration: 120ms;
-            color: #535AF1;
+            color: #535bf199;
 
             &:hover {
                 animation-duration: 120ms;
-                font-weight: bold;
+                color: #535bf1;
+
             }
 
         }
 
         .menu-reactions {
-            position: absolute;
-            right: 0;
-            top: -5px;
             display: flex;
             flex-direction: row-reverse;
             align-items: center;
@@ -542,6 +550,8 @@
             padding: 4px 8px;
             border: 1px solid black;
             border-radius: 100px;
+            height: max-content;
+
 
             mat-icon {
                 display: flex;
@@ -561,10 +571,15 @@
         }
 
         .reactions {
+
+            display: flex;
+            gap: 4px;
+
             .container-single-reactions {
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
+                flex-wrap: wrap;
                 gap: 8px;
                 font-size: 24px;
 
@@ -620,6 +635,11 @@
 }
 
 .container-delete {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+
     mat-icon {
         color: rgba(255, 0, 0, 0.403);
         cursor: pointer;
@@ -646,7 +666,7 @@
     justify-content: flex-start;
     width: 100%;
     box-sizing: border-box;
-    padding: 16px 0;
+    padding: 12px 0;
     gap: 24px;
     position: relative;
 
@@ -694,20 +714,19 @@
             gap: 16px;
             cursor: pointer;
             animation-duration: 120ms;
-            color: #535AF1;
+            color: #535bf199;
+
 
             &:hover {
                 animation-duration: 120ms;
-                font-weight: bold;
+                color: #535AF1;
+
             }
 
         }
 
 
         .menu-reactions {
-            position: absolute;
-            left: 0;
-            top: -5px;
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -715,6 +734,8 @@
             padding: 4px 8px;
             border: 1px solid black;
             border-radius: 100px;
+            height: max-content;
+
 
             mat-icon {
                 display: flex;
@@ -734,10 +755,16 @@
         }
 
         .reactions {
+
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 4px;
+
             .container-single-reactions {
                 display: flex;
                 align-items: center;
                 justify-content: flex-end;
+                flex-wrap: wrap;
                 gap: 8px;
                 font-size: 24px;
 
@@ -908,7 +935,7 @@
         justify-content: flex-start;
         width: 100%;
         box-sizing: border-box;
-        padding: 16px 0;
+        padding: 12px 0;
         gap: 24px;
         position: relative;
 
@@ -952,9 +979,6 @@
 
 
             .menu-reactions {
-                position: absolute;
-                left: 0;
-                top: -5px;
                 display: flex;
                 align-items: center;
                 justify-content: flex-start;
@@ -962,6 +986,8 @@
                 padding: 4px 8px;
                 border: 1px solid black;
                 border-radius: 100px;
+                height: max-content;
+
 
                 mat-icon {
                     display: flex;
@@ -981,10 +1007,15 @@
             }
 
             .reactions {
+                display: flex;
+                flex-direction: row-reverse;
+                gap: 4px;
+
                 .container-single-reactions {
                     display: flex;
                     align-items: center;
                     justify-content: flex-end;
+                    flex-wrap: wrap;
                     gap: 8px;
                     font-size: 24px;
 

@@ -39,6 +39,13 @@
                 <div class="container-user-img">
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
+
+                        <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+                            <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
+                        </div>
+
+
+
                 </div>
 
                 <div class="container-post">
@@ -67,13 +74,6 @@
                         </span>
                     </div>
 
-                    <div class="menu-reactions">
-                        <mat-icon (click)="reactPost(channel.id, post, i)" matTooltip="Auf Post reagieren"
-                            class="icon-add-reaction">add_reaction</mat-icon>
-                        <mat-icon (click)="openAnswers(channel.id, post, i)" matTooltip="Auf Post antworten"
-                            class="icon-add-reaction">question_answer</mat-icon>
-                    </div>
-
                     <!--Emoji Picker-->
                     <div class="inputfield-emoji-picker">
                         <emoji-mart (emojiClick)="selectEmoji($event, i, channel.id, post.id)"
@@ -83,6 +83,18 @@
                     </div>
 
                     <div class="reactions">
+
+<!--                         <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+                            <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
+                        </div> -->
+
+
+                        <div class="menu-reactions">
+                            <mat-icon (click)="reactPost(channel.id, post, i)" matTooltip="Auf Post reagieren"
+                                class="icon-add-reaction">add_reaction</mat-icon>
+                            <mat-icon (click)="openAnswers(channel.id, post, i)" matTooltip="Auf Post antworten"
+                                class="icon-add-reaction">question_answer</mat-icon>
+                        </div>
 
                         <div class="container-single-reactions">
                             <div (click)="addReactionPost(channel.id, post, i, reaction)" class="single-reaction"
@@ -95,9 +107,9 @@
                     </div>
                 </div>
 
-                <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+<!--                 <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
                     <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
-                </div>
+                </div> -->
 
             </div>
         </div>
@@ -142,6 +154,7 @@
             <div class="container-user-img">
                 <img [src]="listPosts[postDetail].user.avatarURL ? '../../../'+listPosts[postDetail].user.avatarURL : listPosts[listPosts].user.photoURL"
                     alt="img user">
+
             </div>
 
             <div class="container-post">
@@ -183,6 +196,12 @@
             <div class="container-user-img">
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
                     alt="img user">
+
+                    <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+                        <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
+                    </div>
+
+
             </div>
 
             <div class="container-post">
@@ -200,11 +219,6 @@
 
                 <!--Code für Reactions-->
 
-                <div class="menu-reactions">
-                    <mat-icon (click)="reactAnswer(channel.id, answer, i)" matTooltip="Auf Post reagieren"
-                        class="icon-add-reaction">add_reaction</mat-icon>
-                </div>
-
                 <!--Emoji Picker-->
                 <div class="inputfield-emoji-picker">
                     <emoji-mart (emojiClick)="selectEmojiAnswer($event, i, channel.id, answer)"
@@ -214,6 +228,16 @@
                 </div>
 
                 <div class="reactions">
+
+<!--                     <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+                        <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
+                    </div> -->
+
+                    <div class="menu-reactions">
+                        <mat-icon (click)="reactAnswer(channel.id, answer, i)" matTooltip="Auf Post reagieren"
+                            class="icon-add-reaction">add_reaction</mat-icon>
+                    </div>
+
 
                     <div class="container-single-reactions">
                         <div (click)="addReactionAnswer(channel.id, answer, i, reaction)" class="single-reaction"
@@ -230,9 +254,9 @@
 
             </div>
 
-            <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+<!--             <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
                 <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
-            </div>
+            </div> -->
 
 
         </div>
