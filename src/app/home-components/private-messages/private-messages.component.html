@@ -91,7 +91,7 @@
               <span class="reaction-amount">{{ reaction.amount }}</span>
             </div>
           </div>
-          
+
           <div
             [ngClass]="
               message.user.authUID == this.storedUserAuthUID
@@ -179,7 +179,7 @@
           <!-- Emoji Picker -->
           <div class="inputfield-emoji-picker">
             <emoji-mart
-              *ngIf="emojiPickerAnswerVisible"
+              *ngIf="emojiPickerVisible"
               title="Pick your emoji…"
               emoji="point_up"
             ></emoji-mart>
@@ -240,7 +240,7 @@
             <p>{{ message.date | date : "HH:mm" }} Uhr</p>
             <div class="message-options">
               <mat-icon
-                (click)="reactMessage(chatId, message.id, i)"
+                (click)="reactMessage(message.id, message, i)"
                 matTooltip="Add Reaction"
                 [ngStyle]="{ color: 'orange' }"
                 >add_reaction</mat-icon
@@ -313,7 +313,7 @@
           <p>{{ answer.date | date : "HH:mm" }} Uhr</p>
           <div class="message-options">
             <mat-icon
-              (click)="toggleEmojiPicker(answer.id)"
+              (click)="reactMessageAnswer(answer.id, answer, i)"
               matTooltip="Add Reaction"
               [ngStyle]="{ color: 'orange' }"
               >add_reaction</mat-icon
@@ -334,6 +334,27 @@
               >
             </ng-container>
           </div>
+        </div>
+      </div>
+      <!-- Emoji Picker -->
+      <div class="reactions-emoji-picker">
+        <emoji-mart
+          (emojiClick)="selectEmojiAnswer($event, i, chatId, answer)"
+          *ngIf="emojiPickerAnswerVisible && this.messageAnswerEmoji == i"
+          title="Pick your emoji…"
+          emoji="point_up"
+        ></emoji-mart>
+      </div>
+
+      <!-- Reactions -->
+      <div class="reactions-wrapper">
+        <div
+        (click)="addReactionMessageAnswer(chatId, answer, i, reaction)"
+          *ngFor="let reaction of answer.reactions"
+          class="single-reaction"
+        >
+          <span>{{ reaction.emoji }}</span>
+          <span class="reaction-amount">{{ reaction.amount }}</span>
         </div>
       </div>
       <div
