@@ -406,7 +406,9 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-
+  editPost(chan_id: any, post: any, i: any) {
+    
+  }
 
 
 

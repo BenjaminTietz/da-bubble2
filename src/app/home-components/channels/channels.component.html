@@ -40,9 +40,9 @@
                     <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
 
-                        <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
-                            <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
-                        </div>
+                    <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+                        <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
+                    </div>
 
 
 
@@ -84,7 +84,7 @@
 
                     <div class="reactions">
 
-<!--                         <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+                        <!--                         <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
                             <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
                         </div> -->
 
@@ -94,6 +94,9 @@
                                 class="icon-add-reaction">add_reaction</mat-icon>
                             <mat-icon (click)="openAnswers(channel.id, post, i)" matTooltip="Auf Post antworten"
                                 class="icon-add-reaction">question_answer</mat-icon>
+                            <mat-icon (click)="editPost(channel.id, post, i)"
+                                *ngIf="this.user && post.user.id == this.user.id" style="color: green">edit</mat-icon>
+
                         </div>
 
                         <div class="container-single-reactions">
@@ -107,7 +110,7 @@
                     </div>
                 </div>
 
-<!--                 <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
+                <!--                 <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
                     <mat-icon (click)="openDialogDeletePost(post)">delete</mat-icon>
                 </div> -->
 
@@ -197,9 +200,9 @@
                 <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
                     alt="img user">
 
-                    <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
-                        <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
-                    </div>
+                <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+                    <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
+                </div>
 
 
             </div>
@@ -229,7 +232,7 @@
 
                 <div class="reactions">
 
-<!--                     <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+                    <!--                     <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
                         <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
                     </div> -->
 
@@ -254,7 +257,7 @@
 
             </div>
 
-<!--             <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
+            <!--             <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
                 <mat-icon (click)="deleteAnswer(answer)">delete</mat-icon>
             </div> -->
 
