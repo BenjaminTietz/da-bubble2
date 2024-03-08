@@ -61,6 +61,22 @@
                         {{ post.content }}
                     </div>
 
+                    <!--Template Edit Post-->
+
+                    <div *ngIf="showEditPost && editPostIndex == i" class="edit-post">
+                        <textarea [(ngModel)]="editNewContent"></textarea>
+                        <div class="edit-post-buttons">
+                          <button class="cancel-btn" (click)="cancelEditPost()">
+                            Abbrechen
+                          </button>
+                          <button class="save-btn" (click)="saveEditPost()">
+                            Speichern
+                          </button>
+                        </div>
+                      </div>
+
+
+
                     <div (click)="openAnswers(channel.id , post, i)" class="answers">
                         <span>{{ post.answers }} Antwort<span
                                 *ngIf="post.answers == 0 || post.answers > 1">en</span></span>

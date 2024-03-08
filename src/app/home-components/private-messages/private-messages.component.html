@@ -1,18 +1,13 @@
 <div class="private-message-wrapper">
   <div class="start-conversation-wrapper">
     <!-- Nachrichten Empfänger  -->
-    <div
-      *ngFor="let participants of selectedUsers"
-      class="start-conversation-top"
-    >
+    <div *ngFor="let participants of selectedUsers" class="start-conversation-top">
       <ng-container>
         <div class="chat-header">
-          <div
-            [ngClass]="{
+          <div [ngClass]="{
               'online-status': participants.status,
               'offline-status': !participants.status
-            }"
-          ></div>
+            }"></div>
           <img [src]="participants.avatarURL" alt="avatar" />
           <h1>{{ participants.name }}</h1>
         </div>
@@ -22,14 +17,11 @@
     <div class="start-conversation-messages">
       <!-- Teilnehmer Nachrichten  -->
 
-      <div
-        [ngClass]="
+      <div [ngClass]="
           message.user.authUID == this.storedUserAuthUID
             ? 'user-chat-message'
             : 'other-user-chat-message'
-        "
-        *ngFor="let message of listMessages; let i = index"
-      >
+        " *ngFor="let message of listMessages; let i = index">
         <!-- messages von mir  -->
         <ng-container>
           <div class="date-wrapper">
@@ -43,28 +35,14 @@
               <h3>{{ message.user.name }}</h3>
               <p>{{ message.time }}</p>
               <div class="message-options">
-                <mat-icon
-                  (click)="reactMessage(message.id, message, i)"
-                  matTooltip="Auf Message reagieren"
-                  [ngStyle]="{ color: 'orange' }"
-                  >add_reaction</mat-icon
-                >
+                <mat-icon (click)="reactMessage(message.id, message, i)" matTooltip="Auf Message reagieren"
+                  [ngStyle]="{ color: 'orange' }">add_reaction</mat-icon>
                 <!-- Edit- und Löschoptionen nur anzeigen, wenn der aktuelle Benutzer der Verfasser der Nachricht ist -->
-                <ng-container
-                  *ngIf="message.user.authUID === storedUserAuthUID"
-                >
-                  <mat-icon
-                    matTooltip="Edit Message"
-                    [ngStyle]="{ color: 'green' }"
-                    (click)="editMessage(message.id)"
-                    >edit</mat-icon
-                  >
-                  <mat-icon
-                    matTooltip="Delete Message"
-                    [ngStyle]="{ color: 'red' }"
-                    (click)="deleteMessage(message.id)"
-                    >delete</mat-icon
-                  >
+                <ng-container *ngIf="message.user.authUID === storedUserAuthUID">
+                  <mat-icon matTooltip="Edit Message" [ngStyle]="{ color: 'green' }"
+                    (click)="editMessage(message.id)">edit</mat-icon>
+                  <mat-icon matTooltip="Delete Message" [ngStyle]="{ color: 'red' }"
+                    (click)="deleteMessage(message.id)">delete</mat-icon>
                 </ng-container>
               </div>
             </div>
@@ -72,45 +50,29 @@
 
           <!-- Emoji Picker -->
           <div class="reactions-emoji-picker">
-            <emoji-mart
-              (emojiClick)="selectEmoji($event, i, chatId, message.id)"
-              *ngIf="emojiPickerMessagesVisible && this.messageEmoji == i"
-              title="Pick your emoji…"
-              emoji="point_up"
-            ></emoji-mart>
+            <emoji-mart (emojiClick)="selectEmoji($event, i, chatId, message.id)"
+              *ngIf="emojiPickerMessagesVisible && this.messageEmoji == i" title="Pick your emoji…"
+              emoji="point_up"></emoji-mart>
           </div>
 
           <!-- Reactions -->
           <div class="reactions-wrapper">
-            <div
-              (click)="addReactionMessage(chatId, message, i, reaction)"
-              *ngFor="let reaction of message.reactions"
-              class="single-reaction"
-            >
+            <div (click)="addReactionMessage(chatId, message, i, reaction)" *ngFor="let reaction of message.reactions"
+              class="single-reaction">
               <span>{{ reaction.emoji }}</span>
               <span class="reaction-amount">{{ reaction.amount }}</span>
             </div>
           </div>
 
-          <div
-            [ngClass]="
+          <div [ngClass]="
               message.user.authUID == this.storedUserAuthUID
                 ? 'user-reversed-text-wrapper'
                 : 'reversed-text-wrapper'
-            "
-          >
+            ">
             <p>{{ message.text }}</p>
-            <div
-              (click)="openAnswers(chatId, message.id, i)"
-              class="message-bottom"
-            >
+            <div (click)="openAnswers(chatId, message.id, i)" class="message-bottom">
               <!-- funktioniert nicht-->
-              <span
-                >{{ listAnswers.length }} Antwort<span
-                  *ngIf="listAnswers.length != 1"
-                  >en</span
-                ></span
-              >
+              <span>{{ listAnswers.length }} Antwort<span *ngIf="listAnswers.length != 1">en</span></span>
 
               <!-- Anzeige der letzten Antwort für eine spezifische Nachricht -->
               <span *ngIf="message.messageAnswer > 0">
@@ -121,11 +83,7 @@
                 </span>
               </span>
             </div>
-            <div
-              *ngIf="editingMessageId === message.id"
-              class="edit-message"
-              id="editMessage"
-            >
+            <div *ngIf="editingMessageId === message.id" class="edit-message" id="editMessage">
               <textarea [(ngModel)]="editMessageText"></textarea>
               <div class="edit-message-buttons">
                 <button class="cancel-btn" (click)="cancelEditingMessage()">
@@ -142,15 +100,10 @@
 
       <!-- Nur anzeigen wenn converstion noch leer ist -->
       <div class="conversation-with-user">
-        <div
-          *ngFor="let participants of this.selectedUsers"
-          class="chat-bottom"
-        >
-          <ng-container
-            *ngIf="
+        <div *ngFor="let participants of this.selectedUsers" class="chat-bottom">
+          <ng-container *ngIf="
               this.selectedUsers.length === 1 && this.listMessages.length === 0
-            "
-          >
+            ">
             <div class="user-detail">
               <img [src]="this.selectedUsers[0].avatarURL" alt="avatar" />
               <h1>{{ this.selectedUsers[0].name }}</h1>
@@ -168,21 +121,12 @@
 
       <div class="start-conversation-bottom">
         <div class="container-new-message">
-          <textarea
-            maxlength="160"
-            [(ngModel)]="messageText"
-            cols="30"
-            rows="auto"
-            [placeholder]="'Antworten...'"
-          ></textarea>
+          <textarea maxlength="160" [(ngModel)]="messageText" cols="30" rows="auto"
+            [placeholder]="'Antworten...'"></textarea>
 
           <!-- Emoji Picker -->
           <div class="inputfield-emoji-picker">
-            <emoji-mart
-              *ngIf="emojiPickerVisible"
-              title="Pick your emoji…"
-              emoji="point_up"
-            ></emoji-mart>
+            <emoji-mart *ngIf="emojiPickerVisible" title="Pick your emoji…" emoji="point_up"></emoji-mart>
           </div>
 
           <div class="container-icons">
@@ -194,12 +138,8 @@
             </div>
 
             <div class="icons-right">
-              <mat-icon
-                (click)="addMessage(chatId)"
-                [matTooltip]="messageText ? 'send' : 'Zuerst Antwort eintippen'"
-                [ngClass]="messageText ? '' : 'cursor-no'"
-                >send</mat-icon
-              >
+              <mat-icon (click)="addMessage(chatId)" [matTooltip]="messageText ? 'send' : 'Zuerst Antwort eintippen'"
+                [ngClass]="messageText ? '' : 'cursor-no'">send</mat-icon>
             </div>
           </div>
         </div>
@@ -218,14 +158,11 @@
     </div>
 
     <!-- Original Post -->
-    <div
-      [ngClass]="
+    <div [ngClass]="
         message.user.authUID == this.storedUserAuthUID
           ? 'user-chat-message'
           : 'other-user-chat-message'
-      "
-      *ngFor="let message of listMessages; let i = index"
-    >
+      " *ngFor="let message of listMessages; let i = index">
       <!-- messages von mir  -->
       <ng-container *ngIf="i === answerDetail">
         <div class="date-wrapper">
@@ -239,44 +176,26 @@
             <h3>{{ message.user.name }}</h3>
             <p>{{ message.date | date : "HH:mm" }} Uhr</p>
             <div class="message-options">
-              <mat-icon
-                (click)="reactMessage(message.id, message, i)"
-                matTooltip="Add Reaction"
-                [ngStyle]="{ color: 'orange' }"
-                >add_reaction</mat-icon
-              >
+              <mat-icon (click)="reactMessage(message.id, message, i)" matTooltip="Add Reaction"
+                [ngStyle]="{ color: 'orange' }">add_reaction</mat-icon>
               <!-- Edit- und Löschoptionen nur anzeigen, wenn der aktuelle Benutzer der Verfasser der Nachricht ist -->
               <ng-container *ngIf="message.user.authUID === storedUserAuthUID">
-                <mat-icon
-                  matTooltip="Edit Message"
-                  [ngStyle]="{ color: 'green' }"
-                  (click)="editMessage(message.id)"
-                  >edit</mat-icon
-                >
-                <mat-icon
-                  matTooltip="Delete Message"
-                  [ngStyle]="{ color: 'red' }"
-                  (click)="deleteMessage(message.id)"
-                  >delete</mat-icon
-                >
+                <mat-icon matTooltip="Edit Message" [ngStyle]="{ color: 'green' }"
+                  (click)="editMessage(message.id)">edit</mat-icon>
+                <mat-icon matTooltip="Delete Message" [ngStyle]="{ color: 'red' }"
+                  (click)="deleteMessage(message.id)">delete</mat-icon>
               </ng-container>
             </div>
           </div>
         </div>
-        <div
-          [ngClass]="
+        <div [ngClass]="
             message.user.authUID == this.storedUserAuthUID
               ? 'user-reversed-text-wrapper'
               : 'reversed-text-wrapper'
-          "
-        >
+          ">
           <p>{{ message.text }}</p>
 
-          <div
-            *ngIf="editingMessageId === message.id"
-            class="edit-message"
-            id="editMessage"
-          >
+          <div *ngIf="editingMessageId === message.id" class="edit-message" id="editMessage">
             <textarea [(ngModel)]="editMessageText"></textarea>
             <div class="edit-message-buttons">
               <button class="cancel-btn" (click)="cancelEditingMessage()">
@@ -293,14 +212,11 @@
 
     <!-- neue Antworten -->
     <!-- Original Post -->
-    <div
-      [ngClass]="
+    <div [ngClass]="
         answer.user.authUID == storedUserAuthUID
           ? 'user-chat-message'
           : 'other-user-chat-message'
-      "
-      *ngFor="let answer of listAnswers; let i = index"
-    >
+      " *ngFor="let answer of listAnswers; let i = index">
       <div class="date-wrapper">
         <div class="purple-line"></div>
         <p>{{ answer.date | date : "HH:mm" }} Uhr</p>
@@ -312,65 +228,41 @@
           <h3>{{ answer.user.name }}</h3>
           <p>{{ answer.date | date : "HH:mm" }} Uhr</p>
           <div class="message-options">
-            <mat-icon
-              (click)="reactMessageAnswer(answer.id, answer, i)"
-              matTooltip="Add Reaction"
-              [ngStyle]="{ color: 'orange' }"
-              >add_reaction</mat-icon
-            >
+            <mat-icon (click)="reactMessageAnswer(answer.id, answer, i)" matTooltip="Add Reaction"
+              [ngStyle]="{ color: 'orange' }">add_reaction</mat-icon>
             <!-- Edit- und Löschoptionen nur anzeigen, wenn der aktuelle Benutzer der Verfasser der Nachricht ist -->
             <ng-container *ngIf="answer.user.authUID === storedUserAuthUID">
-              <mat-icon
-                matTooltip="Edit Message"
-                [ngStyle]="{ color: 'gray' }"
-                (click)="editMessageAnswer(answer.messageId, answer.id)"
-                >edit</mat-icon
-              >
-              <mat-icon
-                matTooltip="Delete Message"
-                [ngStyle]="{ color: 'red' }"
-                (click)="deleteMessageAnswer(answer.messageId, answer.id)"
-                >delete</mat-icon
-              >
+              <mat-icon matTooltip="Edit Message" [ngStyle]="{ color: 'gray' }"
+                (click)="editMessageAnswer(answer.messageId, answer.id)">edit</mat-icon>
+              <mat-icon matTooltip="Delete Message" [ngStyle]="{ color: 'red' }"
+                (click)="deleteMessageAnswer(answer.messageId, answer.id)">delete</mat-icon>
             </ng-container>
           </div>
         </div>
       </div>
       <!-- Emoji Picker -->
       <div class="reactions-emoji-picker">
-        <emoji-mart
-          (emojiClick)="selectEmojiAnswer($event, i, chatId, answer)"
-          *ngIf="emojiPickerAnswerVisible && this.messageAnswerEmoji == i"
-          title="Pick your emoji…"
-          emoji="point_up"
-        ></emoji-mart>
+        <emoji-mart (emojiClick)="selectEmojiAnswer($event, i, chatId, answer)"
+          *ngIf="emojiPickerAnswerVisible && this.messageAnswerEmoji == i" title="Pick your emoji…"
+          emoji="point_up"></emoji-mart>
       </div>
 
       <!-- Reactions -->
       <div class="reactions-wrapper">
-        <div
-        (click)="addReactionMessageAnswer(chatId, answer, i, reaction)"
-          *ngFor="let reaction of answer.reactions"
-          class="single-reaction"
-        >
+        <div (click)="addReactionMessageAnswer(chatId, answer, i, reaction)" *ngFor="let reaction of answer.reactions"
+          class="single-reaction">
           <span>{{ reaction.emoji }}</span>
           <span class="reaction-amount">{{ reaction.amount }}</span>
         </div>
       </div>
-      <div
-        [ngClass]="
+      <div [ngClass]="
           answer.user.authUID == storedUserAuthUID
             ? 'user-reversed-text-wrapper'
             : 'reversed-text-wrapper'
-        "
-      >
+        ">
         <p>{{ answer.text }}</p>
 
-        <div
-          *ngIf="editingMessageAnswerId === answer.id"
-          class="edit-message"
-          id="editMessageAnswer"
-        >
+        <div *ngIf="editingMessageAnswerId === answer.id" class="edit-message" id="editMessageAnswer">
           <textarea [(ngModel)]="editMessageAnswerText"></textarea>
           <div class="edit-message-buttons">
             <button class="cancel-btn" (click)="cancelEditingMessage()">
@@ -386,13 +278,7 @@
 
     <!-- Neues Antwort-Eingabefeld -->
     <div class="container-new-message">
-      <textarea
-        maxlength="160"
-        [(ngModel)]="newAnswer"
-        cols="30"
-        rows="auto"
-        [placeholder]="'Antworten...'"
-      ></textarea>
+      <textarea maxlength="160" [(ngModel)]="newAnswer" cols="30" rows="auto" [placeholder]="'Antworten...'"></textarea>
       <div class="container-icons">
         <div class="icons-left">
           <mat-icon matTooltip="add file">add</mat-icon>
@@ -401,12 +287,9 @@
           <mat-icon>alternate_email</mat-icon>
         </div>
         <div class="icons-right">
-          <mat-icon
-            (click)="createAnswer(chatId, messageId)"
+          <mat-icon (click)="createAnswer(chatId, messageId)"
             [matTooltip]="newAnswer ? 'send' : 'Zuerst Antwort eintippen'"
-            [ngClass]="newAnswer ? '' : 'cursor-no'"
-            >send</mat-icon
-          >
+            [ngClass]="newAnswer ? '' : 'cursor-no'">send</mat-icon>
         </div>
       </div>
     </div>

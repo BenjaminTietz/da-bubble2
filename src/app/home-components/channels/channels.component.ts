@@ -77,6 +77,11 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   showAnswers: boolean = false;
   newAnswer: Answer = new Answer();
 
+  //Edit post
+  editPostIndex: number = 0;
+  showEditPost: boolean = false;
+  editNewContent: string = "";
+
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
   };
@@ -407,8 +412,31 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   editPost(chan_id: any, post: any, i: any) {
-    
+    console.log(post.id)
+    console.log(i)
+    this.editNewContent = post.content;
+    this.editPostIndex = i;
+    this.showEditPost = true;
+
   }
+
+
+  cancelEditPost() {
+    console.log("Cancel edit post")
+    this.editNewContent = "";
+    this.editPostIndex = 0;
+    this.showEditPost = false;
+  }
+
+
+  saveEditPost() {
+    console.log("Save edit post")
+    this.editNewContent = "";
+    this.editPostIndex = 0;
+    this.showEditPost = false;
+  }
+
+
 
 
 
