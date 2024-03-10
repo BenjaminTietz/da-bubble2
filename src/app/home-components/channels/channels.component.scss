@@ -70,6 +70,7 @@
                 align-items: flex-start;
                 justify-content: flex-start;
                 gap: 8px;
+                position: relative;
 
 
                 .name-and-time {
@@ -149,6 +150,7 @@
                 align-items: flex-start;
                 justify-content: flex-start;
                 gap: 8px;
+                position: relative;
 
 
                 .name-and-time {
@@ -504,6 +506,7 @@
         align-items: flex-start;
         justify-content: flex-start;
         gap: 8px;
+        position: relative;
 
 
         .name-and-time {
@@ -686,6 +689,7 @@
         align-items: flex-end;
         justify-content: flex-start;
         gap: 8px;
+        position: relative;
 
 
         .name-and-time {
@@ -879,6 +883,7 @@
             align-items: flex-start;
             justify-content: flex-start;
             gap: 8px;
+            position: relative;
 
 
             .name-and-time {
@@ -955,6 +960,7 @@
             align-items: flex-end;
             justify-content: flex-start;
             gap: 8px;
+            position: relative;
 
 
             .name-and-time {
@@ -1101,6 +1107,7 @@
         align-items: flex-end;
         justify-content: flex-start;
         gap: 8px;
+        position: relative;
 
 
         .name-and-time {
@@ -1150,6 +1157,8 @@
     z-index: 9;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
   
     textarea {
       width: 100%;
