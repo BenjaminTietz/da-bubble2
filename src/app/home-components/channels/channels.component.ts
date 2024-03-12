@@ -80,7 +80,12 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   //Edit post
   editPostIndex: number = 0;
   showEditPost: boolean = false;
-  editNewContent: string = "";
+  editNewContentPost: string = "";
+
+  //Edit Answer
+  editAnswerIndex: number = 0;
+  showEditAnswer: boolean = false;
+  editNewContentAnswer: string = "";
 
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
@@ -412,33 +417,33 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
 
   editPost(chan_id: any, post: any, i: any) {
-    console.log(post.id)
-    console.log(i)
-    this.editNewContent = post.content;
+    this.editNewContentPost = post.content;
     this.editPostIndex = i;
     this.showEditPost = true;
-
   }
 
 
   cancelEditPost() {
-    console.log("Cancel edit post")
-    this.editNewContent = "";
+    this.editNewContentPost = "";
     this.editPostIndex = 0;
     this.showEditPost = false;
   }
 
 
-  saveEditPost() {
-    console.log("Save edit post")
-    this.editNewContent = "";
-    this.editPostIndex = 0;
-    this.showEditPost = false;
+  async saveEditPost(chan_id: any, post: any, i: any) {
+    const docRef = doc(this.getPostSubcollectionRef(chan_id), post.id);
+    await updateDoc(docRef, {
+      content: this.editNewContentPost
+    }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => {
+        this.editNewContentPost = "";
+        this.editPostIndex = 0;
+        this.showEditPost = false;
+      }
+    );
   }
-
-
-
-
 
 
   getPostSubcollectionRef(chan_id: any) {
@@ -573,6 +578,36 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   hideAnswers() {
     this.showAnswers = false;
     this.postDetail = 0; //prüfen auf welche nummer setzen
+  }
+
+
+  editAnswer(chan_id: any, answer: any, i: any) {
+    this.editNewContentAnswer = answer.content;
+    this.editAnswerIndex = i;
+    this.showEditAnswer = true;
+  }
+
+
+  cancelEditAnswer() {
+    this.editNewContentAnswer = "";
+    this.editAnswerIndex = 0;
+    this.showEditAnswer = false;
+  }
+
+
+  async saveEditAnswer(chan_id: any, answer: any) {
+    const docRef = doc(this.getAnswerSubcollectionRef(chan_id, answer.postId), answer.id);
+    await updateDoc(docRef, {
+      content: this.editNewContentAnswer
+    }).catch(
+      (err) => { console.log(err); }
+    ).then(
+      () => {
+        this.editNewContentAnswer = "";
+        this.editAnswerIndex = 0;
+        this.showEditAnswer = false;
+      }
+    );
   }
 
 

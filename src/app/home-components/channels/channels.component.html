@@ -64,16 +64,16 @@
                     <!--Template Edit Post-->
 
                     <div *ngIf="showEditPost && editPostIndex == i" class="edit-post">
-                        <textarea [(ngModel)]="editNewContent"></textarea>
+                        <textarea [(ngModel)]="editNewContentPost"></textarea>
                         <div class="edit-post-buttons">
-                          <button class="cancel-btn" (click)="cancelEditPost()">
-                            Abbrechen
-                          </button>
-                          <button class="save-btn" (click)="saveEditPost()">
-                            Speichern
-                          </button>
+                            <button class="cancel-btn" (click)="cancelEditPost()">
+                                Abbrechen
+                            </button>
+                            <button class="save-btn" (click)="saveEditPost(channel.id, post, i)">
+                                Speichern
+                            </button>
                         </div>
-                      </div>
+                    </div>
 
 
 
@@ -246,6 +246,22 @@
                     </emoji-mart>
                 </div>
 
+
+                <!--Template Edit Answer-->
+
+                <div *ngIf="showEditAnswer && editAnswerIndex == i" class="edit-post">
+                    <textarea [(ngModel)]="editNewContentAnswer"></textarea>
+                    <div class="edit-post-buttons">
+                        <button class="cancel-btn" (click)="cancelEditAnswer()">
+                            Abbrechen
+                        </button>
+                        <button class="save-btn" (click)="saveEditAnswer(channel.id, answer)">
+                            Speichern
+                        </button>
+                    </div>
+                </div>
+
+
                 <div class="reactions">
 
                     <!--                     <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
@@ -255,6 +271,8 @@
                     <div class="menu-reactions">
                         <mat-icon (click)="reactAnswer(channel.id, answer, i)" matTooltip="Auf Post reagieren"
                             class="icon-add-reaction">add_reaction</mat-icon>
+                        <mat-icon (click)="editAnswer(channel.id, answer, i)"
+                            *ngIf="this.user && answer.user.id == this.user.id" style="color: green">edit</mat-icon>
                     </div>
 
 
