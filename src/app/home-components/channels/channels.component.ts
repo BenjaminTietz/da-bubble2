@@ -16,6 +16,7 @@ import { UserService } from '../../services/user.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { Reaction } from '../../../models/reaction.class';
+import { UserDetailComponent } from '../dialogs/user-detail/user-detail.component';
 
 
 
@@ -223,14 +224,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
   }
 
 
-
-
-
-
-
-
-
-
   setReactionObject(obj: any) {
     return {
       id: obj.id || "",
@@ -242,9 +235,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
 
     }
   }
-
-
-
 
 
   addReactionPost(chan_id: any, post: any, i: any, reaction: any) {
@@ -259,11 +249,6 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       }
     })
   }
-
-
-
-
-
 
 
 
@@ -294,6 +279,22 @@ export class ChannelsComponent implements OnDestroy, OnInit {
       email: obj.email || []
     }
   }
+
+
+  openDialogProfile(user: any): void {
+    const dialog = this.dialog.open(UserDetailComponent, {
+      position: {
+        top: '32px',
+        right: '32px'
+      },
+      maxWidth: '100%',
+      panelClass: 'dialog-profile-detail'
+
+    });
+    dialog.componentInstance.user = new User(user);
+  }
+
+
 
 
 

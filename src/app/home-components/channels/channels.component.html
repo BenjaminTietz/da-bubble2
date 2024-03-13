@@ -37,7 +37,8 @@
             <div [ngClass]="post.user.authUID == this.storedUserAuthUID ? 'container-single-post-own-post' : 'container-single-post'"
                 *ngFor="let post of listPosts; let i = index">
                 <div class="container-user-img">
-                    <img [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
+                    <img (click)="openDialogProfile(post.user)"
+                        [src]="post.user.avatarURL ? '../../../'+post.user.avatarURL : post.user.photoURL"
                         alt="img user">
 
                     <div *ngIf="this.user && post.user.id == this.user.id" class="container-delete">
@@ -171,7 +172,8 @@
             [ngClass]="listPosts[postDetail].user.authUID == this.storedUserAuthUID ? 'original-post-own-post' : 'original-post'">
 
             <div class="container-user-img">
-                <img [src]="listPosts[postDetail].user.avatarURL ? '../../../'+listPosts[postDetail].user.avatarURL : listPosts[listPosts].user.photoURL"
+                <img (click)="openDialogProfile(listPosts[postDetail].user)"
+                    [src]="listPosts[postDetail].user.avatarURL ? '../../../'+listPosts[postDetail].user.avatarURL : listPosts[listPosts].user.photoURL"
                     alt="img user">
 
             </div>
@@ -213,7 +215,8 @@
             <!-- </div> class="single-answers"> -->
 
             <div class="container-user-img">
-                <img [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
+                <img (click)="openDialogProfile(answer.user)"
+                    [src]="answer.user.avatarURL ? '../../../'+answer.user.avatarURL : answer.user.photoURL"
                     alt="img user">
 
                 <div *ngIf="this.user && answer.user.id == this.user.id" class="container-delete">
