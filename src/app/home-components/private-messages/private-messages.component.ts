@@ -86,6 +86,7 @@ export class PrivateMessagesComponent implements OnInit, OnDestroy {
   newReaction: Reaction = new Reaction();
 
 // emoji MessageAnswers
+  emojiPickerMessageAnswerVisible: boolean = false;
     emojiPickerAnswerVisible: boolean = false;
     messageAnswerEmoji: number = 0;
 
@@ -729,12 +730,12 @@ async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
 
   toggleSetEmojiPickerMessageAnswer() {
     console.log('Toggle Emoji Picker Msg Answrer');
-    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+    this.emojiPickerMessageAnswerVisible = !this.emojiPickerMessageAnswerVisible;
   }
 
   selectEmojiMessageAnswer($event: { emoji: { native: string } }) {
     this.newAnswer += $event.emoji.native;
-    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+    this.emojiPickerMessageAnswerVisible = !this.emojiPickerMessageAnswerVisible;
   }
 }
 

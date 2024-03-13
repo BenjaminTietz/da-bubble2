@@ -432,6 +432,7 @@ selectChannel(channel: Channel) {
   // emoji
   selectEmoji($event: { emoji: { native: string } }) {
     this.messageText += $event.emoji.native;
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
   }
 
   toggleSetEmojiPicker() {
