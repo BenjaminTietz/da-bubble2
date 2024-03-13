@@ -83,7 +83,7 @@
                 </span>
               </span>
             </div>
-            <div *ngIf="editingMessageId === message.id" class="edit-message" id="editMessage">
+            <div *ngIf="editingMessageId === message.id && !editingMessageAnswerId" class="edit-message" id="editMessage">
               <textarea [(ngModel)]="editMessageText"></textarea>
               <div class="edit-message-buttons">
                 <button class="cancel-btn" (click)="cancelEditingMessage()">
@@ -167,7 +167,7 @@
       <ng-container *ngIf="i === answerDetail">
         <div class="date-wrapper">
           <div class="purple-line"></div>
-          <p>{{ message.date }}</p>
+          <p>{{ message.date  }}</p>
           <div class="purple-line"></div>
         </div>
         <div class="user-wrapper">
@@ -175,17 +175,6 @@
           <div class="user-info">
             <h3>{{ message.user.name }}</h3>
             <p>{{ message.date | date : "HH:mm" }} Uhr</p>
-            <div class="message-options">
-              <mat-icon (click)="reactMessage(message.id, message, i)" matTooltip="Add Reaction"
-                [ngStyle]="{ color: 'orange' }">add_reaction</mat-icon>
-              <!-- Edit- und Löschoptionen nur anzeigen, wenn der aktuelle Benutzer der Verfasser der Nachricht ist -->
-              <ng-container *ngIf="message.user.authUID === storedUserAuthUID">
-                <mat-icon matTooltip="Edit Message" [ngStyle]="{ color: 'green' }"
-                  (click)="editMessage(message.id)">edit</mat-icon>
-                <mat-icon matTooltip="Delete Message" [ngStyle]="{ color: 'red' }"
-                  (click)="deleteMessage(message.id)">delete</mat-icon>
-              </ng-container>
-            </div>
           </div>
         </div>
         <div [ngClass]="
@@ -194,18 +183,6 @@
               : 'reversed-text-wrapper'
           ">
           <p>{{ message.text }}</p>
-
-          <div *ngIf="editingMessageId === message.id" class="edit-message" id="editMessage">
-            <textarea [(ngModel)]="editMessageText"></textarea>
-            <div class="edit-message-buttons">
-              <button class="cancel-btn" (click)="cancelEditingMessage()">
-                Abbrechen
-              </button>
-              <button class="save-btn" (click)="saveEditedMessage()">
-                Speichern
-              </button>
-            </div>
-          </div>
         </div>
       </ng-container>
     </div>

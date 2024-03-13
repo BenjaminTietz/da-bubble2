@@ -383,7 +383,7 @@ subMessagesList(chat_id: any) {
   }
 
   async saveEditedMessageAnswer() {
-    if (!this.editingMessageId || !this.editingMessageAnswerId) {
+    if (!this.editingMessageAnswerId) {
       console.error('No message answer being edited.');
       return;
     }
