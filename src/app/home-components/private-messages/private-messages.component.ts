@@ -714,5 +714,27 @@ async updateAnswerWithId(docRef: DocumentReference<DocumentData>, data: any) {
         }
       })
     }
+
+
+      // emoji Text
+  selectEmojiMessage($event: { emoji: { native: string } }) {
+    this.messageText += $event.emoji.native;
+    this.emojiPickerVisible = !this.emojiPickerVisible;
+  }
+
+  toggleSetEmojiPickerMessage() {
+    console.log('Toggle Emoji Picker');
+    this.emojiPickerVisible = !this.emojiPickerVisible;
+  }
+
+  toggleSetEmojiPickerMessageAnswer() {
+    console.log('Toggle Emoji Picker Msg Answrer');
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+  }
+
+  selectEmojiMessageAnswer($event: { emoji: { native: string } }) {
+    this.newAnswer += $event.emoji.native;
+    this.emojiPickerAnswerVisible = !this.emojiPickerAnswerVisible;
+  }
 }
 
