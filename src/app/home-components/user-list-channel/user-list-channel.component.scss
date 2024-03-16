@@ -57,6 +57,7 @@
 
 
         .container-single-user {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -132,6 +133,36 @@
     }
 
 
+
+
+}
+
+
+.online {
+    position: absolute;
+    left: 48px;
+    top: 40px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    background-color: green;
+    border-radius: 50%;
+    z-index: 5;
+
+}
+
+
+
+.offline {
+    position: absolute;
+    left: 48px;
+    top: 40px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 5;
 
 
 }

@@ -8,12 +8,16 @@
     <div class="container-list-user">
         <div (click)="openDialogUserDetail(user)" *ngFor="let user of listUsersInChannel" class="container-single-user">
             <img [src]="user.avatarURL ? '../../../'+user.avatarURL : user.photoURL" alt="">
+
+            <div [ngClass]="user.status == true ? 'online' : 'offline'"></div>
+
             <span>{{ user.name }}
                 <span *ngIf="user.authUID == this.storedUserAuthUID"> (Du) </span>
             </span>
 
 
-            <mat-icon [mat-dialog-close]="" (click)="deleteUserFromList(user, $event)" matTooltip="Nur Admins Timo und Ben"
+            <mat-icon [mat-dialog-close]="" (click)="deleteUserFromList(user, $event)"
+                matTooltip="Nur Admins Timo und Ben"
                 *ngIf="this.currentUser.name == 'Timo Kempf' || this.currentUser.name == 'Benjamin Tietz'">delete</mat-icon>
 
         </div>
@@ -21,7 +25,8 @@
 
     </div>
 
-    <div *ngIf="this.channel.creator.authUID == this.currentUser.authUID" [mat-dialog-close]="" (click)="openDialogAddUserToChannel(channel)" class="add-user">
+    <div *ngIf="this.channel.creator.authUID == this.currentUser.authUID" [mat-dialog-close]=""
+        (click)="openDialogAddUserToChannel(channel)" class="add-user">
         <mat-icon>person_add</mat-icon>
         <span>Mitglieder hinzufügen</span>
     </div>
